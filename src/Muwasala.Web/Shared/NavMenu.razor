@@ -1,0 +1,71 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">🕌 Muwasala</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Home
+            </NavLink>
+        </div>
+          <hr class="text-muted my-2" />
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="search">
+                <span class="oi oi-magnifying-glass" aria-hidden="true"></span> Global Search
+            </NavLink>
+        </div>
+        
+        <hr class="text-muted my-2" />
+        <div class="nav-item px-3">
+            <small class="text-muted fw-bold">ISLAMIC AGENTS</small>
+        </div>
+        
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="quran">
+                <span class="oi oi-book" aria-hidden="true"></span> Quran Navigator
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="hadith">
+                <span class="oi oi-document" aria-hidden="true"></span> Hadith Verifier
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="fiqh">
+                <span class="oi oi-balance-scale" aria-hidden="true"></span> Fiqh Advisor
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="dua">
+                <span class="oi oi-heart" aria-hidden="true"></span> Dua Companion
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="tajweed">
+                <span class="oi oi-musical-note" aria-hidden="true"></span> Tajweed Tutor
+            </NavLink>
+        </div>
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="sirah">
+                <span class="oi oi-person" aria-hidden="true"></span> Sirah Scholar
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+}

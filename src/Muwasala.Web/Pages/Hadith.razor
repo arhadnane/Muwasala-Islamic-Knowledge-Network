@@ -1,0 +1,363 @@
+@page "/hadith"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@using System.Linq
+@inject HadithVerifierAgent HadithAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Hadith Verifier - Muwasala</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-success">🔍 Hadith Verifier</h2>
+                <a href="/" class="btn btn-outline-success">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Verification Options</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@searchModel" OnValidSubmit="@HandleVerification">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Verification Type</label>
+                            <InputSelect @bind-Value="searchModel.VerificationType" class="form-select">
+                                <option value="verify">Verify Hadith Text</option>
+                                <option value="search">Search by Topic</option>
+                                <option value="authentic">Find Authentic Hadith</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                @if (searchModel.VerificationType == "verify")
+                                {
+                                    <span>Hadith Text to Verify</span>
+                                }
+                                else
+                                {
+                                    <span>Search Query</span>
+                                }
+                            </label>
+                            <InputTextArea @bind-Value="searchModel.Query" class="form-control" rows="4" 
+                                         placeholder="@GetPlaceholderText()" />
+                            <ValidationMessage For="@(() => searchModel.Query)" />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="searchModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Verifying...</span>
+                            }
+                            else
+                            {
+                                <span>🔍 @GetButtonText()</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-success" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Hadith Verifier Agent...</p>
+                    <small class="text-muted">Analyzing hadith authenticity and sources...</small>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">📋 Hadith Verification Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)FormatResponse(response))
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">🔍 Welcome to Hadith Verifier</h4>
+                        <p class="text-muted">
+                            Use the verification panel on the left to authenticate and explore Hadith. You can:
+                        </p>
+                        <ul class="list-unstyled text-muted">
+                            <li>✅ <strong>Verify Hadith Text:</strong> Check authenticity of specific narrations</li>
+                            <li>🔍 <strong>Search by Topic:</strong> Find authentic hadith on specific subjects</li>
+                            <li>📚 <strong>Find Authentic Hadith:</strong> Discover verified prophetic traditions</li>
+                        </ul>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">🎯 Try These Examples</h6>
+                                        <button class="btn btn-sm btn-outline-success mb-2 w-100" @onclick="() => SetExampleVerify()">
+                                            Verify Famous Hadith
+                                        </button>                                        <button class="btn btn-sm btn-outline-success mb-2 w-100" @onclick="@(() => SetExampleSearch("charity"))">
+                                            💰 Charity & Giving
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success w-100" @onclick="@(() => SetExampleSearch("prayer"))">
+                                            🤲 Prayer & Worship
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-warning">📊 Verification Sources</h6>
+                                        <p class="small mb-1">• Sahih Bukhari</p>
+                                        <p class="small mb-1">• Sahih Muslim</p>
+                                        <p class="small mb-1">• Sunan Abu Dawud</p>
+                                        <p class="small mb-1">• Jami' at-Tirmidhi</p>
+                                        <p class="small mb-0">• Other classical collections</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">🛡️ Authentication Process</h6>
+                            <p class="mb-0">
+                                Our Hadith Verifier uses classical Islamic scholarship methods to assess:
+                                <strong>Chain of narration (Isnad)</strong>, <strong>Text authenticity (Matn)</strong>, 
+                                and <strong>Historical context</strong> for comprehensive verification.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SearchModel searchModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+
+    public class SearchModel
+    {
+        public string VerificationType { get; set; } = "verify";
+        public string Query { get; set; } = "";
+        public string Language { get; set; } = "en";
+    }
+
+    private async Task HandleVerification()
+    {
+        if (string.IsNullOrWhiteSpace(searchModel.Query))
+        {
+            errorMessage = "Please enter text to verify or search for.";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();
+
+        var startTime = DateTime.Now;        try
+        {
+            switch (searchModel.VerificationType)
+            {
+                case "verify":
+                    var hadithResponse = await HadithAgent.VerifyHadithAsync(searchModel.Query, searchModel.Language);
+                    response = FormatHadithResponse(hadithResponse);
+                    break;
+                case "search":
+                    var hadithResults = await HadithAgent.GetHadithByTopicAsync(searchModel.Query, searchModel.Language);
+                    response = FormatHadithResults(hadithResults);
+                    break;
+                case "authentic":
+                    var authenticResults = await HadithAgent.GetHadithByTopicAsync(searchModel.Query, searchModel.Language);
+                    response = FormatHadithResults(authenticResults.Where(h => h.Grade == HadithGrade.Sahih).ToList());
+                    break;
+            }
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private string GetPlaceholderText()
+    {
+        return searchModel.VerificationType switch
+        {
+            "verify" => "Enter the hadith text you want to verify...",
+            "search" => "Enter topic or keywords to search for hadith...",
+            "authentic" => "Enter topic to find authentic hadith...",
+            _ => "Enter your query..."
+        };
+    }
+
+    private string GetButtonText()
+    {
+        return searchModel.VerificationType switch
+        {
+            "verify" => "Verify Hadith",
+            "search" => "Search Hadith",
+            "authentic" => "Find Authentic",
+            _ => "Process"
+        };
+    }
+
+    private void SetExampleVerify()
+    {
+        searchModel.VerificationType = "verify";
+        searchModel.Query = "Actions are but by intention, and every man shall have only that which he intended.";
+        StateHasChanged();
+    }
+
+    private void SetExampleSearch(string topic)
+    {
+        searchModel.VerificationType = "search";
+        searchModel.Query = topic;
+        StateHasChanged();
+    }    private string FormatResponse(string response)
+    {
+        if (string.IsNullOrEmpty(response)) return "";
+
+        // Enhanced formatting for hadith verification results
+        var formatted = response
+            .Replace("\n\n", "</p><p>")
+            .Replace("\n", "<br>")
+            .Trim();
+
+        // Highlight verification terms
+        formatted = formatted
+            .Replace("Sahih", "<span class='badge bg-success me-1'>Sahih</span>")
+            .Replace("Authentic", "<span class='badge bg-success me-1'>Authentic</span>")
+            .Replace("Weak", "<span class='badge bg-warning me-1'>Weak</span>")
+            .Replace("Fabricated", "<span class='badge bg-danger me-1'>Fabricated</span>")
+            .Replace("Bukhari", "<strong>Bukhari</strong>")            .Replace("Muslim", "<strong>Muslim</strong>")
+            .Replace("Tirmidhi", "<strong>Tirmidhi</strong>")
+            .Replace("Abu Dawud", "<strong>Abu Dawud</strong>");
+
+        return $"<p>{formatted}</p>";
+    }
+
+    private string FormatHadithResponse(HadithResponse hadithResponse)
+    {
+        if (hadithResponse == null) return "No hadith found.";
+
+        var formatted = "<div class='mb-3'>";
+        formatted += $"<h6><span class='badge bg-{GetGradeBadgeColor(hadithResponse.Grade)}'>{hadithResponse.Grade}</span> {hadithResponse.Collection} {hadithResponse.HadithNumber}</h6>";
+        formatted += $"<p class='mb-2'><strong>Arabic:</strong> {hadithResponse.Text}</p>";
+        formatted += $"<p class='mb-2'><strong>Translation:</strong> {hadithResponse.Translation}</p>";
+        
+        if (!string.IsNullOrEmpty(hadithResponse.Explanation))
+        {
+            formatted += $"<p class='mb-2'><strong>Explanation:</strong> {hadithResponse.Explanation}</p>";
+        }
+        
+        if (!string.IsNullOrEmpty(hadithResponse.Warning))
+        {
+            formatted += $"<div class='alert alert-warning'>{hadithResponse.Warning}</div>";
+        }
+        
+        formatted += "</div>";
+        return formatted;
+    }
+
+    private string FormatHadithResults(List<HadithResponse> results)
+    {
+        if (results == null || !results.Any()) return "No hadith found for this topic.";
+
+        var formatted = "<div>";
+        foreach (var hadith in results)
+        {
+            formatted += FormatHadithResponse(hadith);
+        }
+        formatted += "</div>";
+
+        return formatted;
+    }
+
+    private string GetGradeBadgeColor(HadithGrade grade)
+    {
+        return grade switch
+        {
+            HadithGrade.Sahih => "success",
+            HadithGrade.Hasan => "info",
+            HadithGrade.Daif => "warning",
+            HadithGrade.Mawdu => "danger",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .badge {
+        font-size: 0.8em;
+    }
+</style>

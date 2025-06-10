@@ -1,0 +1,592 @@
+@page "/search"
+@using Muwasala.KnowledgeBase.Services
+@using Muwasala.Core.Models
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.JSInterop
+@using System.ComponentModel.DataAnnotations
+@inject IGlobalSearchService GlobalSearchService
+@inject IIntelligentSearchService IntelligentSearchService
+@inject IJSRuntime JSRuntime
+
+<h1>🧠 Intelligent Search - Muwasala</h1>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">🧠 Intelligent Search</h2>
+                <a href="/" class="btn btn-outline-primary">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">🧠 Intelligent Search Options</h5>
+                </div>                <div class="card-body">
+                    <form @onsubmit="HandleIntelligentSearch" @onsubmit:preventDefault="true">
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Search Query</label>
+                            <textarea @bind="searchModel.Query" class="form-control" rows="3" 
+                                     placeholder="Ask any question about Islam - AI will provide comprehensive answers..."></textarea>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Search Mode</label>
+                            <select @bind="searchModel.SearchMode" class="form-select">
+                                <option value="hybrid">🧠 Hybrid (Local + AI + Web)</option>
+                                <option value="local">📚 Local Knowledge Only</option>
+                                <option value="ai">🤖 AI Enhanced</option>
+                            </select>
+                            <small class="form-text text-muted">Hybrid mode combines local database, AI knowledge, and web sources</small>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Content Types</label>
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchQuran" class="form-check-input" id="quran" />
+                                        <label class="form-check-label" for="quran">📖 Quran</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchHadith" class="form-check-input" id="hadith" />
+                                        <label class="form-check-label" for="hadith">📚 Hadith</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchFiqh" class="form-check-input" id="fiqh" />
+                                        <label class="form-check-label" for="fiqh">⚖️ Fiqh</label>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchDua" class="form-check-input" id="dua" />
+                                        <label class="form-check-label" for="dua">🤲 Dua</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchSirah" class="form-check-input" id="sirah" />
+                                        <label class="form-check-label" for="sirah">📜 Sirah</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" @bind="searchModel.SearchTajweed" class="form-check-input" id="tajweed" />
+                                        <label class="form-check-label" for="tajweed">🎵 Tajweed</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <select @bind="searchModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                                <option value="both">Both</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Max Results</label>
+                            <input type="number" @bind="searchModel.MaxResults" class="form-control" min="5" max="50" />
+                        </div>                        <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Searching with AI...</span>
+                            }
+                            else
+                            {
+                                <span>🧠 Intelligent Search</span>
+                            }
+                        </button>
+                    </form>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Search completed in @responseTime.Value.TotalMilliseconds.ToString("F0")ms</small>
+                            @if (searchResults != null)
+                            {
+                                <br /><small>📊 Found @searchResults.Count results</small>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">🧠 AI is analyzing your question...</p>
+                    <small class="text-muted">Searching local knowledge base, generating AI insights, and finding web sources...</small>
+                </div>
+            }            else if (searchPerformed && intelligentResponse != null)
+            {
+                <!-- AI Response Section -->
+                @if (!string.IsNullOrEmpty(intelligentResponse.Response))
+                {
+                    <div class="card border-success mb-4">
+                        <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">🤖 AI Knowledge Response</h5>
+                            <span class="badge bg-light text-success">@intelligentResponse.ConfidenceScore.ToString("F1")/10</span>
+                        </div>
+                        <div class="card-body">
+                            <div class="ai-response">
+                                @((MarkupString)intelligentResponse.Response.Replace("\n", "<br>"))
+                            </div>
+                            
+                            @if (intelligentResponse.QuranReferences.Any())
+                            {
+                                <div class="mt-3">
+                                    <h6 class="text-primary">📖 Quran References:</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var qref in intelligentResponse.QuranReferences)
+                                        {
+                                            <span class="badge bg-primary">@qref</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (intelligentResponse.HadithReferences.Any())
+                            {
+                                <div class="mt-3">
+                                    <h6 class="text-success">📚 Hadith References:</h6>
+                                    <div class="d-flex flex-wrap gap-2">
+                                        @foreach (var href in intelligentResponse.HadithReferences)
+                                        {
+                                            <span class="badge bg-success">@href</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                            
+                            @if (intelligentResponse.ScholarlyOpinions.Any())
+                            {
+                                <div class="mt-3">
+                                    <h6 class="text-info">👨‍🎓 Scholarly Opinions:</h6>
+                                    <ul class="list-unstyled">
+                                        @foreach (var scholar in intelligentResponse.ScholarlyOpinions)
+                                        {
+                                            <li><small class="text-muted">• @scholar</small></li>
+                                        }
+                                    </ul>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Local Knowledge Base Results (if using hybrid search that includes local results) -->
+                @if (searchResults != null && searchResults.Any())
+                {
+                    <div class="card border-primary mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">📚 Local Knowledge Base Results</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach (var result in searchResults.Take(5))
+                                {
+                                    <div class="col-12 mb-3">
+                                        <div class="card @GetCardClass(result.Type.ToString())">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0">
+                                                    @GetContentTypeIcon(result.Type.ToString()) @result.Title
+                                                </h6>
+                                                <span class="badge bg-primary">@result.RelevanceScore.ToString("F1")</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">@result.Content</p>
+                                                @if (!string.IsNullOrEmpty(result.ArabicText))
+                                                {
+                                                    <div class="arabic-text mb-3">@result.ArabicText</div>
+                                                }
+                                                <small class="text-muted">
+                                                    📍 Source: @result.Source
+                                                    @if (!string.IsNullOrEmpty(result.Reference))
+                                                    {
+                                                        <span> | Reference: @result.Reference</span>
+                                                    }
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }                <!-- Web Search Results -->
+                @if (intelligentResponse?.WebSearchResults?.Any() == true)
+                {
+                    <div class="card border-info mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">🌐 Web Search Results (@intelligentResponse.WebSearchResults.Count found)</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                @foreach (var webResult in intelligentResponse.WebSearchResults.Take(3))
+                                {
+                                    <div class="col-12 mb-3">
+                                        <div class="card border-info">
+                                            <div class="card-header d-flex justify-content-between align-items-center">
+                                                <h6 class="mb-0">
+                                                    🌐 @webResult.Title
+                                                </h6>
+                                                <span class="badge bg-info">@webResult.RelevanceScore.ToString("F1")</span>
+                                            </div>
+                                            <div class="card-body">
+                                                <p class="card-text">@webResult.Content</p>
+                                                <small class="text-muted">
+                                                    🔗 Source: <a href="@webResult.Source" target="_blank" class="text-decoration-none">@webResult.Source</a>
+                                                </small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }                <!-- Suggestions section -->
+                @if (suggestions != null && suggestions.Any())
+                {
+                    <div class="card border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h6 class="mb-0">💡 Related Search Suggestions</h6>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var suggestion in suggestions)
+                            {
+                                <button class="btn btn-outline-warning btn-sm me-2 mb-2" 
+                                        @onclick="@(() => SetSuggestion(suggestion))">
+                                    @suggestion
+                                </button>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- No results found section -->
+                @if (searchPerformed && 
+                     (intelligentResponse == null || string.IsNullOrEmpty(intelligentResponse.Response)) && 
+                     (searchResults == null || !searchResults.Any()) && 
+                     (suggestions == null || !suggestions.Any()))
+                {
+                    <div class="card border-secondary">
+                        <div class="card-body text-center py-5">
+                            <h5 class="text-muted mb-3">🔍 No Results Found</h5>
+                            <p class="text-muted">
+                                We couldn't find relevant information for your query. Try:
+                            </p>
+                            <ul class="list-unstyled text-muted">
+                                <li>✓ Using different keywords</li>
+                                <li>✓ Checking spelling</li>
+                                <li>✓ Making your question more specific</li>
+                                <li>✓ Trying a different search mode</li>
+                            </ul>
+                        </div>
+                    </div>
+                }
+            }            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">🧠 Welcome to Intelligent Search</h4>
+                        <p class="text-muted">
+                            Ask any Islamic question and get comprehensive answers powered by AI, local knowledge base, and authentic web sources.
+                        </p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary">🎯 Try These Examples</h6>
+                                        <button class="btn btn-sm btn-outline-primary mb-2 w-100" @onclick="@(() => SetExample("What are the five pillars of Islam?"))">
+                                            Ask about Five Pillars
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary mb-2 w-100" @onclick="@(() => SetExample("How to perform Wudu correctly?"))">
+                                            Learn about Wudu
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary w-100" @onclick="@(() => SetExample("What is the importance of prayer in Islam?"))">
+                                            Understand Prayer
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">⚡ AI Features</h6>
+                                        <ul class="list-unstyled text-start small">
+                                            <li>✅ AI-powered responses</li>
+                                            <li>✅ Quran & Hadith references</li>
+                                            <li>✅ Scholarly opinions</li>
+                                            <li>✅ Web source integration</li>
+                                            <li>✅ Multiple search modes</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SearchModel searchModel = new();
+    private bool isLoading = false;
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+    private List<GlobalSearchResult> searchResults = new();
+    private List<string> suggestions = new();
+    private IslamicKnowledgeResponse? intelligentResponse;
+
+    public class SearchModel
+    {
+        public string Query { get; set; } = "";
+        public string Language { get; set; } = "en";
+        public int MaxResults { get; set; } = 20;
+        public string SearchMode { get; set; } = "local";
+        public bool SearchQuran { get; set; } = true;
+        public bool SearchHadith { get; set; } = true;
+        public bool SearchFiqh { get; set; } = true;
+        public bool SearchDua { get; set; } = true;
+        public bool SearchSirah { get; set; } = true;
+        public bool SearchTajweed { get; set; } = true;
+    }    private async Task HandleIntelligentSearch()
+    {
+        Console.WriteLine("🔍 HandleIntelligentSearch called!");
+        
+        if (string.IsNullOrWhiteSpace(searchModel.Query))
+        {
+            Console.WriteLine("❌ Empty query detected");
+            errorMessage = "Please enter a search query.";
+            return;
+        }
+
+        Console.WriteLine($"🔍 Starting search for: '{searchModel.Query}'");
+        Console.WriteLine($"🔍 Search mode: {searchModel.SearchMode}");
+        Console.WriteLine($"🔍 SearchQuran: {searchModel.SearchQuran}");
+        Console.WriteLine($"🔍 SearchHadith: {searchModel.SearchHadith}");
+        Console.WriteLine($"🔍 SearchFiqh: {searchModel.SearchFiqh}");
+        Console.WriteLine($"🔍 SearchDua: {searchModel.SearchDua}");
+        Console.WriteLine($"🔍 SearchSirah: {searchModel.SearchSirah}");
+        Console.WriteLine($"🔍 SearchTajweed: {searchModel.SearchTajweed}");
+        
+        isLoading = true;
+        errorMessage = "";
+        searchResults.Clear();
+        suggestions.Clear();
+        intelligentResponse = null;
+        searchPerformed = false;
+        StateHasChanged();
+
+        try
+        {
+            var stopwatch = System.Diagnostics.Stopwatch.StartNew();            if (searchModel.SearchMode == "hybrid")
+            {
+                // Use hybrid search that combines local + AI + web sources
+                var hybridResponse = await IntelligentSearchService.PerformHybridSearchAsync(
+                    searchModel.Query, 
+                    searchModel.Language,
+                    searchModel.MaxResults
+                );
+                  // Extract results from hybrid response
+                searchResults = hybridResponse.LocalResults.ToList();
+                intelligentResponse = hybridResponse.AIResponse;
+                suggestions = hybridResponse.SearchSuggestions.ToList();
+                  // Store web results in intelligentResponse for display
+                Console.WriteLine($"🌐 Web results count from hybrid: {hybridResponse.WebResults.Count}");
+                if (hybridResponse.WebResults.Any() && intelligentResponse != null)
+                {
+                    Console.WriteLine("🌐 Adding web results to existing AI response");
+                    // Create new AI response with web results attached
+                    intelligentResponse = intelligentResponse with { WebSearchResults = hybridResponse.WebResults };
+                    Console.WriteLine($"🌐 AI response now has {intelligentResponse.WebSearchResults.Count} web results");
+                }
+                else if (hybridResponse.WebResults.Any())
+                {
+                    Console.WriteLine("🌐 Creating minimal AI response with web results only");
+                    // Create a minimal AI response to carry web results
+                    intelligentResponse = new IslamicKnowledgeResponse(
+                        searchModel.Query,
+                        "", // No AI response, just web results
+                        new List<string>(),
+                        new List<string>(),
+                        new List<string>(),
+                        0.0,
+                        "Web Search Only",
+                        searchModel.Language
+                    ) { WebSearchResults = hybridResponse.WebResults };
+                    Console.WriteLine($"🌐 Created minimal AI response with {intelligentResponse.WebSearchResults.Count} web results");
+                }
+                else
+                {
+                    Console.WriteLine("🌐 No web results found in hybrid response");
+                }
+            }            else if (searchModel.SearchMode == "local")
+            {
+                // Use traditional global search for local only
+                var selectedTypes = GetSelectedTypesAsEnum().ToArray();
+                Console.WriteLine($"🔍 Selected types count: {selectedTypes.Length}");
+                Console.WriteLine($"🔍 Selected types: {string.Join(", ", selectedTypes)}");
+                
+                var results = await GlobalSearchService.SearchByTypeAsync(
+                    searchModel.Query, 
+                    selectedTypes, 
+                    searchModel.Language, 
+                    searchModel.MaxResults
+                );
+                
+                Console.WriteLine($"🔍 Raw results object: {results}");
+                Console.WriteLine($"🔍 Results.Results count: {results.Results?.Count ?? -1}");
+                Console.WriteLine($"🔍 Results.TotalResults: {results.TotalResults}");
+                
+                searchResults = results.Results?.ToList() ?? new List<GlobalSearchResult>();
+                Console.WriteLine($"🔍 Final searchResults count: {searchResults.Count}");
+                
+                suggestions = await GlobalSearchService.GetSearchSuggestionsAsync(searchModel.Query);
+            }
+            else if (searchModel.SearchMode == "ai")
+            {
+                // Use AI enhanced mode - AI only without local search
+                intelligentResponse = await IntelligentSearchService.GetAIKnowledgeAsync(
+                    searchModel.Query, 
+                    searchModel.Language
+                );
+            }
+
+            stopwatch.Stop();
+            responseTime = stopwatch.Elapsed;
+            searchPerformed = true;
+            
+            // Final debug logging
+            Console.WriteLine($"🎯 Search completed! Final state:");
+            Console.WriteLine($"   - Local results: {searchResults?.Count ?? 0}");
+            Console.WriteLine($"   - AI response: {(intelligentResponse != null ? "Available" : "None")}");
+            Console.WriteLine($"   - Web results in AI response: {intelligentResponse?.WebSearchResults?.Count ?? 0}");
+            Console.WriteLine($"   - Suggestions: {suggestions?.Count ?? 0}");
+            Console.WriteLine($"   - Search performed flag: {searchPerformed}");
+            
+            StateHasChanged(); // Force UI refresh
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred during search: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }private IEnumerable<string> GetSelectedTypes()
+    {
+        var types = new List<string>();
+        if (searchModel.SearchQuran) types.Add("quran");
+        if (searchModel.SearchHadith) types.Add("hadith");
+        if (searchModel.SearchFiqh) types.Add("fiqh");
+        if (searchModel.SearchDua) types.Add("dua");
+        if (searchModel.SearchSirah) types.Add("sirah");
+        if (searchModel.SearchTajweed) types.Add("tajweed");
+        return types;
+    }
+
+    private IEnumerable<IslamicContentType> GetSelectedTypesAsEnum()
+    {
+        var types = new List<IslamicContentType>();
+        if (searchModel.SearchQuran) types.Add(IslamicContentType.Verse);
+        if (searchModel.SearchHadith) types.Add(IslamicContentType.Hadith);
+        if (searchModel.SearchFiqh) types.Add(IslamicContentType.FiqhRuling);
+        if (searchModel.SearchDua) types.Add(IslamicContentType.Dua);
+        if (searchModel.SearchSirah) types.Add(IslamicContentType.SirahEvent);
+        if (searchModel.SearchTajweed) types.Add(IslamicContentType.TajweedRule);
+        return types;
+    }
+
+    private void SetExample(string query)
+    {
+        searchModel.Query = query;
+        StateHasChanged();
+    }
+
+    private void SetSuggestion(string suggestion)
+    {
+        searchModel.Query = suggestion;
+        StateHasChanged();
+    }
+
+    private string GetContentTypeIcon(string contentType)
+    {
+        return contentType?.ToLower() switch
+        {
+            "verse" => "📖",
+            "hadith" => "📚",
+            "fiqhruling" => "⚖️",
+            "dua" => "🤲",
+            "sirahevent" => "📜",
+            "tajweedrule" => "🎵",
+            _ => "📄"
+        };
+    }
+
+    private string GetCardClass(string contentType)
+    {
+        return contentType?.ToLower() switch
+        {
+            "verse" => "border-primary",
+            "hadith" => "border-success",
+            "fiqhruling" => "border-info",
+            "dua" => "border-warning",
+            "sirahevent" => "border-dark",
+            "tajweedrule" => "border-secondary",
+            _ => "border-light"
+        };
+    }
+}
+
+<style>
+    .arabic-text {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2c5530;
+        text-align: right;
+        direction: rtl;
+        background: #f8f9fa;
+        padding: 10px;
+        border-right: 4px solid #ffc107;
+        margin: 10px 0;
+        border-radius: 4px;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .form-check {
+        margin-bottom: 0.5rem;
+    }
+    
+    .badge {
+        font-size: 0.75rem;
+    }
+</style>

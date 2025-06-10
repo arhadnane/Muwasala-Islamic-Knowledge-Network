@@ -1,0 +1,362 @@
+@page "/quran"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@inject QuranNavigatorAgent QuranAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Quran Navigator - Muwasala</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-primary">📖 Quran Navigator</h2>
+                <a href="/" class="btn btn-outline-primary">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Search Options</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@searchModel" OnValidSubmit="@HandleSearch">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Search Type</label>
+                            <InputSelect @bind-Value="searchModel.SearchType" class="form-select">
+                                <option value="theme">Search by Theme</option>
+                                <option value="context">Search by Context</option>
+                                <option value="verse">Specific Verse</option>
+                                <option value="surah">Entire Surah</option>
+                            </InputSelect>
+                        </div>
+
+                        @if (searchModel.SearchType == "verse")
+                        {
+                            <div class="row">
+                                <div class="col-6">
+                                    <label class="form-label">Surah</label>
+                                    <InputNumber @bind-Value="searchModel.SurahNumber" class="form-control" min="1" max="114" />
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Verse</label>
+                                    <InputNumber @bind-Value="searchModel.VerseNumber" class="form-control" min="1" />
+                                </div>
+                            </div>
+                        }
+                        else if (searchModel.SearchType == "surah")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Surah Number</label>
+                                <InputNumber @bind-Value="searchModel.SurahNumber" class="form-control" min="1" max="114" />
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Search Query</label>
+                                <InputTextArea @bind-Value="searchModel.Query" class="form-control" rows="3" 
+                                             placeholder="Enter your search term, theme, or context..." />
+                                <ValidationMessage For="@(() => searchModel.Query)" />
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="searchModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Searching...</span>
+                            }
+                            else
+                            {
+                                <span>🔍 Search Quran</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Quran Navigator Agent...</p>
+                    <small class="text-muted">This typically takes 20-30 seconds</small>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5 class="mb-0">📋 Quran Navigation Results</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)FormatResponse(response))
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">🕌 Welcome to Quran Navigator</h4>
+                        <p class="text-muted">
+                            Use the search panel on the left to explore the Holy Quran. You can:
+                        </p>
+                        <ul class="list-unstyled text-muted">
+                            <li>🔍 <strong>Search by Theme:</strong> Find verses related to specific topics</li>
+                            <li>📝 <strong>Search by Context:</strong> Discover verses by situation or meaning</li>
+                            <li>📖 <strong>Specific Verse:</strong> Look up exact Surah and verse numbers</li>
+                            <li>📚 <strong>Entire Surah:</strong> Read complete chapters</li>
+                        </ul>
+                        <div class="row mt-4">
+                            <div class="col-md-6">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary">🎯 Try These Examples</h6>                                        <button class="btn btn-sm btn-outline-primary mb-2 w-100" @onclick="@(() => SetExampleSearch("patience"))">
+                                            Search for "patience"
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary mb-2 w-100" @onclick="@(() => SetExampleSearch("guidance"))">
+                                            Search for "guidance"
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-primary w-100" @onclick="@(() => SetExampleVerse(2, 255))">
+                                            Ayat al-Kursi (2:255)
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">⚡ Performance</h6>
+                                        <p class="small mb-1">Average response time: <strong>~20 seconds</strong></p>
+                                        <p class="small mb-1">Cache-enabled for faster repeated searches</p>
+                                        <p class="small mb-0">Powered by optimized phi3:mini model</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SearchModel searchModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+
+    public class SearchModel
+    {
+        public string SearchType { get; set; } = "theme";
+        public string Query { get; set; } = "";
+        public string Language { get; set; } = "en";
+        public int SurahNumber { get; set; } = 1;
+        public int VerseNumber { get; set; } = 1;
+    }    private async Task HandleSearch()
+    {
+        if (searchModel.SearchType != "verse" && searchModel.SearchType != "surah" && string.IsNullOrWhiteSpace(searchModel.Query))
+        {
+            errorMessage = "Please enter a search query.";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();
+
+        var startTime = DateTime.Now;
+
+        try
+        {
+            VerseResponse result;
+            switch (searchModel.SearchType)
+            {
+                case "theme":
+                    result = await QuranAgent.GetVerseAsync($"Thematic search: {searchModel.Query}", searchModel.Language);
+                    response = FormatVerseResponse(result);
+                    break;
+                case "context":
+                    result = await QuranAgent.GetVerseAsync(searchModel.Query, searchModel.Language);
+                    response = FormatVerseResponse(result);
+                    break;
+                case "verse":
+                    result = await QuranAgent.GetVerseAsync($"Verse {searchModel.SurahNumber}:{searchModel.VerseNumber}", searchModel.Language);
+                    response = FormatVerseResponse(result);
+                    break;                case "surah":
+                    var surahResults = await QuranAgent.GetSurahAnalysisAsync(searchModel.SurahNumber, searchModel.Language);
+                    response = FormatThematicResponse(surahResults);
+                    break;
+            }
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SetExampleSearch(string query)
+    {
+        searchModel.SearchType = "theme";
+        searchModel.Query = query;
+        StateHasChanged();
+    }
+
+    private void SetExampleVerse(int surah, int verse)
+    {
+        searchModel.SearchType = "verse";
+        searchModel.SurahNumber = surah;
+        searchModel.VerseNumber = verse;
+        StateHasChanged();
+    }    private string FormatResponse(string response)
+    {
+        if (string.IsNullOrEmpty(response)) return "";
+
+        // Simple formatting for better readability
+        return response
+            .Replace("\n\n", "</p><p>")
+            .Replace("\n", "<br>")
+            .Replace("**", "<strong>")
+            .Replace("**", "</strong>")
+            .Trim();
+    }
+
+    private string FormatVerseResponse(VerseResponse verseResponse)
+    {
+        var result = $@"
+            <div class='verse-container mb-4'>
+                <h5 class='text-primary'>📖 Verse {verseResponse.Verse.Surah}:{verseResponse.Verse.Verse}</h5>
+                
+                <div class='arabic-text mb-3' style='font-size: 1.5rem; text-align: right; font-family: Arial Unicode MS, Tahoma;'>
+                    {verseResponse.ArabicText}
+                </div>
+                
+                <div class='translation mb-3' style='font-style: italic; font-size: 1.1rem;'>
+                    <strong>Translation:</strong> {verseResponse.Translation}
+                </div>";
+
+        if (!string.IsNullOrEmpty(verseResponse.Transliteration))
+        {
+            result += $@"
+                <div class='transliteration mb-3'>
+                    <strong>Transliteration:</strong> {verseResponse.Transliteration}
+                </div>";
+        }
+
+        if (!string.IsNullOrEmpty(verseResponse.Tafsir))
+        {
+            result += $@"
+                <div class='tafsir mb-3'>
+                    <strong>Explanation ({verseResponse.TafsirSource}):</strong>
+                    <p>{verseResponse.Tafsir}</p>
+                </div>";
+        }
+
+        if (verseResponse.RelatedVerses?.Any() == true)
+        {
+            result += $@"
+                <div class='related-verses mb-3'>
+                    <strong>Related Verses:</strong>
+                    <ul>";
+            foreach (var relatedVerse in verseResponse.RelatedVerses)
+            {
+                result += $"<li>{relatedVerse.Surah}:{relatedVerse.Verse}</li>";
+            }
+            result += "</ul></div>";
+        }
+
+        if (verseResponse.RelatedDuas?.Any() == true)
+        {
+            result += $@"
+                <div class='related-duas mb-3'>
+                    <strong>Related Du'as:</strong>
+                    <ul>";
+            foreach (var dua in verseResponse.RelatedDuas)
+            {
+                result += $"<li>{dua}</li>";
+            }
+            result += "</ul></div>";
+        }
+
+        result += "</div>";
+        return result;
+    }
+
+    private string FormatThematicResponse(List<VerseResponse> responses)
+    {
+        var result = $"<h5 class='text-primary mb-4'>📚 Thematic Analysis Results ({responses.Count} verses)</h5>";
+
+        foreach (var verseResponse in responses)
+        {
+            result += FormatVerseResponse(verseResponse);
+            result += "<hr class='my-4'>";
+        }
+
+        return result;
+    }
+}
+
+<style>
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>

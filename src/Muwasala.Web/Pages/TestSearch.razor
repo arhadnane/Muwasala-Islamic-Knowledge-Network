@@ -1,0 +1,162 @@
+@page "/test-search"
+@using Muwasala.KnowledgeBase.Services
+@using Muwasala.KnowledgeBase.Data
+@using Microsoft.EntityFrameworkCore
+@inject IGlobalSearchService GlobalSearchService
+@inject IslamicKnowledgeDbContext DbContext
+
+<h1>🧪 Database Test & Search Debug</h1>
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            @if (isLoading)
+            {
+                <div class="alert alert-info">
+                    <div class="spinner-border spinner-border-sm me-2"></div>
+                    Testing database and search functionality...
+                </div>
+            }
+            else if (testResults.Any())
+            {
+                <div class="card">
+                    <div class="card-header bg-success text-white">
+                        <h5>✅ Database Test Results</h5>
+                    </div>
+                    <div class="card-body">
+                        @foreach (var result in testResults)
+                        {
+                            <div class="alert @(result.StartsWith("✅") ? "alert-success" : result.StartsWith("❌") ? "alert-danger" : "alert-info")">
+                                @result
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @if (searchTestResults.Any())
+                {
+                    <div class="card mt-3">
+                        <div class="card-header bg-primary text-white">
+                            <h5>🔍 Search Test Results</h5>
+                        </div>
+                        <div class="card-body">
+                            @foreach (var searchResult in searchTestResults)
+                            {
+                                <div class="card mb-2">
+                                    <div class="card-body">
+                                        <h6 class="card-title">@searchResult.Source: @searchResult.Title</h6>
+                                        <p class="card-text">@searchResult.Content.Substring(0, Math.Min(200, searchResult.Content.Length))...</p>
+                                        <small class="text-muted">Score: @searchResult.RelevanceScore.ToString("F2")</small>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <button class="btn btn-primary" @onclick="RunTests">🧪 Run Database & Search Tests</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private bool isLoading = false;
+    private List<string> testResults = new();
+    private List<GlobalSearchResult> searchTestResults = new();
+
+    private async Task RunTests()
+    {
+        isLoading = true;
+        testResults.Clear();
+        searchTestResults.Clear();
+        StateHasChanged();
+
+        try
+        {
+            // Test database connectivity
+            testResults.Add("🔗 Testing database connectivity...");
+            
+            var canConnect = await DbContext.Database.CanConnectAsync();
+            if (canConnect)
+            {
+                testResults.Add("✅ Database connection successful");
+            }
+            else
+            {
+                testResults.Add("❌ Database connection failed");
+                return;
+            }
+
+            // Check table counts
+            testResults.Add("📊 Checking table record counts...");
+            
+            var quranCount = await DbContext.QuranVerses.CountAsync();
+            var hadithCount = await DbContext.HadithRecords.CountAsync();
+            var fiqhCount = await DbContext.FiqhRulings.CountAsync();
+            var duaCount = await DbContext.DuaRecords.CountAsync();
+            var sirahCount = await DbContext.SirahEvents.CountAsync();
+            var tajweedCount = await DbContext.TajweedRules.CountAsync();
+
+            testResults.Add($"📖 Quran verses: {quranCount:N0}");
+            testResults.Add($"📚 Hadith records: {hadithCount:N0}");
+            testResults.Add($"⚖️ Fiqh rulings: {fiqhCount:N0}");
+            testResults.Add($"🤲 Duas: {duaCount:N0}");
+            testResults.Add($"📜 Sirah events: {sirahCount:N0}");
+            testResults.Add($"🎵 Tajweed rules: {tajweedCount:N0}");
+
+            var totalRecords = quranCount + hadithCount + fiqhCount + duaCount + sirahCount + tajweedCount;
+            testResults.Add($"📊 Total records: {totalRecords:N0}");
+
+            if (totalRecords == 0)
+            {
+                testResults.Add("⚠️ Database appears to be empty! The web application should have initialized it on startup.");
+            }
+            else
+            {
+                testResults.Add("✅ Database contains data!");
+            }
+
+            // Test search functionality
+            testResults.Add("🔍 Testing search functionality...");
+            
+            var searchQueries = new[] { "Allah", "prayer", "patience" };
+            
+            foreach (var query in searchQueries)
+            {                try
+                {
+                    var response = await GlobalSearchService.SearchAllAsync(query, "en", 3);
+                    testResults.Add($"🔍 Search for '{query}': {response.Results.Count} results found");
+                    
+                    searchTestResults.AddRange(response.Results.Take(2));
+                }
+                catch (Exception ex)
+                {
+                    testResults.Add($"❌ Search for '{query}' failed: {ex.Message}");
+                }
+            }
+
+            if (searchTestResults.Any())
+            {
+                testResults.Add("✅ Search functionality is working!");
+            }
+            else
+            {
+                testResults.Add("❌ Search functionality returned no results");
+            }
+        }
+        catch (Exception ex)
+        {
+            testResults.Add($"❌ Test failed with error: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+}

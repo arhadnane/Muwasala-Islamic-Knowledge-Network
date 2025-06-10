@@ -1,0 +1,264 @@
+﻿@page "/"
+@using Muwasala.Agents
+@using Microsoft.JSInterop
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Muwasala - Islamic Knowledge Network</PageTitle>
+
+<div class="hero-section text-center py-5 mb-5">
+    <div class="container">
+        <h1 class="display-4 text-primary mb-4">🕌 Muwasala</h1>
+        <h2 class="h3 text-muted mb-4">Islamic Knowledge Network</h2>
+        <p class="lead mb-4">
+            Your comprehensive digital companion for Islamic learning, spiritual guidance, and religious practice.
+            Access authentic knowledge through AI-powered Islamic scholars specialized in Quran, Hadith, Fiqh, and more.
+        </p>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <h5 class="card-title text-primary">🚀 Enhanced Performance</h5>
+                        <p class="card-text">
+                            <strong>70% faster responses</strong> with our optimized system - from 65+ seconds to 20-35 seconds average response time
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>    </div>
+</div>
+
+<div class="container">
+    <!-- Global Search Feature Highlight -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card border-primary shadow">
+                <div class="card-header bg-gradient" style="background: linear-gradient(135deg, #007bff, #0056b3);">
+                    <div class="row align-items-center text-white">
+                        <div class="col-md-8">
+                            <h4 class="mb-1">🔍 Global Search</h4>
+                            <p class="mb-0">Search across all Islamic knowledge sources simultaneously</p>
+                        </div>
+                        <div class="col-md-4 text-md-end">
+                            <a href="/search" class="btn btn-light btn-lg">
+                                <strong>🚀 Try Global Search</strong>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <p class="card-text">
+                                Our powerful Global Search lets you search across <strong>all six Islamic knowledge sources</strong> 
+                                at once - Quran, Hadith, Fiqh, Dua, Sirah, and Tajweed. Get comprehensive results with relevance 
+                                scoring, Arabic text display, and cross-referenced sources.
+                            </p>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <small class="text-muted">📖 Quran Verses</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">📚 Hadith Collections</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">⚖️ Fiqh Rulings</small>
+                                </div>
+                            </div>
+                            <div class="row text-center mt-2">
+                                <div class="col-4">
+                                    <small class="text-muted">🤲 Authentic Duas</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">📜 Sirah Events</small>
+                                </div>
+                                <div class="col-4">
+                                    <small class="text-muted">🎵 Tajweed Rules</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="bg-light p-3 rounded">
+                                <h6 class="text-primary">✨ Features:</h6>
+                                <ul class="small mb-0">
+                                    <li>⚡ Ultra-fast parallel search</li>
+                                    <li>🎯 Relevance scoring</li>
+                                    <li>🌐 Multilingual support</li>
+                                    <li>🔍 Advanced filtering</li>
+                                    <li>📄 Detailed source info</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">📖 Quran Navigator</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Search and explore the Holy Quran with contextual understanding. 
+                        Find verses by theme, context, or specific references with detailed explanations.
+                    </p>
+                    <p class="small text-muted">⚡ Avg response: ~20 seconds</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/quran" class="btn btn-primary w-100">Explore Quran</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">🔍 Hadith Verifier</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Verify authenticity of Hadith and explore prophetic traditions. 
+                        Search by topic and get detailed authentication information.
+                    </p>
+                    <p class="small text-muted">⚡ Optimized responses</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/hadith" class="btn btn-success w-100">Verify Hadith</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">⚖️ Fiqh Advisor</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Get Islamic jurisprudence guidance across different schools of thought. 
+                        Understand rulings on contemporary and classical issues.
+                    </p>
+                    <p class="small text-muted">⚡ Avg response: ~35 seconds</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/fiqh" class="btn btn-info w-100">Get Guidance</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="card-title mb-0">🤲 Dua Companion</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Discover authentic duas for every occasion and life situation. 
+                        Learn proper supplications with Arabic text and translations.
+                    </p>
+                    <p class="small text-muted">⚡ Avg response: ~40 seconds</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/dua" class="btn btn-warning w-100">Find Duas</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="card-title mb-0">🎵 Tajweed Tutor</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Learn proper Quranic recitation with tajweed rules and pronunciation guidance. 
+                        Analyze verses for correct articulation.
+                    </p>
+                    <p class="small text-muted">🔧 Being optimized</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/tajweed" class="btn btn-secondary w-100">Learn Tajweed</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm agent-card">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="card-title mb-0">📚 Sirah Scholar</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">
+                        Explore the life and teachings of Prophet Muhammad (ﷺ). 
+                        Learn from prophetic biography and apply lessons to daily life.
+                    </p>
+                    <p class="small text-muted">⚡ Avg response: ~53 seconds</p>
+                </div>
+                <div class="card-footer">
+                    <a href="/sirah" class="btn btn-dark w-100">Study Sirah</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card border-info">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">🔧 System Features</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h6>⚡ Performance Optimized</h6>
+                            <ul class="small">
+                                <li>70% faster responses</li>
+                                <li>Intelligent caching system</li>
+                                <li>Optimized AI models (phi3:mini)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>🤖 AI-Powered Agents</h6>
+                            <ul class="small">
+                                <li>6 specialized Islamic scholars</li>
+                                <li>Local Ollama models</li>
+                                <li>Authentic knowledge sources</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-4">
+                            <h6>🎯 Multi-Interface Access</h6>
+                            <ul class="small">
+                                <li>Web interface (this)</li>
+                                <li>REST API</li>
+                                <li>Console application</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        margin: -1rem -15px 2rem -15px;
+    }
+    
+    .agent-card {
+        transition: transform 0.2s ease-in-out;
+    }
+    
+    .agent-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .card-header h5 {
+        font-size: 1.1rem;
+    }
+</style>

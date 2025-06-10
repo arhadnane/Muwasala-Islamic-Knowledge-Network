@@ -1,0 +1,441 @@
+@page "/dua"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@inject DuaCompanionAgent DuaAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Dua Companio                                        <button class="btn btn-sm btn-outline-warning mb-2 w-100" @onclick="@(() => SetExample("occasion", "morning"))">
+                                            Morning Prayers
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning mb-2 w-100" @onclick="@(() => SetExample("occasion", "evening"))">
+                                            Evening Prayers
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning w-100" @onclick="@(() => SetExample("occasion", "before_sleep"))">
+                                            Before Sleep
+                                        </button>ala</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-warning">🤲 Dua Companion</h2>
+                <a href="/" class="btn btn-outline-warning">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="mb-0">Find Duas</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@duaModel" OnValidSubmit="@HandleDuaSearch">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Search Type</label>
+                            <InputSelect @bind-Value="duaModel.SearchType" class="form-select">
+                                <option value="occasion">Duas for Occasion</option>
+                                <option value="daily">Daily Duas</option>
+                                <option value="protection">Protection Duas</option>
+                                <option value="guidance">Guidance & Help</option>
+                                <option value="custom">Custom Request</option>
+                            </InputSelect>
+                        </div>
+
+                        @if (duaModel.SearchType == "occasion")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Select Occasion</label>
+                                <InputSelect @bind-Value="duaModel.Occasion" class="form-select">
+                                    <option value="">Select an occasion...</option>
+                                    <option value="morning">Morning</option>
+                                    <option value="evening">Evening</option>
+                                    <option value="before_sleep">Before Sleep</option>
+                                    <option value="travel">Travel</option>
+                                    <option value="eating">Before/After Eating</option>
+                                    <option value="studying">Studying</option>
+                                    <option value="difficulty">Times of Difficulty</option>
+                                    <option value="gratitude">Expressing Gratitude</option>
+                                </InputSelect>
+                            </div>
+                        }
+                        else if (duaModel.SearchType == "custom")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Describe Your Situation</label>
+                                <InputTextArea @bind-Value="duaModel.CustomRequest" class="form-control" rows="3" 
+                                             placeholder="Describe what you need duas for..." />
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="duaModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                                <option value="both">Both Arabic & English</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <InputCheckbox @bind-Value="duaModel.IncludePronunciation" class="form-check-input" id="pronunciation" />
+                                <label class="form-check-label" for="pronunciation">
+                                    Include pronunciation guide
+                                </label>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-warning w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Finding Duas...</span>
+                            }
+                            else
+                            {
+                                <span>🤲 Find Duas</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Dua Companion Agent...</p>
+                    <small class="text-muted">Finding appropriate supplications...</small>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-warning text-white">
+                        <h5 class="mb-0">🤲 Recommended Duas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)FormatDuaResponse(response))
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">💡 Tip</h6>
+                            <p class="mb-0">
+                                Regular recitation of authentic duas brings spiritual benefit and Allah's protection. 
+                                Make these supplications part of your daily routine.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">🤲 Welcome to Dua Companion</h4>
+                        <p class="text-muted">
+                            Discover authentic Islamic supplications for every occasion and life situation. 
+                            Learn proper duas with Arabic text, translations, and pronunciation guides.
+                        </p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-warning">🌅 Daily Duas</h6>                                        <button class="btn btn-sm btn-outline-warning mb-2 w-100" @onclick="@(() => SetExample("occasion", "morning"))">
+                                            Morning Duas
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning mb-2 w-100" @onclick="@(() => SetExample("occasion", "evening"))">
+                                            Evening Duas
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-warning w-100" @onclick="@(() => SetExample("occasion", "before_sleep"))">
+                                            Before Sleep
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">🛡️ Protection & Guidance</h6>                                        <button class="btn btn-sm btn-outline-success mb-2 w-100" @onclick="@(() => SetExample("protection", ""))">
+                                            Protection Duas
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success mb-2 w-100" @onclick="@(() => SetExample("guidance", ""))">
+                                            Guidance Duas
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success w-100" @onclick="@(() => SetExample("occasion", "difficulty"))">
+                                            Times of Need
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary">🌍 Travel</h6>
+                                        <p class="small">Safe journey duas</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-info h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">🍽️ Meals</h6>
+                                        <p class="small">Before & after eating</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-secondary h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-secondary">📚 Study</h6>
+                                        <p class="small">Learning & knowledge</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-danger h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-danger">🤲 Forgiveness</h6>
+                                        <p class="small">Repentance duas</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-success mt-4">
+                            <h6 class="alert-heading">📿 The Power of Dua</h6>
+                            <p class="mb-0">
+                                "Dua is the essence of worship" - Prophet Muhammad (ﷺ). 
+                                Regular supplication strengthens our connection with Allah and brings peace to the heart.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private DuaModel duaModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+
+    public class DuaModel
+    {
+        public string SearchType { get; set; } = "occasion";
+        public string Occasion { get; set; } = "";
+        public string CustomRequest { get; set; } = "";
+        public string Language { get; set; } = "both";
+        public bool IncludePronunciation { get; set; } = true;
+    }
+
+    private async Task HandleDuaSearch()
+    {
+        string searchQuery = "";
+        
+        switch (duaModel.SearchType)
+        {
+            case "occasion":
+                if (string.IsNullOrEmpty(duaModel.Occasion))
+                {
+                    errorMessage = "Please select an occasion.";
+                    return;
+                }
+                searchQuery = duaModel.Occasion.Replace("_", " ");
+                break;
+            case "custom":
+                if (string.IsNullOrWhiteSpace(duaModel.CustomRequest))
+                {
+                    errorMessage = "Please describe your situation.";
+                    return;
+                }
+                searchQuery = duaModel.CustomRequest;
+                break;
+            default:
+                searchQuery = duaModel.SearchType;
+                break;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();
+
+        var startTime = DateTime.Now;
+
+        try
+        {
+            var includeArabic = duaModel.Language == "ar" || duaModel.Language == "both";
+            var includeEnglish = duaModel.Language == "en" || duaModel.Language == "both";
+              var duaResponses = await DuaAgent.GetDuasForOccasionAsync(
+                searchQuery, 
+                duaModel.Language, 
+                3
+            );
+
+            response = FormatDuaResults(duaResponses);
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SetExample(string type, string occasion)
+    {
+        duaModel.SearchType = type;
+        duaModel.Occasion = occasion;
+        StateHasChanged();
+    }
+
+    private string FormatDuaResults(List<DuaResponse> duaResponses)
+    {
+        if (duaResponses == null || duaResponses.Count == 0) 
+            return "<p>No duas found for the specified occasion.</p>";
+
+        var result = "<div class='duas-container'>";
+        
+        foreach (var dua in duaResponses)
+        {
+            result += "<div class='dua-item mb-4 p-3 border rounded'>";
+            
+            // Arabic text
+            if (!string.IsNullOrEmpty(dua.ArabicText))
+            {
+                result += $"<div class='arabic-text mb-3'>{dua.ArabicText}</div>";
+            }
+            
+            // Translation
+            if (!string.IsNullOrEmpty(dua.Translation))
+            {
+                result += $"<div class='translation mb-2'><strong>Translation:</strong> {dua.Translation}</div>";
+            }
+            
+            // Transliteration
+            if (!string.IsNullOrEmpty(dua.Transliteration))
+            {
+                result += $"<div class='transliteration mb-2'><strong>Pronunciation:</strong> {dua.Transliteration}</div>";
+            }
+            
+            // Benefits
+            if (dua.Benefits != null && dua.Benefits.Any())
+            {
+                result += "<div class='benefits mb-2'><strong>Benefits:</strong>";
+                result += "<ul>";
+                foreach (var benefit in dua.Benefits)
+                {
+                    result += $"<li>{benefit}</li>";
+                }
+                result += "</ul></div>";
+            }
+            
+            // Source
+            if (!string.IsNullOrEmpty(dua.Source))
+            {
+                result += $"<div class='source text-muted'><small><strong>Source:</strong> {dua.Source}</small></div>";
+            }
+            
+            result += "</div>";
+        }
+        
+        result += "</div>";
+        return result;
+    }
+
+    private string FormatDuaResponse(string response)
+    {
+        if (string.IsNullOrEmpty(response)) return "";
+
+        // Enhanced formatting for dua responses
+        var formatted = response
+            .Replace("\n\n", "</p><p>")
+            .Replace("\n", "<br>")
+            .Trim();
+
+        // Format Arabic text in a special style
+        formatted = System.Text.RegularExpressions.Regex.Replace(
+            formatted, 
+            @"([\u0600-\u06FF\u0750-\u077F]+)", 
+            "<div class='arabic-text'>$1</div>"
+        );
+
+        // Highlight dua-related terms
+        formatted = formatted
+            .Replace("Dua:", "<strong class='text-warning'>Dua:</strong>")
+            .Replace("Translation:", "<strong class='text-info'>Translation:</strong>")
+            .Replace("Pronunciation:", "<strong class='text-success'>Pronunciation:</strong>")
+            .Replace("Benefits:", "<strong class='text-primary'>Benefits:</strong>");
+
+        return $"<p>{formatted}</p>";
+    }
+}
+
+<style>
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .arabic-text {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #2c5530;
+        text-align: right;
+        direction: rtl;
+        background: #f8f9fa;
+        padding: 10px;
+        border-right: 4px solid #ffc107;
+        margin: 10px 0;
+        border-radius: 4px;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>

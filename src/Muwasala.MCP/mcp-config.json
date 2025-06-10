@@ -1,0 +1,44 @@
+{
+  "database": {
+    "path": "../../data/database/IslamicKnowledge.db",
+    "description": "SQLite database containing Islamic knowledge"
+  },
+  "server": {
+    "name": "Muwasala Islamic Knowledge MCP Server",
+    "version": "1.0.0",
+    "protocol_version": "2024-11-05"
+  },
+  "capabilities": {
+    "tools": [
+      "query_database",
+      "search_quran",
+      "search_hadith", 
+      "search_fiqh",
+      "search_dua",
+      "get_quran_verse",
+      "get_table_schema",
+      "list_tables"
+    ],
+    "resources": [
+      "sqlite://islamic-knowledge"
+    ],
+    "prompts": [
+      "islamic_search",
+      "verse_analysis"
+    ]
+  },
+  "tables": {
+    "QuranVerses": "Quranic verses with Arabic text and translations",
+    "Tafsirs": "Quranic commentary and interpretations", 
+    "HadithRecords": "Authenticated hadith collections",
+    "FiqhRulings": "Islamic jurisprudence rulings by madhab",
+    "DuaRecords": "Islamic prayers and supplications",
+    "SirahEvents": "Events from Prophet Muhammad's biography",
+    "TajweedRules": "Quranic recitation rules",
+    "VerseTajweedData": "Verse-specific Tajweed applications",
+    "CommonMistakes": "Common recitation errors and corrections",
+    "SearchHistory": "User search queries and analytics",
+    "SearchResultHistory": "Individual search result tracking", 
+    "SearchAnalytics": "Search performance insights"
+  }
+}

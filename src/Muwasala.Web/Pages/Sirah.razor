@@ -1,0 +1,431 @@
+@page "/sirah"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@inject SirahScholarAgent SirahAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Sirah Scholar - Muwasala</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-dark">📚 Sirah Scholar</h2>
+                <a href="/" class="btn btn-outline-dark">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Study Prophet's Life</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@sirahModel" OnValidSubmit="@HandleSirahStudy">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Study Type</label>
+                            <InputSelect @bind-Value="sirahModel.StudyType" class="form-select">
+                                <option value="event">Specific Event</option>
+                                <option value="lesson">Life Lesson</option>
+                                <option value="character">Character Trait</option>
+                                <option value="timeline">Timeline Period</option>
+                                <option value="guidance">Prophetic Guidance</option>
+                            </InputSelect>
+                        </div>
+
+                        @if (sirahModel.StudyType == "event")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Select Event</label>
+                                <InputSelect @bind-Value="sirahModel.SpecificEvent" class="form-select">
+                                    <option value="">Choose an event...</option>
+                                    <option value="birth">Birth of the Prophet ﷺ</option>
+                                    <option value="first_revelation">First Revelation</option>
+                                    <option value="migration">Hijra (Migration)</option>
+                                    <option value="battle_badr">Battle of Badr</option>
+                                    <option value="conquest_mecca">Conquest of Mecca</option>
+                                    <option value="farewell_hajj">Farewell Hajj</option>
+                                    <option value="treaty_hudaybiyyah">Treaty of Hudaybiyyah</option>
+                                    <option value="night_journey">Isra and Mi'raj</option>
+                                </InputSelect>
+                            </div>
+                        }
+                        else if (sirahModel.StudyType == "timeline")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Time Period</label>
+                                <InputSelect @bind-Value="sirahModel.TimePeriod" class="form-select">
+                                    <option value="mecca_early">Early Mecca Period</option>
+                                    <option value="mecca_persecution">Persecution Period</option>
+                                    <option value="medina_early">Early Medina Period</option>
+                                    <option value="medina_consolidation">Medina Consolidation</option>
+                                    <option value="final_years">Final Years</option>
+                                </InputSelect>
+                            </div>
+                        }
+                        else if (sirahModel.StudyType == "character")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Character Trait</label>
+                                <InputSelect @bind-Value="sirahModel.CharacterTrait" class="form-select">
+                                    <option value="compassion">Compassion & Mercy</option>
+                                    <option value="justice">Justice & Fairness</option>
+                                    <option value="patience">Patience & Perseverance</option>
+                                    <option value="forgiveness">Forgiveness</option>
+                                    <option value="leadership">Leadership</option>
+                                    <option value="humility">Humility</option>
+                                    <option value="honesty">Honesty & Trustworthiness</option>
+                                </InputSelect>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Topic or Question</label>
+                                <InputTextArea @bind-Value="sirahModel.CustomTopic" class="form-control" rows="3" 
+                                             placeholder="What would you like to learn about the Prophet's life?" />
+                                <ValidationMessage For="@(() => sirahModel.CustomTopic)" />
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label">Focus</label>
+                            <InputSelect @bind-Value="sirahModel.Focus" class="form-select">
+                                <option value="historical">Historical Details</option>
+                                <option value="lessons">Life Lessons</option>
+                                <option value="both">Both History & Lessons</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="sirahModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Learning...</span>
+                            }
+                            else
+                            {
+                                <span>📚 Study Sirah</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-dark" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Sirah Scholar Agent...</p>
+                    <small class="text-muted">Drawing lessons from the life of Prophet Muhammad ﷺ...</small>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0">📚 Prophetic Wisdom & Biography</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)FormatSirahResponse(response))
+                        </div>
+                        
+                        <div class="alert alert-success mt-4">
+                            <h6 class="alert-heading">🌟 Reflection</h6>
+                            <p class="mb-0">
+                                The Prophet Muhammad ﷺ said: "I have been sent to perfect good character." 
+                                His life remains the perfect example for all humanity across all times.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">📚 Welcome to Sirah Scholar</h4>
+                        <p class="text-muted">
+                            Explore the life and teachings of Prophet Muhammad ﷺ. Learn from his biography, 
+                            character, and wisdom to apply prophetic guidance in your daily life.
+                        </p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-dark">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-dark">🎯 Study Examples</h6>                                        <button class="btn btn-sm btn-outline-dark mb-2 w-100" @onclick="@(() => SetEventExample("migration"))">
+                                            The Great Migration
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-dark mb-2 w-100" @onclick="@(() => SetCharacterExample("compassion"))">
+                                            Prophet's Compassion
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-dark w-100" @onclick="@(() => SetEventExample("conquest_mecca"))">
+                                            Conquest of Mecca
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">✨ Character Traits</h6>
+                                        <div class="text-start">
+                                            <p class="small mb-1">• <strong>Ar-Rahman:</strong> The Compassionate</p>
+                                            <p class="small mb-1">• <strong>As-Sabur:</strong> The Patient</p>
+                                            <p class="small mb-1">• <strong>Al-Haleem:</strong> The Gentle</p>
+                                            <p class="small mb-0">• <strong>Al-Amin:</strong> The Trustworthy</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="card border-info h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-info small">🌅 Early Life</h6>
+                                        <p class="small mb-0">Birth to prophethood</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card border-warning h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-warning small">🕌 Mecca</h6>
+                                        <p class="small mb-0">13 years of preaching</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card border-primary h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-primary small">🏃‍♂️ Hijra</h6>
+                                        <p class="small mb-0">Migration to Medina</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card border-success h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-success small">🏛️ Medina</h6>
+                                        <p class="small mb-0">Building the Ummah</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card border-secondary h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-secondary small">🕊️ Peace</h6>
+                                        <p class="small mb-0">Final victories</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-2">
+                                <div class="card border-danger h-100">
+                                    <div class="card-body text-center p-2">
+                                        <h6 class="text-danger small">💫 Legacy</h6>
+                                        <p class="small mb-0">Eternal guidance</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-primary mt-4">
+                            <h6 class="alert-heading">🤲 Prayer Upon the Prophet</h6>
+                            <p class="mb-0 text-center">
+                                <strong>صلى الله عليه وسلم</strong><br>
+                                <em>May Allah's peace and blessings be upon him</em>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private SirahModel sirahModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+
+    public class SirahModel
+    {
+        public string StudyType { get; set; } = "event";
+        public string SpecificEvent { get; set; } = "";
+        public string TimePeriod { get; set; } = "";
+        public string CharacterTrait { get; set; } = "";
+        public string CustomTopic { get; set; } = "";
+        public string Focus { get; set; } = "both";
+        public string Language { get; set; } = "en";
+    }
+
+    private async Task HandleSirahStudy()
+    {
+        string studyQuery = "";
+        
+        switch (sirahModel.StudyType)
+        {
+            case "event":
+                if (string.IsNullOrEmpty(sirahModel.SpecificEvent))
+                {
+                    errorMessage = "Please select a specific event.";
+                    return;
+                }
+                studyQuery = sirahModel.SpecificEvent.Replace("_", " ");
+                break;
+            case "timeline":
+                if (string.IsNullOrEmpty(sirahModel.TimePeriod))
+                {
+                    errorMessage = "Please select a time period.";
+                    return;
+                }
+                studyQuery = sirahModel.TimePeriod.Replace("_", " ");
+                break;
+            case "character":
+                if (string.IsNullOrEmpty(sirahModel.CharacterTrait))
+                {
+                    errorMessage = "Please select a character trait.";
+                    return;
+                }
+                studyQuery = sirahModel.CharacterTrait;
+                break;
+            default:
+                if (string.IsNullOrWhiteSpace(sirahModel.CustomTopic))
+                {
+                    errorMessage = "Please enter your topic or question.";
+                    return;
+                }
+                studyQuery = sirahModel.CustomTopic;
+                break;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();
+
+        var startTime = DateTime.Now;
+
+        try
+        {            var sirahResponse = await SirahAgent.GetGuidanceFromSirahAsync(studyQuery, sirahModel.Language);
+            response = sirahResponse.Description;
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SetEventExample(string eventName)
+    {
+        sirahModel.StudyType = "event";
+        sirahModel.SpecificEvent = eventName;
+        StateHasChanged();
+    }
+
+    private void SetCharacterExample(string trait)
+    {
+        sirahModel.StudyType = "character";
+        sirahModel.CharacterTrait = trait;
+        StateHasChanged();
+    }
+
+    private string FormatSirahResponse(string response)
+    {
+        if (string.IsNullOrEmpty(response)) return "";
+
+        // Enhanced formatting for sirah responses
+        var formatted = response
+            .Replace("\n\n", "</p><p>")
+            .Replace("\n", "<br>")
+            .Trim();
+
+        // Format Arabic phrases
+        formatted = System.Text.RegularExpressions.Regex.Replace(
+            formatted, 
+            @"([\u0600-\u06FF\u0750-\u077F]+)", 
+            "<span class='arabic-text'>$1</span>"
+        );
+
+        // Highlight key terms
+        formatted = formatted
+            .Replace("Prophet Muhammad", "<strong class='text-primary'>Prophet Muhammad</strong>")
+            .Replace("ﷺ", "<span class='text-success'>ﷺ</span>")
+            .Replace("Lesson:", "<strong class='text-warning'>Lesson:</strong>")
+            .Replace("Application:", "<strong class='text-info'>Application:</strong>")
+            .Replace("Reflection:", "<strong class='text-success'>Reflection:</strong>");
+
+        return $"<p>{formatted}</p>";
+    }
+}
+
+<style>
+    .arabic-text {
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #198754;
+        direction: rtl;
+        display: inline;
+    }
+    
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+</style>

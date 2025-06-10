@@ -1,0 +1,569 @@
+@page "/tajweed"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@using System
+@using static Muwasala.Agents.TajweedTutorAgent
+@inject TajweedTutorAgent TajweedAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Tajweed Tutor - Muwasala</PageTitle>
+
+<div class="container-fluid">    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-secondary">🎵 Tajweed Tutor</h2>
+                <a href="/" class="btn btn-outline-secondary">← Back to Home</a>
+            </div>
+            
+            <div class="alert alert-warning mb-4">
+                <h6 class="alert-heading">🔧 Optimization Notice</h6>
+                <p class="mb-0">
+                    The Tajweed Tutor is currently being optimized for better performance. 
+                    Response times may be longer than other agents (60-100+ seconds). We're working to improve this!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-secondary text-white">
+                    <h5 class="mb-0">Tajweed Learning</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@tajweedModel" OnValidSubmit="@HandleTajweedAnalysis">
+                        <DataAnnotationsValidator />
+                          <div class="mb-3">
+                            <label class="form-label">Learning Type</label>
+                            <InputSelect @bind-Value="tajweedModel.LearningType" class="form-select">
+                                <option value="analysis">Analyze Verse</option>
+                                <option value="lesson">Recitation Lesson</option>
+                                <option value="pronunciation">Pronunciation Guide</option>
+                                <option value="mistakes">Common Mistakes</option>
+                            </InputSelect>
+                        </div>
+
+                        @if (tajweedModel.LearningType == "pronunciation")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Arabic Word</label>
+                                <InputTextArea @bind-Value="tajweedModel.ArabicText" class="form-control arabic-input" rows="2" 
+                                             placeholder="Enter Arabic word for pronunciation guide..." dir="rtl" />
+                                <ValidationMessage For="@(() => tajweedModel.ArabicText)" />
+                                <div class="form-text">Enter a specific Arabic word from the Quran</div>
+                            </div>
+                        }
+                        else if (tajweedModel.LearningType == "lesson")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Surah Number</label>
+                                <InputNumber @bind-Value="tajweedModel.SurahNumber" class="form-control" min="1" max="114" />
+                                <div class="form-text">Enter surah number (1-114)</div>
+                            </div>
+                        }
+                        else if (tajweedModel.LearningType == "analysis" || tajweedModel.LearningType == "mistakes")
+                        {
+                            <div class="mb-3">
+                                <label class="form-label">Surah Number</label>
+                                <InputNumber @bind-Value="tajweedModel.SurahNumber" class="form-control" min="1" max="114" />
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Verse Number</label>
+                                <InputNumber @bind-Value="tajweedModel.VerseNumber" class="form-control" min="1" />
+                            </div>
+                        }
+
+                        <div class="mb-3">
+                            <label class="form-label">Learning Level</label>
+                            <InputSelect @bind-Value="tajweedModel.Level" class="form-select">
+                                <option value="beginner">Beginner</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="advanced">Advanced</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="tajweedModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-secondary w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Analyzing...</span>
+                            }
+                            else
+                            {
+                                <span>🎵 Start Learning</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                            @if (responseTime.Value.TotalSeconds > 90)
+                            {
+                                <br><small class="text-warning">⚠️ Slower than expected - optimization in progress</small>
+                            }
+                        </div>
+                    }
+
+                    @if (isLoading)
+                    {
+                        <div class="mt-3">
+                            <div class="progress">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated" 
+                                     role="progressbar" style="width: 100%"></div>
+                            </div>
+                            <small class="text-muted">
+                                This may take 60-100 seconds. Please be patient while we analyze the tajweed rules.
+                            </small>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-secondary" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Tajweed Tutor Agent...</p>
+                    <small class="text-muted">Analyzing pronunciation rules and articulation points...</small>
+                    <div class="mt-3">
+                        <small class="text-warning">⏱️ Expected time: 60-100 seconds (being optimized)</small>
+                    </div>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="mb-0">🎵 Tajweed Analysis</h5>
+                    </div>                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)response)
+                        </div>
+                        
+                        <div class="alert alert-info mt-4">
+                            <h6 class="alert-heading">🎯 Practice Tips</h6>
+                            <ul class="mb-0">
+                                <li>Practice each rule slowly and repeatedly</li>
+                                <li>Listen to qualified reciters for proper examples</li>
+                                <li>Focus on articulation points (Makharij al-Huruf)</li>
+                                <li>Regular practice with a qualified teacher is recommended</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">🎵 Welcome to Tajweed Tutor</h4>
+                        <p class="text-muted">
+                            Learn the beautiful art of Quranic recitation with proper tajweed rules. 
+                            Master pronunciation, rhythm, and the sacred tradition of Quranic recitation.
+                        </p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-secondary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-secondary">📝 Try Analysis</h6>                                        <button class="btn btn-sm btn-outline-secondary mb-2 w-100" @onclick="@(() => SetExampleVerse())">
+                                            Analyze Al-Fatiha
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary mb-2 w-100" @onclick="@(() => SetExampleLesson(1))">
+                                            Learn Al-Fatiha
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-secondary w-100" @onclick="@(() => SetExamplePronunciation("بِسْمِ"))">
+                                            Pronounce "Bismillaah"
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary">🎯 Tajweed Rules</h6>
+                                        <div class="text-start">
+                                            <p class="small mb-1">• <strong>Noon Sakinah:</strong> Izhar, Idgham, Iqlab, Ikhfa</p>
+                                            <p class="small mb-1">• <strong>Meem Sakinah:</strong> Ikhfa, Idgham, Izhar</p>
+                                            <p class="small mb-1">• <strong>Qalqalah:</strong> ق ط ب ج د</p>
+                                            <p class="small mb-0">• <strong>Madd:</strong> Natural & Connected</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="card border-success h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">🗣️ Pronunciation</h6>
+                                        <p class="small">Proper articulation</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-info h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">⏱️ Timing</h6>
+                                        <p class="small">Rhythm & pauses</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-warning h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-warning">🎵 Melody</h6>
+                                        <p class="small">Beautiful recitation</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-danger h-100">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-danger">❤️ Heart</h6>
+                                        <p class="small">Spiritual connection</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-warning mt-4">
+                            <h6 class="alert-heading">⚠️ Performance Note</h6>
+                            <p class="mb-0">
+                                Tajweed analysis involves complex linguistic processing and may take 60-100+ seconds. 
+                                We're actively optimizing this agent for better performance. Thank you for your patience!
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private TajweedModel tajweedModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;    public class TajweedModel
+    {
+        public string LearningType { get; set; } = "analysis";
+        public string ArabicText { get; set; } = "";
+        public int SurahNumber { get; set; } = 1;
+        public int VerseNumber { get; set; } = 1;
+        public string Level { get; set; } = "beginner";
+        public string Language { get; set; } = "en";
+    }    private async Task HandleTajweedAnalysis()
+    {
+        if (tajweedModel.LearningType == "pronunciation" && string.IsNullOrWhiteSpace(tajweedModel.ArabicText))
+        {
+            errorMessage = "Please enter Arabic word for pronunciation guide.";
+            return;
+        }
+
+        if ((tajweedModel.LearningType == "analysis" || tajweedModel.LearningType == "mistakes") 
+            && (tajweedModel.SurahNumber < 1 || tajweedModel.SurahNumber > 114 || tajweedModel.VerseNumber < 1))
+        {
+            errorMessage = "Please enter valid surah number (1-114) and verse number.";
+            return;
+        }
+
+        if (tajweedModel.LearningType == "lesson" 
+            && (tajweedModel.SurahNumber < 1 || tajweedModel.SurahNumber > 114))
+        {
+            errorMessage = "Please enter valid surah number (1-114).";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();
+
+        var startTime = DateTime.Now;
+
+        try
+        {
+            switch (tajweedModel.LearningType)
+            {
+                case "analysis":
+                    var verseRef = new VerseReference(tajweedModel.SurahNumber, tajweedModel.VerseNumber);
+                    var tajweedResponse = await TajweedAgent.AnalyzeVerseAsync(verseRef, tajweedModel.Language);
+                    response = FormatTajweedResponse(tajweedResponse);
+                    break;
+                case "lesson":
+                    var level = Enum.Parse<RecitationLevel>(tajweedModel.Level, true);
+                    var lesson = await TajweedAgent.CreateRecitationLessonAsync(tajweedModel.SurahNumber, level, tajweedModel.Language);
+                    response = FormatRecitationLesson(lesson);
+                    break;
+                case "pronunciation":
+                    var pronGuide = await TajweedAgent.GetPronunciationGuideAsync(tajweedModel.ArabicText, tajweedModel.Language);
+                    response = FormatPronunciationGuide(pronGuide);
+                    break;
+                case "mistakes":
+                    var mistakeVerseRef = new VerseReference(tajweedModel.SurahNumber, tajweedModel.VerseNumber);
+                    var mistakes = await TajweedAgent.CheckCommonMistakesAsync(mistakeVerseRef, tajweedModel.Language);
+                    response = FormatCommonMistakes(mistakes);
+                    break;
+            }
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }    private void SetExampleVerse()
+    {
+        tajweedModel.LearningType = "analysis";
+        tajweedModel.SurahNumber = 1;
+        tajweedModel.VerseNumber = 1;
+        StateHasChanged();
+    }
+
+    private void SetExampleLesson(int surahNumber)
+    {
+        tajweedModel.LearningType = "lesson";
+        tajweedModel.SurahNumber = surahNumber;
+        StateHasChanged();
+    }
+
+    private void SetExamplePronunciation(string arabicWord)
+    {
+        tajweedModel.LearningType = "pronunciation";
+        tajweedModel.ArabicText = arabicWord;
+        StateHasChanged();
+    }
+
+    private string FormatTajweedResponse(TajweedResponse response)
+    {
+        if (response == null) return "";
+
+        var formatted = $"<div class='arabic-text'>{response.VerseText}</div>";
+        
+        if (response.Rules?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>🎵 Tajweed Rules:</h6><ul>";
+            foreach (var rule in response.Rules)
+            {
+                formatted += $"<li><strong>{rule.Name}:</strong> {rule.Description}";
+                if (!string.IsNullOrEmpty(rule.Example))
+                {
+                    formatted += $"<br><em>Example: {rule.Example}</em>";
+                }
+                formatted += "</li>";
+            }
+            formatted += "</ul>";
+        }
+
+        if (!string.IsNullOrEmpty(response.PronunciationGuide))
+        {
+            formatted += $"<h6 class='mt-3'>🗣️ Pronunciation Guide:</h6><p>{response.PronunciationGuide}</p>";
+        }
+
+        return formatted;
+    }
+
+    private string FormatRecitationLesson(RecitationLesson lesson)
+    {
+        if (lesson == null) return "";
+
+        var formatted = $"<h5>📚 Lesson: Surah {lesson.SurahName} (#{lesson.SurahNumber})</h5>";
+        formatted += $"<p><strong>Level:</strong> {lesson.Level} | <strong>Duration:</strong> {lesson.EstimatedDuration.TotalMinutes:F0} minutes</p>";
+
+        if (lesson.Prerequisites?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>📋 Prerequisites:</h6><ul>";
+            foreach (var prereq in lesson.Prerequisites)
+            {
+                formatted += $"<li>{prereq}</li>";
+            }
+            formatted += "</ul>";
+        }
+
+        if (lesson.LearningObjectives?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>🎯 Learning Objectives:</h6><ul>";
+            foreach (var objective in lesson.LearningObjectives)
+            {
+                formatted += $"<li>{objective}</li>";
+            }
+            formatted += "</ul>";
+        }
+
+        if (lesson.Steps?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>📖 Lesson Steps:</h6>";
+            foreach (var step in lesson.Steps)
+            {
+                formatted += $"<div class='card mb-2'><div class='card-body'>";
+                formatted += $"<h6 class='card-title'>Step {step.StepNumber}: {step.Title}</h6>";
+                formatted += $"<p class='card-text'>{step.Objective}</p>";
+                if (step.TajweedFocus?.Any() == true)
+                {
+                    formatted += "<small class='text-muted'>Focus: " + string.Join(", ", step.TajweedFocus) + "</small>";
+                }
+                formatted += "</div></div>";
+            }
+        }
+
+        return formatted;
+    }
+
+    private string FormatPronunciationGuide(PronunciationGuide guide)
+    {
+        if (guide == null) return "";
+
+        var formatted = $"<div class='arabic-text'>{guide.Word}</div>";
+        formatted += $"<h6 class='mt-3'>🔤 Phonetic: {guide.PhoneticTranscription}</h6>";
+
+        if (guide.Letters?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>📝 Letter-by-Letter Guide:</h6><div class='row'>";
+            foreach (var letter in guide.Letters)
+            {
+                formatted += "<div class='col-md-6 mb-2'>";
+                formatted += $"<div class='card'><div class='card-body p-2'>";
+                formatted += $"<div class='arabic-text small'>{letter.Letter}</div>";
+                formatted += $"<small><strong>{letter.Pronunciation}</strong><br>{letter.Description}</small>";
+                formatted += "</div></div></div>";
+            }
+            formatted += "</div>";
+        }
+
+        if (guide.CommonMistakes?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>⚠️ Common Mistakes:</h6><ul>";
+            foreach (var mistake in guide.CommonMistakes)
+            {
+                formatted += $"<li>{mistake}</li>";
+            }
+            formatted += "</ul>";
+        }
+
+        if (guide.PracticeExercises?.Any() == true)
+        {
+            formatted += "<h6 class='mt-3'>🏃‍♂️ Practice Exercises:</h6><ol>";
+            foreach (var exercise in guide.PracticeExercises)
+            {
+                formatted += $"<li>{exercise}</li>";
+            }
+            formatted += "</ol>";
+        }
+
+        return formatted;
+    }
+
+    private string FormatCommonMistakes(List<TajweedCorrection> corrections)
+    {
+        if (corrections == null || !corrections.Any()) return "<p>No common mistakes found for this verse.</p>";
+
+        var formatted = "<h6>⚠️ Common Tajweed Mistakes:</h6>";
+
+        foreach (var correction in corrections)
+        {
+            formatted += "<div class='card mb-3'><div class='card-body'>";
+            formatted += $"<h6 class='card-title text-danger'>{correction.MistakeType}</h6>";
+            
+            if (!string.IsNullOrEmpty(correction.IncorrectPronunciation))
+            {
+                formatted += $"<p><strong>❌ Incorrect:</strong> {correction.IncorrectPronunciation}</p>";
+            }
+            
+            if (!string.IsNullOrEmpty(correction.CorrectPronunciation))
+            {
+                formatted += $"<p><strong>✅ Correct:</strong> {correction.CorrectPronunciation}</p>";
+            }
+            
+            if (!string.IsNullOrEmpty(correction.Explanation))
+            {
+                formatted += $"<p><strong>💡 Explanation:</strong> {correction.Explanation}</p>";
+            }
+
+            if (correction.PracticeTips?.Any() == true)
+            {
+                formatted += "<p><strong>🎯 Practice Tips:</strong></p><ul>";
+                foreach (var tip in correction.PracticeTips)
+                {
+                    formatted += $"<li>{tip}</li>";
+                }
+                formatted += "</ul>";
+            }
+
+            formatted += "</div></div>";
+        }
+
+        return formatted;
+    }
+}
+
+<style>
+    .arabic-input {
+        font-size: 1.2rem;
+        font-family: 'Arabic Typesetting', 'Traditional Arabic', serif;
+    }
+    
+    .arabic-text {
+        font-size: 1.4rem;
+        font-weight: bold;
+        color: #495057;
+        text-align: right;
+        direction: rtl;
+        background: #f8f9fa;
+        padding: 10px;
+        border-right: 4px solid #6c757d;
+        margin: 10px 0;
+        border-radius: 4px;
+    }
+    
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .badge {
+        font-size: 0.8em;
+    }
+</style>

@@ -1,0 +1,29 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run Web Application - Debug",
+			"type": "shell",
+			"command": "dotnet",
+			"args": [
+				"run",
+				"--verbosity",
+				"detailed"
+			],
+			"group": "build",
+			"isBackground": true,
+			"options": {
+				"cwd": "${workspaceFolder}/src/Muwasala.Web"
+			},
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": true,
+				"panel": "new",
+				"showReuseMessage": false,
+				"clear": true
+			},
+			"problemMatcher": []
+		}
+	]
+}

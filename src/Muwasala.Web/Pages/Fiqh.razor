@@ -1,0 +1,366 @@
+@page "/fiqh"
+@using Muwasala.Agents
+@using Muwasala.Core.Models
+@using System
+@inject FiqhAdvisorAgent FiqhAgent
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Fiqh Advisor - Muwasala</PageTitle>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="text-info">⚖️ Fiqh Advisor</h2>
+                <a href="/" class="btn btn-outline-info">← Back to Home</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="card sticky-top" style="top: 20px;">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Fiqh Consultation</h5>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="@consultationModel" OnValidSubmit="@HandleConsultation">
+                        <DataAnnotationsValidator />
+                        
+                        <div class="mb-3">
+                            <label class="form-label">Question Type</label>
+                            <InputSelect @bind-Value="consultationModel.QuestionType" class="form-select">
+                                <option value="ruling">Islamic Ruling</option>
+                                <option value="comparison">Compare Madhabs</option>
+                                <option value="contemporary">Contemporary Issue</option>
+                                <option value="worship">Worship & Rituals</option>
+                                <option value="family">Family & Marriage</option>
+                                <option value="business">Business & Finance</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Your Question</label>
+                            <InputTextArea @bind-Value="consultationModel.Question" class="form-control" rows="4" 
+                                         placeholder="Describe your fiqh question in detail..." />
+                            <ValidationMessage For="@(() => consultationModel.Question)" />
+                            <div class="form-text">Be specific for more accurate guidance</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Preferred Madhab</label>
+                            <InputSelect @bind-Value="consultationModel.Madhab" class="form-select">
+                                <option value="all">All Schools</option>
+                                <option value="hanafi">Hanafi</option>
+                                <option value="maliki">Maliki</option>
+                                <option value="shafi">Shafi'i</option>
+                                <option value="hanbali">Hanbali</option>
+                            </InputSelect>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Language</label>
+                            <InputSelect @bind-Value="consultationModel.Language" class="form-select">
+                                <option value="en">English</option>
+                                <option value="ar">Arabic</option>
+                            </InputSelect>
+                        </div>
+
+                        <button type="submit" class="btn btn-info w-100" disabled="@isLoading">
+                            @if (isLoading)
+                            {
+                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                <span>Consulting...</span>
+                            }
+                            else
+                            {
+                                <span>💡 Get Fiqh Guidance</span>
+                            }
+                        </button>
+                    </EditForm>
+
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="alert alert-danger mt-3">
+                            <strong>Error:</strong> @errorMessage
+                        </div>
+                    }
+
+                    @if (searchPerformed && responseTime.HasValue)
+                    {
+                        <div class="alert alert-info mt-3">
+                            <small>⚡ Response time: @responseTime.Value.TotalSeconds.ToString("F1") seconds</small>
+                        </div>
+                    }
+
+                    <div class="mt-4">
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <h6 class="text-warning">⚠️ Important Notice</h6>
+                                <p class="small mb-0">
+                                    This is for educational purposes. For important decisions, 
+                                    please consult qualified Islamic scholars in your locality.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            @if (isLoading)
+            {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-info" style="width: 3rem; height: 3rem;"></div>
+                    <p class="mt-3 text-muted">Consulting the Fiqh Advisor Agent...</p>
+                    <small class="text-muted">Analyzing Islamic jurisprudence sources...</small>
+                </div>
+            }
+            else if (searchPerformed && !string.IsNullOrEmpty(response))
+            {
+                <div class="card">
+                    <div class="card-header bg-info text-white">
+                        <h5 class="mb-0">📋 Fiqh Guidance</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="response-content">
+                            @((MarkupString)FormatResponse(response))
+                        </div>
+                        
+                        <div class="alert alert-warning mt-4">
+                            <h6 class="alert-heading">📚 Remember</h6>
+                            <p class="mb-0">
+                                This guidance is based on classical Islamic jurisprudence. 
+                                For personal situations, especially complex matters, please consult with a qualified local scholar.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="card">
+                    <div class="card-body text-center py-5">
+                        <h4 class="text-muted mb-3">⚖️ Welcome to Fiqh Advisor</h4>
+                        <p class="text-muted">
+                            Get Islamic jurisprudence guidance based on classical scholarship and the four major schools of thought.
+                        </p>
+                        
+                        <div class="row mt-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-info">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-info">🎯 Try These Examples</h6>                                        <button class="btn btn-sm btn-outline-info mb-2 w-100" @onclick="@(() => SetExample("ruling", "Is it permissible to pray with shoes on?"))">
+                                            Prayer with shoes
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info mb-2 w-100" @onclick="@(() => SetExample("business", "What are the Islamic guidelines for online trading?"))">
+                                            Online trading
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info w-100" @onclick="@(() => SetExample("worship", "How to perform wudu correctly?"))">
+                                            Wudu guidance
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="card border-success">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-success">🏛️ Schools of Thought</h6>
+                                        <div class="row text-start">
+                                            <div class="col-6">
+                                                <p class="small mb-1"><strong>Hanafi:</strong> Rationalist approach</p>
+                                                <p class="small mb-1"><strong>Maliki:</strong> Medinan practice</p>
+                                            </div>
+                                            <div class="col-6">
+                                                <p class="small mb-1"><strong>Shafi'i:</strong> Systematic methodology</p>
+                                                <p class="small mb-1"><strong>Hanbali:</strong> Hadith-focused</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card border-primary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-primary">🕌 Worship</h6>
+                                        <p class="small">Prayer, fasting, hajj, purification</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-warning">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-warning">👨‍👩‍👧‍👦 Family</h6>
+                                        <p class="small">Marriage, divorce, inheritance</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card border-secondary">
+                                    <div class="card-body text-center">
+                                        <h6 class="text-secondary">💼 Business</h6>
+                                        <p class="small">Trade, finance, contracts</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@code {
+    private ConsultationModel consultationModel = new();
+    private bool isLoading = false;
+    private string response = "";
+    private string errorMessage = "";
+    private bool searchPerformed = false;
+    private TimeSpan? responseTime;
+
+    public class ConsultationModel
+    {
+        public string QuestionType { get; set; } = "ruling";
+        public string Question { get; set; } = "";
+        public string Madhab { get; set; } = "all";
+        public string Language { get; set; } = "en";
+    }
+
+    private async Task HandleConsultation()
+    {
+        if (string.IsNullOrWhiteSpace(consultationModel.Question))
+        {
+            errorMessage = "Please enter your fiqh question.";
+            return;
+        }
+
+        isLoading = true;
+        errorMessage = "";
+        response = "";
+        searchPerformed = false;
+        StateHasChanged();        var startTime = DateTime.Now;
+        
+        try
+        {
+            // Parse the madhab from string to enum
+            var madhabEnum = consultationModel.Madhab.ToLower() switch
+            {
+                "hanafi" => Madhab.Hanafi,
+                "maliki" => Madhab.Maliki,
+                "shafi" => Madhab.Shafi,
+                "hanbali" => Madhab.Hanbali,
+                _ => Madhab.Hanafi // default to Hanafi for "all" or any other value
+            };
+            
+            var fiqhResponse = await FiqhAgent.GetRulingAsync(
+                consultationModel.Question, 
+                madhabEnum, 
+                consultationModel.Language
+            );
+            response = FormatFiqhResponse(fiqhResponse);
+
+            responseTime = DateTime.Now - startTime;
+            searchPerformed = true;
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"An error occurred: {ex.Message}";
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private void SetExample(string type, string question)
+    {
+        consultationModel.QuestionType = type;
+        consultationModel.Question = question;
+        StateHasChanged();
+    }
+
+    private string FormatResponse(string response)
+    {
+        if (string.IsNullOrEmpty(response)) return "";
+
+        // Enhanced formatting for fiqh responses
+        var formatted = response
+            .Replace("\n\n", "</p><p>")
+            .Replace("\n", "<br>")
+            .Trim();
+
+        // Highlight madhab names and key terms
+        formatted = formatted
+            .Replace("Hanafi", "<span class='badge bg-primary me-1'>Hanafi</span>")
+            .Replace("Maliki", "<span class='badge bg-success me-1'>Maliki</span>")
+            .Replace("Shafi'i", "<span class='badge bg-info me-1'>Shafi'i</span>")
+            .Replace("Hanbali", "<span class='badge bg-warning me-1'>Hanbali</span>")            .Replace("Permissible", "<span class='text-success fw-bold'>Permissible</span>")
+            .Replace("Prohibited", "<span class='text-danger fw-bold'>Prohibited</span>")
+            .Replace("Recommended", "<span class='text-info fw-bold'>Recommended</span>")
+            .Replace("Disliked", "<span class='text-warning fw-bold'>Disliked</span>");
+            
+        return $"<p>{formatted}</p>";
+        }
+
+    private string FormatFiqhResponse(FiqhResponse fiqhResponse)
+    {
+        if (fiqhResponse == null) return "No ruling found.";
+
+        var formatted = "<div class='mb-3'>";
+        formatted += $"<h6><span class='badge bg-{GetMadhabColor(fiqhResponse.Madhab)}'>{fiqhResponse.Madhab}</span> Ruling</h6>";
+        formatted += $"<p class='mb-2'><strong>Question:</strong> {fiqhResponse.Question}</p>";
+        formatted += $"<p class='mb-2'><strong>Ruling:</strong> {fiqhResponse.Ruling}</p>";
+        formatted += $"<p class='mb-2'><strong>Evidence:</strong> {fiqhResponse.Evidence}</p>";
+        
+        if (!string.IsNullOrEmpty(fiqhResponse.ModernApplication))
+        {
+            formatted += $"<p class='mb-2'><strong>Modern Application:</strong> {fiqhResponse.ModernApplication}</p>";
+        }
+        
+        if (!string.IsNullOrEmpty(fiqhResponse.Warning))
+        {
+            formatted += $"<div class='alert alert-warning'>{fiqhResponse.Warning}</div>";
+        }
+          formatted += "</div>";
+        return formatted;
+    }    private string GetMadhabColor(Madhab madhab)
+    {
+        return madhab switch
+        {
+            Madhab.Hanafi => "primary",
+            Madhab.Maliki => "success", 
+            Madhab.Shafi => "info",
+            Madhab.Hanbali => "warning",
+            _ => "secondary"
+        };
+    }
+}
+
+<style>
+    .sticky-top {
+        z-index: 1020;
+    }
+    
+    .response-content {
+        line-height: 1.6;
+        font-size: 1.05rem;
+    }
+    
+    .response-content p {
+        margin-bottom: 1rem;
+    }
+    
+    .card {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .badge {
+        font-size: 0.8em;
+    }
+</style>
