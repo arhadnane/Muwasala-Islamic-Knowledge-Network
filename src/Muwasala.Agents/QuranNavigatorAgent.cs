@@ -50,13 +50,31 @@ public class QuranNavigatorAgent
                 return cachedResponse;
             }
 
-            // First, search knowledge base for relevant verses
-            var candidateVerses = await _quranService.SearchVersesByContextAsync(context, language);
+            // Check if this is a specific verse request (format: "Verse X:Y")
+            var specificVerse = ParseSpecificVerseRequest(context);
+            List<QuranVerse> candidateVerses;
             
-            if (!candidateVerses.Any())
+            if (specificVerse != null)
             {
-                _logger.LogWarning("No verses found for context: {Context}", context);
-                throw new InvalidOperationException($"No relevant verses found for context: {context}");
+                // Get the specific verse
+                var verse = await _quranService.GetVerseAsync(specificVerse, language);
+                if (verse == null)
+                {
+                    _logger.LogWarning("Specific verse not found: {Context}", context);
+                    throw new InvalidOperationException($"Verse not found: {context}");
+                }
+                candidateVerses = new List<QuranVerse> { verse };
+            }
+            else
+            {
+                // First, search knowledge base for relevant verses
+                candidateVerses = await _quranService.SearchVersesByContextAsync(context, language);
+                
+                if (!candidateVerses.Any())
+                {
+                    _logger.LogWarning("No verses found for context: {Context}", context);
+                    throw new InvalidOperationException($"No relevant verses found for context: {context}");
+                }
             }            // Use AI to select the most relevant verse and provide analysis
             var prompt = BuildContextualPrompt(context, candidateVerses, language, tafsir);
             var aiText = await _ollama.GenerateResponseAsync(
@@ -252,6 +270,51 @@ Select best verse and provide brief {tafsir} explanation. JSON format:
             relatedDuas,
             "AI analysis of contextual relevance"
         );
+    }
+
+    /// <summary>
+    /// Parse a specific verse request in the format "Verse X:Y" or "X:Y"
+    /// </summary>
+    private VerseReference? ParseSpecificVerseRequest(string context)
+    {
+        if (string.IsNullOrWhiteSpace(context))
+            return null;
+
+        // Try to match "Verse X:Y" pattern
+        var versePattern = @"^Verse\s+(\d+):(\d+)$";
+        var match = System.Text.RegularExpressions.Regex.Match(context.Trim(), versePattern, System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        
+        if (match.Success)
+        {
+            if (int.TryParse(match.Groups[1].Value, out int surah) && 
+                int.TryParse(match.Groups[2].Value, out int verse))
+            {
+                // Validate surah and verse numbers
+                if (surah >= 1 && surah <= 114 && verse >= 1)
+                {
+                    return new VerseReference(surah, verse);
+                }
+            }
+        }
+
+        // Try to match simple "X:Y" pattern
+        var simplePattern = @"^(\d+):(\d+)$";
+        match = System.Text.RegularExpressions.Regex.Match(context.Trim(), simplePattern);
+        
+        if (match.Success)
+        {
+            if (int.TryParse(match.Groups[1].Value, out int surah) && 
+                int.TryParse(match.Groups[2].Value, out int verse))
+            {
+                // Validate surah and verse numbers
+                if (surah >= 1 && surah <= 114 && verse >= 1)
+                {
+                    return new VerseReference(surah, verse);
+                }
+            }
+        }
+
+        return null;
     }
 
     private record VerseAnalysisResponse(

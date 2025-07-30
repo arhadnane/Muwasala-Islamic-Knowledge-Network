@@ -2,7 +2,7 @@
 Write-Host "Starting Muwasala API..." -ForegroundColor Green
 
 # Navigate to the API project directory
-Set-Location "d:\Coding\VSCodeProject\Muwasala Islamic Knowledge Network\src\Muwasala.Api"
+Set-Location "d:\Data Perso Adnane\Coding\VSCodeProject\Muwasala Islamic Knowledge Network V2\Muwasala-Islamic-Knowledge-Network\src\Muwasala.Api"
 
 # Check if the project file exists
 if (Test-Path "Muwasala.Api.csproj") {

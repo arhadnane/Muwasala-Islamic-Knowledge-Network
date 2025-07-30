@@ -1,32 +1,145 @@
 using Muwasala.Core.Models;
 using Muwasala.KnowledgeBase.Data.Repositories;
+using Microsoft.Extensions.Logging;
 
 namespace Muwasala.KnowledgeBase.Services;
 
 /// <summary>
-/// Database-backed implementation of Quran service
+/// Database-backed implementation of Quran service with file-based fallback
 /// </summary>
 public class DatabaseQuranService : IQuranService
 {
     private readonly IQuranRepository _quranRepository;
     private readonly ITafsirRepository _tafsirRepository;
+    private readonly FileBasedQuranSearchService _fileService;
+    private readonly ILogger<DatabaseQuranService>? _logger;
 
-    public DatabaseQuranService(IQuranRepository quranRepository, ITafsirRepository tafsirRepository)
+    public DatabaseQuranService(IQuranRepository quranRepository, ITafsirRepository tafsirRepository, ILogger<DatabaseQuranService>? logger = null)
     {
         _quranRepository = quranRepository;
         _tafsirRepository = tafsirRepository;
+        _fileService = new FileBasedQuranSearchService();
+        _logger = logger;
     }
 
     public async Task<List<QuranVerse>> SearchVersesByContextAsync(string context, string language = "en")
     {
-        var entities = await _quranRepository.GetVersesByContextAsync(context, language, 20);
-        return entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToQuranVerse).ToList();
+        try
+        {
+            // Try database first
+            var entities = await _quranRepository.GetVersesByContextAsync(context, language, 20);
+            var results = entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToQuranVerse).ToList();
+            
+            // If database returns results, use them
+            if (results.Count > 0)
+            {
+                _logger?.LogInformation("Found {Count} verses in database for context: {Context}", results.Count, context);
+                return results;
+            }
+            
+            // If no results in database, try file-based search
+            _logger?.LogInformation("No verses found in database for context: {Context}, trying file-based search", context);
+            var fileResults = await _fileService.SearchVersesByContextAsync(context, 5);
+            
+            // Convert file results to QuranVerse format
+            var convertedResults = fileResults.Select(fr => new QuranVerse(
+                fr.Surah,
+                fr.Verse,
+                fr.ArabicText,
+                fr.Translation,
+                "", // No transliteration in file results
+                language
+            )).ToList();
+            
+            _logger?.LogInformation("Found {Count} verses in files for context: {Context}", convertedResults.Count, context);
+            return convertedResults;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Error in database search for context: {Context}, falling back to file search", context);
+            
+            // If database fails, use file-based search as fallback
+            try
+            {
+                var fileResults = await _fileService.SearchVersesByContextAsync(context, 5);
+                var convertedResults = fileResults.Select(fr => new QuranVerse(
+                    fr.Surah,
+                    fr.Verse,
+                    fr.ArabicText,
+                    fr.Translation,
+                    "",
+                    language
+                )).ToList();
+                
+                _logger?.LogInformation("Fallback: Found {Count} verses in files for context: {Context}", convertedResults.Count, context);
+                return convertedResults;
+            }
+            catch (Exception fileEx)
+            {
+                _logger?.LogError(fileEx, "File-based search also failed for context: {Context}", context);
+                return new List<QuranVerse>();
+            }
+        }
     }
 
     public async Task<List<QuranVerse>> SearchVersesByThemeAsync(string theme, string language = "en", int maxResults = 10)
     {
-        var entities = await _quranRepository.SearchByThemeAsync(theme, language, maxResults);
-        return entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToQuranVerse).ToList();
+        try
+        {
+            // Try database first
+            var entities = await _quranRepository.SearchByThemeAsync(theme, language, maxResults);
+            var results = entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToQuranVerse).ToList();
+            
+            // If database returns results, use them
+            if (results.Count > 0)
+            {
+                _logger?.LogInformation("Found {Count} verses in database for theme: {Theme}", results.Count, theme);
+                return results;
+            }
+            
+            // If no results in database, try file-based search
+            _logger?.LogInformation("No verses found in database for theme: {Theme}, trying file-based search", theme);
+            var fileResults = await _fileService.SearchVersesByContextAsync(theme, maxResults);
+            
+            // Convert file results to QuranVerse format
+            var convertedResults = fileResults.Select(fr => new QuranVerse(
+                fr.Surah,
+                fr.Verse,
+                fr.ArabicText,
+                fr.Translation,
+                "",
+                language
+            )).ToList();
+            
+            _logger?.LogInformation("Found {Count} verses in files for theme: {Theme}", convertedResults.Count, theme);
+            return convertedResults;
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Error in database search for theme: {Theme}, falling back to file search", theme);
+            
+            // If database fails, use file-based search as fallback
+            try
+            {
+                var fileResults = await _fileService.SearchVersesByContextAsync(theme, maxResults);
+                var convertedResults = fileResults.Select(fr => new QuranVerse(
+                    fr.Surah,
+                    fr.Verse,
+                    fr.ArabicText,
+                    fr.Translation,
+                    "",
+                    language
+                )).ToList();
+                
+                _logger?.LogInformation("Fallback: Found {Count} verses in files for theme: {Theme}", convertedResults.Count, theme);
+                return convertedResults;
+            }
+            catch (Exception fileEx)
+            {
+                _logger?.LogError(fileEx, "File-based search also failed for theme: {Theme}", theme);
+                return new List<QuranVerse>();
+            }
+        }
     }
 
     public async Task<QuranVerse?> GetVerseAsync(VerseReference verse, string language = "en")

@@ -5,85 +5,202 @@ using System.Text.Json;
 namespace Muwasala.KnowledgeBase.Services;
 
 /// <summary>
-/// Implementation of Quran service with sample data
+/// Implementation of Quran service with file-based data from SourceFiles
 /// </summary>
 public class QuranService : IQuranService
 {
-    private readonly List<QuranVerse> _verses;
+    private readonly FileBasedQuranSearchService _fileBasedService;
+    private readonly List<QuranVerse> _fallbackVerses;
 
     public QuranService()
     {
-        _verses = GetSampleQuranData();
+        _fileBasedService = new FileBasedQuranSearchService();
+        _fallbackVerses = GetSampleQuranData(); // Keep as fallback
     }    public async Task<List<QuranVerse>> SearchVersesByContextAsync(string context, string language = "en")
     {
-        await Task.Delay(100); // Simulate database query
-        
-        var lowerContext = context.ToLower();
-        
-        // Create a list of search terms including synonyms
-        var searchTerms = new List<string> { lowerContext };
-        
-        // Add synonyms for common Islamic concepts
-        if (lowerContext.Contains("patience"))
-            searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
-        if (lowerContext.Contains("hardship"))
-            searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
-        if (lowerContext.Contains("guidance"))
-            searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
-        if (lowerContext.Contains("mercy"))
-            searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
-        if (lowerContext.Contains("prayer"))
-            searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
-          return _verses.Where(v => 
-            searchTerms.Any(term => 
-                v.Translation.ToLower().Contains(term) ||
-                v.ArabicText.Contains(term) ||
-                (v.Transliteration?.ToLower().Contains(term) ?? false)
-            )
-        ).Take(5).ToList();
+        try
+        {
+            // Use file-based search service
+            var fileResults = await _fileBasedService.SearchVersesByContextAsync(context, 5);
+            
+            // Convert file results to QuranVerse format (fileResults uses different property names)
+            var convertedResults = fileResults.Select(fr => new QuranVerse(
+                fr.Surah,  // Our FileBasedQuranSearchService uses Surah, not SurahNumber
+                fr.Verse,  // Our FileBasedQuranSearchService uses Verse, not VerseNumber  
+                fr.ArabicText, 
+                fr.Translation, // Our FileBasedQuranSearchService uses Translation, not EnglishText
+                "", // No transliteration in file results
+                language
+            )).ToList();
+            
+            // If results found in files, return them
+            if (convertedResults.Count > 0)
+            {
+                return convertedResults;
+            }
+            
+            // Fall back to sample data with synonym expansion
+            var lowerContext = context.ToLower();
+            var searchTerms = new List<string> { lowerContext };
+            
+            // Add synonyms for common Islamic concepts
+            if (lowerContext.Contains("patience"))
+                searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
+            if (lowerContext.Contains("hardship"))
+                searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
+            if (lowerContext.Contains("guidance"))
+                searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
+            if (lowerContext.Contains("mercy"))
+                searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
+            if (lowerContext.Contains("prayer"))
+                searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
+              
+            return _fallbackVerses.Where(v => 
+                searchTerms.Any(term => 
+                    v.Translation.ToLower().Contains(term) ||
+                    v.ArabicText.Contains(term) ||
+                    (v.Transliteration?.ToLower().Contains(term) ?? false)
+                )
+            ).Take(5).ToList();
+        }
+        catch (Exception)
+        {
+            // If file-based search fails, use fallback data
+            await Task.Delay(100); // Simulate database query
+            
+            var lowerContext = context.ToLower();
+            var searchTerms = new List<string> { lowerContext };
+            
+            // Add synonyms for common Islamic concepts
+            if (lowerContext.Contains("patience"))
+                searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
+            if (lowerContext.Contains("hardship"))
+                searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
+            if (lowerContext.Contains("guidance"))
+                searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
+            if (lowerContext.Contains("mercy"))
+                searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
+            if (lowerContext.Contains("prayer"))
+                searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
+              
+            return _fallbackVerses.Where(v => 
+                searchTerms.Any(term => 
+                    v.Translation.ToLower().Contains(term) ||
+                    v.ArabicText.Contains(term) ||
+                    (v.Transliteration?.ToLower().Contains(term) ?? false)
+                )
+            ).Take(5).ToList();
+        }
     }
 
     public async Task<List<QuranVerse>> SearchVersesByThemeAsync(string theme, string language = "en", int maxResults = 10)
     {
-        await Task.Delay(100);
-        
-        var lowerTheme = theme.ToLower();
-        
-        // Create a list of search terms including synonyms
-        var searchTerms = new List<string> { lowerTheme };
-        
-        // Add synonyms for common Islamic themes
-        if (lowerTheme.Contains("patience"))
-            searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
-        if (lowerTheme.Contains("hardship"))
-            searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
-        if (lowerTheme.Contains("guidance"))
-            searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
-        if (lowerTheme.Contains("mercy"))
-            searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
-        if (lowerTheme.Contains("prayer"))
-            searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
-          return _verses.Where(v => 
-            searchTerms.Any(term => 
-                v.Translation.ToLower().Contains(term) ||
-                (v.ArabicText?.Contains(term) ?? false) ||
-                (v.Transliteration?.ToLower().Contains(term) ?? false)
-            )
-        ).Take(maxResults).ToList();
+        try
+        {
+            // Use file-based search service
+            var results = await _fileBasedService.SearchVersesByContextAsync(theme, maxResults);
+            
+            // If no results found in files, fall back to sample data with synonym expansion
+            if (results.Count == 0)
+            {
+                var lowerTheme = theme.ToLower();
+                var searchTerms = new List<string> { lowerTheme };
+                
+                // Add synonyms for common Islamic themes
+                if (lowerTheme.Contains("patience"))
+                    searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
+                if (lowerTheme.Contains("hardship"))
+                    searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
+                if (lowerTheme.Contains("guidance"))
+                    searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
+                if (lowerTheme.Contains("mercy"))
+                    searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
+                if (lowerTheme.Contains("prayer"))
+                    searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
+                  
+                return _fallbackVerses.Where(v => 
+                    searchTerms.Any(term => 
+                        v.Translation.ToLower().Contains(term) ||
+                        (v.ArabicText?.Contains(term) ?? false) ||
+                        (v.Transliteration?.ToLower().Contains(term) ?? false)
+                    )
+                ).Take(maxResults).ToList();
+            }
+            
+            return results;
+        }
+        catch (Exception)
+        {
+            // If file-based search fails, use fallback data
+            await Task.Delay(100);
+            
+            var lowerTheme = theme.ToLower();
+            var searchTerms = new List<string> { lowerTheme };
+            
+            // Add synonyms for common Islamic themes
+            if (lowerTheme.Contains("patience"))
+                searchTerms.AddRange(new[] { "patient", "perseverance", "endurance", "sabr", "sabiru" });
+            if (lowerTheme.Contains("hardship"))
+                searchTerms.AddRange(new[] { "difficulty", "trial", "test", "suffering", "ease" });
+            if (lowerTheme.Contains("guidance"))
+                searchTerms.AddRange(new[] { "guide", "path", "direction", "light" });
+            if (lowerTheme.Contains("mercy"))
+                searchTerms.AddRange(new[] { "merciful", "compassion", "forgiveness", "rahman", "raheem" });
+            if (lowerTheme.Contains("prayer"))
+                searchTerms.AddRange(new[] { "pray", "salah", "worship", "dua" });
+              
+            return _fallbackVerses.Where(v => 
+                searchTerms.Any(term => 
+                    v.Translation.ToLower().Contains(term) ||
+                    (v.ArabicText?.Contains(term) ?? false) ||
+                    (v.Transliteration?.ToLower().Contains(term) ?? false)
+                )
+            ).Take(maxResults).ToList();
+        }
     }
 
     public async Task<QuranVerse?> GetVerseAsync(VerseReference verse, string language = "en")
     {
-        await Task.Delay(50);
+        try
+        {
+            // Search in file-based service
+            var results = await _fileBasedService.SearchVersesByContextAsync($"{verse.Surah}:{verse.Verse}", 10);
+            var matchingVerse = results.FirstOrDefault(v => v.Surah == verse.Surah && v.Verse == verse.Verse);
+            
+            if (matchingVerse != null)
+                return matchingVerse;
+        }
+        catch (Exception)
+        {
+            // Continue to fallback
+        }
         
-        return _verses.FirstOrDefault(v => v.Surah == verse.Surah && v.Verse == verse.Verse);
+        // Fallback to sample data
+        await Task.Delay(50);
+        return _fallbackVerses.FirstOrDefault(v => v.Surah == verse.Surah && v.Verse == verse.Verse);
     }
 
     public async Task<List<QuranVerse>> GetSurahAsync(int surahNumber, string language = "en")
     {
-        await Task.Delay(200);
+        try
+        {
+            // Search in file-based service for entire surah
+            var results = await _fileBasedService.SearchVersesByContextAsync($"surah {surahNumber}", 300);
+            var surahVerses = results.Where(v => v.Surah == surahNumber)
+                                   .OrderBy(v => v.Verse)
+                                   .ToList();
+            
+            if (surahVerses.Count > 0)
+                return surahVerses;
+        }
+        catch (Exception)
+        {
+            // Continue to fallback
+        }
         
-        return _verses.Where(v => v.Surah == surahNumber).ToList();
+        // Fallback to sample data
+        await Task.Delay(200);
+        return _fallbackVerses.Where(v => v.Surah == surahNumber).ToList();
     }
 
     public async Task<List<TafsirEntry>> GetTafsirAsync(VerseReference verse, string source = "IbnKathir")
@@ -1309,7 +1426,7 @@ SCHOLARS: [scholar1|scholar2]";
             // 🚀 OPTIMISATION: Timeout pour éviter les attentes trop longues
             using var cts = new CancellationTokenSource(TimeSpan.FromSeconds(15));
             
-            var aiResponse = await _ollamaService.GenerateResponseAsync("mistral:7b", prompt);
+            var aiResponse = await _ollamaService.GenerateResponseAsync("mistral:latest", prompt);
             
             // Parse AI response (logique existante)
             var lines = aiResponse.Split('\n', StringSplitOptions.RemoveEmptyEntries);

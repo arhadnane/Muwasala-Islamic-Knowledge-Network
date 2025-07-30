@@ -2,7 +2,7 @@
 Write-Host "Starting Muwasala Web Application..." -ForegroundColor Green
 
 # Navigate to the web project directory
-Set-Location "d:\Coding\VSCodeProject\Muwasala Islamic Knowledge Network\src\Muwasala.Web"
+Set-Location "d:\Data Perso Adnane\Coding\VSCodeProject\Muwasala Islamic Knowledge Network V2\Muwasala-Islamic-Knowledge-Network\src\Muwasala.Web"
 
 # Check if the project file exists
 if (Test-Path "Muwasala.Web.csproj") {

@@ -642,7 +642,7 @@ class Program
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddInMemoryCollection(new Dictionary<string, string?>
             {
-                ["ConnectionStrings:IslamicKnowledgeDb"] = @"Data Source=d:\Coding\VSCodeProject\Muwasala Islamic Knowledge Network\data\database\IslamicKnowledge.db"
+                ["ConnectionStrings:IslamicKnowledgeDb"] = @"Data Source=d:\Data Perso Adnane\Coding\VSCodeProject\Muwasala Islamic Knowledge Network V2\Muwasala-Islamic-Knowledge-Network\data\database\IslamicKnowledge.db"
             })
             .Build();
             
