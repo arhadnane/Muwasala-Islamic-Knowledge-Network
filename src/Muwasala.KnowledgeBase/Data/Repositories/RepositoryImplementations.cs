@@ -184,8 +184,11 @@ public class HadithRepository : Repository<HadithEntity>, IHadithRepository
     public async Task<IEnumerable<HadithEntity>> SearchByTextAsync(string searchText, string language = "en", int maxResults = 10)
     {
         var query = searchText.ToLower();
-        return await _dbSet            .Where(h => h.Translation.ToLower().Contains(query) || 
-                       h.ArabicText.Contains(query))
+        return await _dbSet
+            .Where(h => (h.Translation.ToLower().Contains(query) || 
+                        h.ArabicText.Contains(query)) &&
+                       h.Grade <= (int)HadithGrade.Hasan) // Only Sahih and Hasan (authentic) hadiths
+            .OrderBy(h => h.Grade) // Sahih first, then Hasan
             .Take(maxResults)
             .ToListAsync();
     }

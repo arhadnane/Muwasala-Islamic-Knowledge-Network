@@ -90,21 +90,90 @@ public class HadithVerifierAgent
     }
 
     /// <summary>
-    /// Get hadiths by topic with verification status
+    /// Get hadiths by topic with verification status - ONLY authentic hadiths
     /// </summary>
     public async Task<List<HadithResponse>> GetHadithByTopicAsync(string topic, string language = "en", int maxResults = 5)
     {
         _logger.LogInformation("HadithVerifier searching hadiths by topic: {Topic}", topic);
 
-        var hadiths = await _hadithService.GetHadithByTopicAsync(topic, language, maxResults);
+        // Use GetAuthenticHadithAsync to ensure only Sahih hadiths are returned
+        var hadiths = await _hadithService.GetAuthenticHadithAsync(topic, maxResults);
         var responses = new List<HadithResponse>();
 
+        // Only process authentic hadiths found in database - no AI generation
         foreach (var hadith in hadiths)
         {
-            var response = await VerifyHadithAsync(hadith.ArabicText, language);
+            // Build response directly from database hadith (no AI verification to avoid generating fake content)
+            var prompt = BuildVerificationPrompt(hadith, language);
+            var aiResponse = await _ollama.GenerateResponseAsync(MODEL_NAME, prompt, 0.3);
+
+            var response = new HadithResponse
+            {
+                Text = hadith.ArabicText,
+                Translation = hadith.Translation,
+                Grade = hadith.Grade,
+                Collection = hadith.Collection,
+                BookNumber = hadith.BookNumber,
+                HadithNumber = hadith.HadithNumber,
+                SanadChain = hadith.SanadChain,
+                Explanation = aiResponse,
+                AlternativeHadith = new List<string> { "Related authentic hadiths available upon request" }
+            };
+
+            // Since we're using GetAuthenticHadithAsync, these should all be Sahih
+            // But keep safety checks just in case
+            if (hadith.Grade == HadithGrade.Daif)
+            {
+                response = response with { Warning = "This hadith is classified as weak (Da'if). Use with caution." };
+            }
+            else if (hadith.Grade == HadithGrade.Mawdu)
+            {
+                response = response with { Warning = "⚠️ WARNING: This hadith is fabricated (Mawdu'). Do not use for religious guidance." };
+            }
+
+            response.Sources.AddRange(new[] { hadith.Collection, "Hadith Verification Database", MODEL_NAME });
             responses.Add(response);
         }
 
+        _logger.LogInformation("Found {Count} authentic hadiths for topic: {Topic}", responses.Count, topic);
+        return responses.OrderByDescending(h => h.Grade).ToList();
+    }
+
+    /// <summary>
+    /// Get ONLY authentic (Sahih) hadiths by topic - explicit method for clarity
+    /// </summary>
+    public async Task<List<HadithResponse>> GetAuthenticHadithByTopicAsync(string topic, string language = "en", int maxResults = 5)
+    {
+        _logger.LogInformation("HadithVerifier searching ONLY authentic hadiths by topic: {Topic}", topic);
+
+        // Use GetAuthenticHadithAsync to ensure only Sahih hadiths are returned
+        var hadiths = await _hadithService.GetAuthenticHadithAsync(topic, maxResults);
+        var responses = new List<HadithResponse>();
+
+        // Process each authentic hadith
+        foreach (var hadith in hadiths)
+        {
+            var prompt = BuildVerificationPrompt(hadith, language);
+            var aiResponse = await _ollama.GenerateResponseAsync(MODEL_NAME, prompt, 0.3);
+
+            var response = new HadithResponse
+            {
+                Text = hadith.ArabicText,
+                Translation = hadith.Translation,
+                Grade = hadith.Grade, // Should always be Sahih
+                Collection = hadith.Collection,
+                BookNumber = hadith.BookNumber,
+                HadithNumber = hadith.HadithNumber,
+                SanadChain = hadith.SanadChain,
+                Explanation = aiResponse,
+                AlternativeHadith = new List<string> { "Related authentic hadiths available upon request" }
+            };
+
+            response.Sources.AddRange(new[] { hadith.Collection, "Authentic Hadith Database", MODEL_NAME });
+            responses.Add(response);
+        }
+
+        _logger.LogInformation("Found {Count} verified authentic hadiths for topic: {Topic}", responses.Count, topic);
         return responses.OrderByDescending(h => h.Grade).ToList();
     }
 
@@ -132,29 +201,32 @@ public class HadithVerifierAgent
     {
         _logger.LogWarning("Unknown hadith submitted for verification");
 
+        // Do NOT generate fake hadith content - just return guidance
         var prompt = $@"
-Analyze this hadith text that was not found in our authenticated collections:
+A hadith text was submitted that is not found in our authenticated collections:
 ""{hadithText}""
 
-Provide guidance on:
-1. Whether this looks like authentic Islamic content
-2. Possible reasons why it's not in major collections
-3. Alternative authentic hadiths on similar topics
+Provide ONLY guidance about why this might not be found and what to do next.
+DO NOT create or suggest alternative hadith texts.
+DO NOT translate or explain the content as if it were authentic.
 
-Language: {language}
+Provide brief guidance on:
+1. Why hadiths might not be in major collections
+2. Recommend consulting qualified Islamic scholars
+3. Suggest searching with different keywords
 
-Respond in JSON format with warning about unverified content.";
+Keep response concise and focused on verification guidance only.";
 
         var aiGuidance = await _ollama.GenerateResponseAsync(MODEL_NAME, prompt, 0.1);
 
         return new HadithResponse
         {
-            Text = hadithText,
-            Translation = "Translation not available - unverified hadith",
+            Text = "[Text not displayed - unverified]",
+            Translation = "Not available - this text was not found in authenticated collections",
             Grade = HadithGrade.Unknown,
-            Collection = "Unknown",
+            Collection = "Not Found",
             Explanation = aiGuidance,
-            Warning = "⚠️ This hadith was not found in authenticated collections. Please verify with scholars before using."
+            Warning = "⚠️ This hadith was not found in authenticated collections. Please verify with qualified Islamic scholars before using."
         };
     }    private string BuildVerificationPrompt(HadithRecord hadith, string language)
     {

@@ -38,18 +38,27 @@ public class DatabaseInitializer
             await context.Database.EnsureCreatedAsync();
             _logger.LogInformation("Database schema created/verified.");
 
-            // Check if data already exists
-            var hasData = await context.QuranVerses.AnyAsync();
-            if (!hasData)
+            // Always try to load hadith data from files first (the loader has duplicate protection)
+            _logger.LogInformation("Attempting to load hadith data from files...");
+            await context.LoadHadithFromFilesAsync(_logger);
+
+            // Check if Quran data exists after potential file loading
+            var hasQuranData = await context.QuranVerses.AnyAsync();
+            if (!hasQuranData)
             {
-                _logger.LogInformation("Seeding database with Islamic knowledge data...");
-                await SeedDataAsync(context);
-                _logger.LogInformation("Database seeding completed successfully.");
+                _logger.LogInformation("Seeding database with Quran verses...");
+                await SeedQuranVersesAsync(context);
+                
+                // Call SeedDataAsync for other basic data (FiqhRulings, DuaRecords, etc.)
+                // but note that SeedHadithDataAsync is now disabled in the context
+                await context.SeedDataAsync();
             }
             else
             {
-                _logger.LogInformation("Database already contains data. Skipping seeding.");
+                _logger.LogInformation("Quran data already exists. Skipping Quran seeding.");
             }
+
+            _logger.LogInformation("Database initialization completed successfully.");
         }
         catch (Exception ex)
         {
@@ -221,6 +230,9 @@ public class DatabaseInitializer
 
         // Add our new Quran verse seeding
         await SeedQuranVersesAsync(context);
+
+        // Add hadith loading from files
+        await context.LoadHadithFromFilesAsync(_logger);
     }
 
     private async Task SeedQuranVersesAsync(IslamicKnowledgeDbContext context)

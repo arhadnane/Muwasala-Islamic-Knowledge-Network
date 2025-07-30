@@ -18,8 +18,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configure HTTP client for Ollama
-builder.Services.AddHttpClient<IOllamaService, OllamaService>();
+// Configure HTTP client for Ollama with extended timeout
+builder.Services.AddHttpClient<IOllamaService, OllamaService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5); // 5 minutes timeout for AI operations
+});
 
 // Register core services
 builder.Services.AddScoped<IOllamaService, OllamaService>();

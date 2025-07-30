@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using Microsoft.Extensions.Http;
 using Muwasala.Core.Services;
 using Muwasala.Agents;
 using Muwasala.KnowledgeBase.Services;
@@ -14,6 +15,10 @@ builder.Services.AddServerSideBlazor();
 
 // Add Muwasala services
 builder.Services.AddHttpClient();
+builder.Services.ConfigureAll<HttpClientFactoryOptions>(options =>
+{
+    options.HttpClientActions.Add(client => client.Timeout = TimeSpan.FromMinutes(5));
+});
 builder.Services.AddSingleton<IOllamaService, OllamaService>();
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 

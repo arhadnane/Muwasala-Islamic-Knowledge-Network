@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Http;
 using System.CommandLine;
 using Muwasala.Core.Services;
 using Muwasala.Agents;
@@ -636,8 +637,12 @@ class Program
         // Add logging
         services.AddLogging(builder => builder.AddConsole());
         
-        // Add HTTP client
-        services.AddHttpClient();        // Add configuration
+        // Add HTTP client with extended timeout
+        services.AddHttpClient();
+        services.Configure<HttpClientFactoryOptions>(options =>
+        {
+            options.HttpClientActions.Add(client => client.Timeout = TimeSpan.FromMinutes(5));
+        });        // Add configuration
         var configuration = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddInMemoryCollection(new Dictionary<string, string?>
