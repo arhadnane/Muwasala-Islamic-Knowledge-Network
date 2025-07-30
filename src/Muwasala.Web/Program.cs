@@ -17,7 +17,7 @@ builder.Services.AddHttpClient();
 builder.Services.AddSingleton<IOllamaService, OllamaService>();
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 
-// Add Islamic Knowledge Base services with database backend
+// Add Islamic Knowledge Base services with database backend (with file fallback)
 builder.Services.AddIslamicKnowledgeBase(builder.Configuration, useDatabaseServices: true);
 
 // Add Intelligent Search Service (AI + Web) - Changed to Scoped to match database services
