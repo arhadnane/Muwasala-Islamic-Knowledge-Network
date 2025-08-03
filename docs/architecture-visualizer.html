@@ -85,6 +85,7 @@ graph TB
 
     subgraph "Services Externes"
         OLLAMA[Ollama AI<br/>DeepSeek Models]
+        PHI3[Phi-3 AI<br/>Enhanced Processing ⭐]
         SUNNAH[Sunnah.com API]
         WEB_SOURCES[Islamic Web Sources]
     end
@@ -99,6 +100,7 @@ graph TB
     CORE --> KB
     
     AGENTS --> OLLAMA
+    AGENTS --> PHI3
     AGENTS --> SUNNAH
     AGENTS --> WEB_SOURCES
     
@@ -115,7 +117,7 @@ graph TB
     class WEB,API,CLI,MCP presentation
     class CORE,AGENTS application
     class KB,DB,ES,FILES data
-    class OLLAMA,SUNNAH,WEB_SOURCES external
+    class OLLAMA,PHI3,SUNNAH,WEB_SOURCES external
             </div>
         </div>
 
@@ -133,20 +135,26 @@ graph LR
     subgraph "Agents Spécialisés"
         QNA[Quran Navigator<br/>Agent]
         HVA[Hadith Verifier<br/>Agent]
-        FIA[Fiqh Advisor<br/>Agent]
+        FIA[Enhanced Fiqh Advisor<br/>Agent ⭐]
         DCA[Dua Companion<br/>Agent]
         TTA[Tajweed Tutor<br/>Agent]
         SSA[Sirah Scholar<br/>Agent]
         WCA[Web Crawler<br/>Agent]
-        QAA[Query Analysis<br/>Agent]
+        QAA[AI Query Analysis<br/>Agent]
         RQA[Response Quality<br/>Agent]
         RTS[Real-Time Search<br/>Agent]
+        TSA[Text Summarization<br/>Agent]
+        CSA[Context Search<br/>Agent]
     end
 
     subgraph "Services de Support"
         HYBRID[Enhanced Hybrid<br/>Search Service]
         FALLBACK[Fast Fallback<br/>Service]
         CIRCUIT[Circuit Breaker<br/>Service]
+        ENHANCED[Enhanced Fiqh<br/>Service ⭐]
+        PHI3_SVC[Phi-3 AI Integration<br/>Service]
+        VECTOR[Vector Similarity<br/>Service]
+        SEMANTIC[Semantic Analysis<br/>Service]
     end
 
     USER[👤 Utilisateur] --> BRAIN
@@ -160,11 +168,17 @@ graph LR
     BRAIN --> QAA
     BRAIN --> RQA
     BRAIN --> RTS
+    BRAIN --> TSA
+    BRAIN --> CSA
     
     QNA --> HYBRID
     HVA --> HYBRID
-    FIA --> HYBRID
+    FIA --> ENHANCED
+    FIA --> PHI3_SVC
+    FIA --> VECTOR
+    FIA --> SEMANTIC
     
+    ENHANCED --> HYBRID
     HYBRID --> FALLBACK
     FALLBACK --> CIRCUIT
     
@@ -177,13 +191,60 @@ graph LR
     classDef user fill:#96ceb4
     
     class BRAIN brain
-    class QNA,HVA,FIA,DCA,TTA,SSA,WCA,QAA,RQA,RTS agents
-    class HYBRID,FALLBACK,CIRCUIT services
+    class QNA,HVA,FIA,DCA,TTA,SSA,WCA,QAA,RQA,RTS,TSA,CSA agents
+    class HYBRID,FALLBACK,CIRCUIT,ENHANCED,PHI3_SVC,VECTOR,SEMANTIC services
     class USER user
             </div>
         </div>
 
-        <h2>3. Flux de Recherche</h2>
+        <h2>3. Flux Enhanced Fiqh Advisor ⭐</h2>
+        <div class="description">
+            Nouveau système de consultation jurisprudentielle islamique avec IA avancée - processus complet de traitement des questions Fiqh.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+sequenceDiagram
+    participant U as Utilisateur
+    participant W as Blazor Web
+    participant EFC as Enhanced Fiqh Controller
+    participant EFS as Enhanced Fiqh Service
+    participant EFA as Enhanced Fiqh Agent
+    participant PHI as Phi-3 AI Service
+    participant VES as Vector Embedding Service
+    participant IKS as Islamic Knowledge Service
+    participant DB as Database
+
+    U->>W: Question Fiqh: "Is cryptocurrency halal?"
+    W->>EFC: POST /api/enhanced-fiqh/ask
+    EFC->>EFS: ProcessQuestionAsync()
+    
+    EFS->>EFA: AnalyzeQuestionAsync()
+    EFA->>PHI: Analyze question context
+    PHI-->>EFA: Question analysis result
+    
+    par Recherche de preuves parallèle
+        EFA->>VES: Search relevant verses
+        EFA->>IKS: Search relevant hadiths
+        EFA->>IKS: Search scholarly opinions
+    end
+    
+    VES-->>EFA: Quran verses
+    IKS-->>EFA: Hadith evidences
+    IKS-->>EFA: Scholarly references
+    
+    EFA->>PHI: Generate comprehensive response
+    PHI-->>EFA: AI-enhanced response
+    
+    EFA->>EFS: Format final response
+    EFS->>EFC: EnhancedFiqhResponse
+    EFC->>W: JSON with structured answer
+    W->>U: Display comprehensive Fiqh guidance
+    
+    Note over U,DB: Response includes: Main ruling, evidence,<br/>school differences, practical guidance
+            </div>
+        </div>
+
+        <h2>4. Flux de Recherche Classique</h2>
         <div class="description">
             Séquence de traitement d'une recherche "moon" de l'utilisateur jusqu'aux résultats finaux.
         </div>
@@ -224,9 +285,9 @@ sequenceDiagram
             </div>
         </div>
 
-        <h2>4. Architecture des Données</h2>
+        <h2>5. Architecture des Données</h2>
         <div class="description">
-            Structure des données islamiques et leurs services d'accès dans le système.
+            Structure des données islamiques et leurs services d'accès dans le système, avec les nouveaux modèles Enhanced Fiqh.
         </div>
         <div class="diagram-container">
             <div class="mermaid">
@@ -248,6 +309,9 @@ graph TB
         HSS[Hadith Search<br/>Service]
         ESS[Elasticsearch<br/>Service]
         AHS[Advanced Hadith<br/>Search Service]
+        EFS[Enhanced Fiqh<br/>Service ⭐]
+        VES[Vector Embedding<br/>Service]
+        SAS[Semantic Analysis<br/>Service]
     end
 
     subgraph "Modèles de Données"
@@ -255,6 +319,10 @@ graph TB
         HR[HadithRecord]
         SH[ScoredHadith]
         SR[SearchResult]
+        EFR[EnhancedFiqhResponse ⭐]
+        EFQ[EnhancedFiqhQuestion]
+        FE[FiqhEvidence]
+        SchR[SchoolRuling]
     end
 
     %% Data Flow
@@ -271,11 +339,17 @@ graph TB
     IKS --> HSS
     ESS --> AHS
     HSS --> AHS
+    EFS --> VES
+    EFS --> SAS
     
     AHS --> QV
     AHS --> HR
     AHS --> SH
     AHS --> SR
+    EFS --> EFR
+    EFS --> EFQ
+    EFS --> FE
+    EFS --> SchR
 
     %% Styling
     classDef sources fill:#ffeb3b
@@ -285,14 +359,14 @@ graph TB
     
     class QF,HF,AF sources
     class SQLITE,ELASTIC,CACHE persistence
-    class IKS,HSS,ESS,AHS services
-    class QV,HR,SH,SR models
+    class IKS,HSS,ESS,AHS,EFS,VES,SAS services
+    class QV,HR,SH,SR,EFR,EFQ,FE,SchR models
             </div>
         </div>
 
-        <h2>5. Technologies Utilisées</h2>
+        <h2>6. Technologies Utilisées</h2>
         <div class="description">
-            Vue d'ensemble des technologies et frameworks utilisés dans le projet.
+            Vue d'ensemble des technologies et frameworks utilisés dans le projet, incluant les nouvelles intégrations IA.
         </div>
         <div class="diagram-container">
             <div class="mermaid">
@@ -306,11 +380,13 @@ mindmap
       Swagger/OpenAPI
     Frontend
       Blazor Server
+      Enhanced Fiqh UI ⭐
       HTML/CSS/JavaScript
       Bootstrap
       Chart.js
     AI/ML
       Ollama
+      Phi-3 Integration ⭐
       DeepSeek Models
       Vector Search
       Semantic Analysis
@@ -324,6 +400,79 @@ mindmap
       Integration Tests
       Performance Tests
       Load Testing
+            </div>
+        </div>
+
+        <h2>7. Architecture Enhanced Fiqh Advisor ⭐</h2>
+        <div class="description">
+            Architecture détaillée du nouveau système Enhanced Fiqh Advisor avec intégration Phi-3 et services avancés.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TB
+    subgraph "Interface Utilisateur"
+        UI[Enhanced Fiqh Page<br/>Blazor UI]
+        TEMPLATES[Question Templates<br/>Prayer, Fasting, Marriage, etc.]
+        CHAT[Interactive Chat Interface]
+    end
+
+    subgraph "Couche de Traitement"
+        CONTROLLER[Enhanced Fiqh Controller<br/>API Endpoint]
+        SERVICE[Enhanced Fiqh Service<br/>Business Logic]
+        AGENT[Enhanced Fiqh Agent<br/>AI Orchestration]
+    end
+
+    subgraph "Intelligence Artificielle"
+        PHI3[Phi-3 Mini Model<br/>3.8B Parameters]
+        ANALYSIS[Question Analysis<br/>Context Understanding]
+        GENERATION[Response Generation<br/>Structured Output]
+    end
+
+    subgraph "Base de Connaissances"
+        QURAN[Quran Verses<br/>114 Suras]
+        HADITH[Hadith Collections<br/>6 Major Books]
+        FIQH[Fiqh Rules<br/>4 Schools of Thought]
+        SCHOLARS[Scholarly Opinions<br/>Historical & Contemporary]
+    end
+
+    subgraph "Services de Support"
+        VECTOR[Vector Similarity<br/>Semantic Search]
+        EMBEDDING[Text Embedding<br/>Multilingual Support]
+        CACHE[Response Caching<br/>Performance Optimization]
+    end
+
+    UI --> CONTROLLER
+    TEMPLATES --> UI
+    CHAT --> UI
+    
+    CONTROLLER --> SERVICE
+    SERVICE --> AGENT
+    
+    AGENT --> PHI3
+    AGENT --> ANALYSIS
+    AGENT --> GENERATION
+    
+    AGENT --> QURAN
+    AGENT --> HADITH
+    AGENT --> FIQH
+    AGENT --> SCHOLARS
+    
+    AGENT --> VECTOR
+    AGENT --> EMBEDDING
+    SERVICE --> CACHE
+
+    %% Styling
+    classDef ui fill:#e3f2fd
+    classDef processing fill:#f3e5f5
+    classDef ai fill:#fff3e0
+    classDef knowledge fill:#e8f5e8
+    classDef support fill:#fce4ec
+    
+    class UI,TEMPLATES,CHAT ui
+    class CONTROLLER,SERVICE,AGENT processing
+    class PHI3,ANALYSIS,GENERATION ai
+    class QURAN,HADITH,FIQH,SCHOLARS knowledge
+    class VECTOR,EMBEDDING,CACHE support
             </div>
         </div>
     </div>

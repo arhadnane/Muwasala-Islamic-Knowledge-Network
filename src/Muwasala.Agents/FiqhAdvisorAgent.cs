@@ -158,9 +158,9 @@ public class FiqhAdvisorAgent
         {
             Question = question,
             MadhabRulings = comparisons,
-            CommonGround = analysis.CommonGround,
-            KeyDifferences = analysis.KeyDifferences,
-            RecommendedApproach = analysis.RecommendedApproach
+            CommonGround = analysis?.CommonGround ?? new List<string>(),
+            KeyDifferences = analysis?.KeyDifferences ?? new List<string>(),
+            RecommendedApproach = analysis?.RecommendedApproach ?? "Please consult with qualified Islamic scholars for guidance."
         };
     }
 
