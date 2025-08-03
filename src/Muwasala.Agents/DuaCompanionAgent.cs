@@ -14,7 +14,7 @@ public class DuaCompanionAgent
     private readonly IOllamaService _ollama;
     private readonly IDuaService _duaService;
     private readonly ILogger<DuaCompanionAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     public DuaCompanionAgent(
         IOllamaService ollama,
@@ -208,7 +208,17 @@ Respond with suggestions for finding appropriate authentic du'as.";
 
     private string BuildDuaExplanationPrompt(DuaRecord dua, string occasion, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are an Islamic scholar providing du'a guidance.
+
+{languageInstruction}
+
 Explain this authentic Islamic du'a:
 
 Arabic: {dua.ArabicText}
@@ -222,11 +232,9 @@ Provide:
 3. Related du'as on similar themes
 4. Historical context or Prophet's guidance about it
 
-Language: {language}
-
 Respond in JSON format:
 {{
-    ""benefits"": ""spiritual and practical benefits"",
+    ""benefits"": ""spiritual and practical benefits in the requested language"",
     ""bestTimes"": ""when to recite this du'a"",
     ""relatedDuas"": [""names of related duas""],
     ""historicalContext"": ""background information""
@@ -235,7 +243,17 @@ Respond in JSON format:
 
     private string BuildSpecificPrayerPrompt(DuaRecord dua, SpecificPrayer prayerType, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are an Islamic scholar providing prayer guidance.
+
+{languageInstruction}
+
 Provide comprehensive guidance for this specific Islamic prayer:
 
 Prayer Type: {prayerType}
@@ -249,9 +267,7 @@ Explain:
 3. What to expect and how Allah responds
 4. Related supplications
 
-Language: {language}
-
-Respond in JSON format with detailed guidance.";
+Respond in JSON format with detailed guidance in the requested language.";
     }
 
     private string BuildContextDescription(PersonalContext context)

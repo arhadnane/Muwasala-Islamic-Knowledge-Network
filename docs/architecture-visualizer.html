@@ -2,7 +2,26 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name    subgraph "Services Externes"
+        OLLAMA[Ollama AI<br/>DeepSeek Models]
+        DEEPSEEK[DeepSeek R1<br/>Enhanced Processing ⭐]
+        SUNNAH[Sunnah.com API]
+        WEB_SOURCES[Islamic Web Sources]
+    end
+
+    %% Connections
+    WEB --> CORE
+    API --> CORE
+    CLI --> CORE
+    MCP --> CORE
+    
+    CORE --> AGENTS
+    CORE --> KB
+    
+    AGENTS --> OLLAMA
+    AGENTS --> DEEPSEEK
+    AGENTS --> SUNNAH
+    AGENTS --> WEB_SOURCES"width=device-width, initial-scale=1.0">
     <title>Architecture Muwasala - Diagrammes Mermaid</title>
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
     <style>
@@ -85,7 +104,7 @@ graph TB
 
     subgraph "Services Externes"
         OLLAMA[Ollama AI<br/>DeepSeek Models]
-        PHI3[Phi-3 AI<br/>Enhanced Processing ⭐]
+        DEEPSEEK[DeepSeek R1<br/>Enhanced Processing ⭐]
         SUNNAH[Sunnah.com API]
         WEB_SOURCES[Islamic Web Sources]
     end
@@ -117,7 +136,7 @@ graph TB
     class WEB,API,CLI,MCP presentation
     class CORE,AGENTS application
     class KB,DB,ES,FILES data
-    class OLLAMA,PHI3,SUNNAH,WEB_SOURCES external
+    class OLLAMA,DEEPSEEK,SUNNAH,WEB_SOURCES external
             </div>
         </div>
 
@@ -152,7 +171,7 @@ graph LR
         FALLBACK[Fast Fallback<br/>Service]
         CIRCUIT[Circuit Breaker<br/>Service]
         ENHANCED[Enhanced Fiqh<br/>Service ⭐]
-        PHI3_SVC[Phi-3 AI Integration<br/>Service]
+        DEEPSEEK_SVC[DeepSeek R1 Integration<br/>Service]
         VECTOR[Vector Similarity<br/>Service]
         SEMANTIC[Semantic Analysis<br/>Service]
     end
@@ -174,7 +193,7 @@ graph LR
     QNA --> HYBRID
     HVA --> HYBRID
     FIA --> ENHANCED
-    FIA --> PHI3_SVC
+    FIA --> DEEPSEEK_SVC
     FIA --> VECTOR
     FIA --> SEMANTIC
     
@@ -192,7 +211,7 @@ graph LR
     
     class BRAIN brain
     class QNA,HVA,FIA,DCA,TTA,SSA,WCA,QAA,RQA,RTS,TSA,CSA agents
-    class HYBRID,FALLBACK,CIRCUIT,ENHANCED,PHI3_SVC,VECTOR,SEMANTIC services
+    class HYBRID,FALLBACK,CIRCUIT,ENHANCED,DEEPSEEK_SVC,VECTOR,SEMANTIC services
     class USER user
             </div>
         </div>
@@ -209,7 +228,7 @@ sequenceDiagram
     participant EFC as Enhanced Fiqh Controller
     participant EFS as Enhanced Fiqh Service
     participant EFA as Enhanced Fiqh Agent
-    participant PHI as Phi-3 AI Service
+    participant DEEPSEEK as DeepSeek R1 AI Service
     participant VES as Vector Embedding Service
     participant IKS as Islamic Knowledge Service
     participant DB as Database
@@ -219,8 +238,8 @@ sequenceDiagram
     EFC->>EFS: ProcessQuestionAsync()
     
     EFS->>EFA: AnalyzeQuestionAsync()
-    EFA->>PHI: Analyze question context
-    PHI-->>EFA: Question analysis result
+    EFA->>DEEPSEEK: Analyze question context
+    DEEPSEEK-->>EFA: Question analysis result
     
     par Recherche de preuves parallèle
         EFA->>VES: Search relevant verses
@@ -232,8 +251,8 @@ sequenceDiagram
     IKS-->>EFA: Hadith evidences
     IKS-->>EFA: Scholarly references
     
-    EFA->>PHI: Generate comprehensive response
-    PHI-->>EFA: AI-enhanced response
+    EFA->>DEEPSEEK: Generate comprehensive response
+    DEEPSEEK-->>EFA: AI-enhanced response
     
     EFA->>EFS: Format final response
     EFS->>EFC: EnhancedFiqhResponse
@@ -386,7 +405,7 @@ mindmap
       Chart.js
     AI/ML
       Ollama
-      Phi-3 Integration ⭐
+      DeepSeek R1 Integration ⭐
       DeepSeek Models
       Vector Search
       Semantic Analysis
@@ -405,7 +424,7 @@ mindmap
 
         <h2>7. Architecture Enhanced Fiqh Advisor ⭐</h2>
         <div class="description">
-            Architecture détaillée du nouveau système Enhanced Fiqh Advisor avec intégration Phi-3 et services avancés.
+            Architecture détaillée du nouveau système Enhanced Fiqh Advisor avec intégration DeepSeek R1 et services avancés.
         </div>
         <div class="diagram-container">
             <div class="mermaid">
@@ -423,7 +442,7 @@ graph TB
     end
 
     subgraph "Intelligence Artificielle"
-        PHI3[Phi-3 Mini Model<br/>3.8B Parameters]
+        DEEPSEEK_MODEL[DeepSeek R1 Model<br/>Advanced Reasoning]
         ANALYSIS[Question Analysis<br/>Context Understanding]
         GENERATION[Response Generation<br/>Structured Output]
     end
@@ -448,7 +467,7 @@ graph TB
     CONTROLLER --> SERVICE
     SERVICE --> AGENT
     
-    AGENT --> PHI3
+    AGENT --> DEEPSEEK_MODEL
     AGENT --> ANALYSIS
     AGENT --> GENERATION
     
@@ -470,7 +489,7 @@ graph TB
     
     class UI,TEMPLATES,CHAT ui
     class CONTROLLER,SERVICE,AGENT processing
-    class PHI3,ANALYSIS,GENERATION ai
+    class DEEPSEEK_MODEL,ANALYSIS,GENERATION ai
     class QURAN,HADITH,FIQH,SCHOLARS knowledge
     class VECTOR,EMBEDDING,CACHE support
             </div>

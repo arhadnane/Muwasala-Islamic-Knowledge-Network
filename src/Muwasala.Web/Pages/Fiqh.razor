@@ -59,11 +59,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Language</label>
+                            <label class="form-label">Response Language</label>
                             <InputSelect @bind-Value="consultationModel.Language" class="form-select">
-                                <option value="en">English</option>
-                                <option value="ar">Arabic</option>
+                                <option value="en">🇺🇸 English - الإنجليزية</option>
+                                <option value="ar">🇸🇦 Arabic - العربية</option>
                             </InputSelect>
+                            <div class="form-text">Choose the language for the Fiqh response</div>
                         </div>
 
                         <button type="submit" class="btn btn-info w-100" disabled="@isLoading">

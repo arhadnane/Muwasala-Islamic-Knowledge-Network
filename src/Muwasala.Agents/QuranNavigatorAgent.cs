@@ -17,7 +17,7 @@ public class QuranNavigatorAgent
     private readonly IQuranService _quranService;
     private readonly ICacheService _cache;
     private readonly ILogger<QuranNavigatorAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     public QuranNavigatorAgent(
         IOllamaService ollama, 
@@ -197,15 +197,28 @@ public class QuranNavigatorAgent
         var versesText = string.Join("\n", candidateVerses.Take(3).Select(v => 
             $"{v.Surah}:{v.Verse} - {v.Translation.Substring(0, Math.Min(v.Translation.Length, 100))}..."));
 
-        return $@"Context: {context}
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
 
-Verses:
+        return $@"You are an Islamic scholar providing Quranic guidance.
+
+{languageInstruction}
+
+Context: {context}
+
+Available verses:
 {versesText}
 
-Select best verse and provide brief {tafsir} explanation. JSON format:
+Select the most relevant verse and provide a brief {tafsir} explanation that addresses the user's context. 
+
+Respond in JSON format:
 {{
     ""selectedVerse"": {{ ""surah"": {candidateVerses[0].Surah}, ""verse"": {candidateVerses[0].Verse} }},
-    ""tafsirExplanation"": ""brief explanation"",
+    ""tafsirExplanation"": ""brief explanation in the requested language"",
     ""relatedVerses"": [{{ ""surah"": 1, ""verse"": 1 }}],
     ""relatedDuas"": [""Dua for Guidance""]
 }}";
