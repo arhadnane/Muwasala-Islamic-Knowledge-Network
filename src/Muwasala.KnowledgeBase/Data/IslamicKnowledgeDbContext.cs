@@ -345,8 +345,13 @@ public class IslamicKnowledgeDbContext : DbContext
         await QuranVerses.AddRangeAsync(verses);
     }
 
-    private async Task SeedHadithDataAsync()
+    private Task SeedHadithDataAsync()
     {
+        // Temporarily disabled to allow file-based hadith loading to work
+        // The file-based loader in HadithDataLoader.cs will handle hadith loading instead
+        
+        // Original code commented out:
+        /*
         var hadiths = new List<HadithEntity>
         {
             new HadithEntity
@@ -374,6 +379,8 @@ public class IslamicKnowledgeDbContext : DbContext
         };
 
         await HadithRecords.AddRangeAsync(hadiths);
+        */
+        return Task.CompletedTask;
     }
 
     private async Task SeedFiqhDataAsync()

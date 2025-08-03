@@ -25,7 +25,7 @@ public static class MultiAgentServiceExtensions
         {
             client.DefaultRequestHeaders.Add("User-Agent", 
                 "Muwasala Islamic Knowledge Network Bot 1.0 (+https://muwasala.com)");
-            client.Timeout = TimeSpan.FromSeconds(30);
+            client.Timeout = TimeSpan.FromMinutes(5); // 5 minutes timeout
         });
 
         // Register HttpClient for RealTimeSearchAgent
@@ -33,12 +33,21 @@ public static class MultiAgentServiceExtensions
         {
             client.DefaultRequestHeaders.Add("User-Agent", 
                 "Muwasala Islamic Knowledge Network Bot 1.0 (+https://muwasala.com)");
-            client.Timeout = TimeSpan.FromSeconds(10);
+            client.Timeout = TimeSpan.FromMinutes(5); // 5 minutes timeout
+        });
+
+        // Register HttpClient for Sunnah.com API integration
+        services.AddHttpClient<SunnahComService>(client =>
+        {
+            client.DefaultRequestHeaders.Add("User-Agent", 
+                "Muwasala Islamic Knowledge Network Bot 1.0 (+https://muwasala.com)");
+            client.Timeout = TimeSpan.FromMinutes(2); // 2 minutes timeout for API calls
         });
 
         // Register specialized agents
         services.AddScoped<WebCrawlerAgent>();
         services.AddScoped<HadithVerifierAgent>();
+        services.AddScoped<SunnahComService>(); // Add Sunnah.com API service
         services.AddScoped<FiqhAdvisorAgent>();
         services.AddScoped<QuranNavigatorAgent>();
         services.AddScoped<DuaCompanionAgent>();

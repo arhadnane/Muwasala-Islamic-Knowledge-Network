@@ -179,6 +179,15 @@ public class DatabaseHadithService : IHadithService
         return entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToHadithRecord).ToList();
     }
 
+    /// <summary>
+    /// Search only authentic hadiths (Sahih and Hasan grades)
+    /// </summary>
+    public async Task<List<HadithRecord>> SearchAuthenticHadithAsync(string text, string language = "en")
+    {
+        var entities = await _hadithRepository.GetAuthenticHadithAsync(text, HadithGrade.Sahih, 20);
+        return entities.Select(Muwasala.KnowledgeBase.Data.Mappers.EntityMapper.ToHadithRecord).ToList();
+    }
+
     public async Task<List<HadithRecord>> GetHadithByTopicAsync(string topic, string language = "en", int maxResults = 10)
     {
         var entities = await _hadithRepository.GetByTopicAsync(topic, language, maxResults);

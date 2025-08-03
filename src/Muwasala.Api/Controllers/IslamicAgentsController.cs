@@ -76,11 +76,16 @@ public class QuranController : ControllerBase
 public class HadithController : ControllerBase
 {
     private readonly HadithVerifierAgent _hadithAgent;
+    private readonly IAdvancedHadithSearchService _advancedSearchService;
     private readonly ILogger<HadithController> _logger;
 
-    public HadithController(HadithVerifierAgent hadithAgent, ILogger<HadithController> logger)
+    public HadithController(
+        HadithVerifierAgent hadithAgent, 
+        IAdvancedHadithSearchService advancedSearchService,
+        ILogger<HadithController> logger)
     {
         _hadithAgent = hadithAgent;
+        _advancedSearchService = advancedSearchService;
         _logger = logger;
     }
 

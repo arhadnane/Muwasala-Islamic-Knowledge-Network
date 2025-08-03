@@ -1,0 +1,37 @@
+{
+  "version": 2,
+  "dgSpecHash": "8l13wfMv84E=",
+  "success": true,
+  "projectFilePath": "D:\\Data Perso Adnane\\Coding\\VSCodeProject\\Muwasala Islamic Knowledge Network V2\\Muwasala-Islamic-Knowledge-Network\\NasaiImporter\\NasaiImporter.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\aaadn\\.nuget\\packages\\htmlagilitypack\\1.11.46\\htmlagilitypack.1.11.46.nupkg.sha512",
+    "C:\\Users\\aaadn\\.nuget\\packages\\system.text.encodings.web\\8.0.0\\system.text.encodings.web.8.0.0.nupkg.sha512",
+    "C:\\Users\\aaadn\\.nuget\\packages\\system.text.json\\8.0.0\\system.text.json.8.0.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "Le package 'System.Text.Json' 8.0.0 présente une vulnérabilité de gravité élevé(e) connue, https://github.com/advisories/GHSA-8g4q-xg66-9fp4.",
+      "projectPath": "D:\\Data Perso Adnane\\Coding\\VSCodeProject\\Muwasala Islamic Knowledge Network V2\\Muwasala-Islamic-Knowledge-Network\\NasaiImporter\\NasaiImporter.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Data Perso Adnane\\Coding\\VSCodeProject\\Muwasala Islamic Knowledge Network V2\\Muwasala-Islamic-Knowledge-Network\\NasaiImporter\\NasaiImporter.csproj",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    },
+    {
+      "code": "NU1903",
+      "level": "Warning",
+      "message": "Le package 'System.Text.Json' 8.0.0 présente une vulnérabilité de gravité élevé(e) connue, https://github.com/advisories/GHSA-hh2w-p6rv-4g7w.",
+      "projectPath": "D:\\Data Perso Adnane\\Coding\\VSCodeProject\\Muwasala Islamic Knowledge Network V2\\Muwasala-Islamic-Knowledge-Network\\NasaiImporter\\NasaiImporter.csproj",
+      "warningLevel": 1,
+      "filePath": "D:\\Data Perso Adnane\\Coding\\VSCodeProject\\Muwasala Islamic Knowledge Network V2\\Muwasala-Islamic-Knowledge-Network\\NasaiImporter\\NasaiImporter.csproj",
+      "libraryId": "System.Text.Json",
+      "targetGraphs": [
+        "net8.0"
+      ]
+    }
+  ]
+}

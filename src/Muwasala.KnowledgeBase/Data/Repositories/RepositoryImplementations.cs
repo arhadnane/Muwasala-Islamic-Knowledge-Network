@@ -184,8 +184,16 @@ public class HadithRepository : Repository<HadithEntity>, IHadithRepository
     public async Task<IEnumerable<HadithEntity>> SearchByTextAsync(string searchText, string language = "en", int maxResults = 10)
     {
         var query = searchText.ToLower();
-        return await _dbSet            .Where(h => h.Translation.ToLower().Contains(query) || 
-                       h.ArabicText.Contains(query))
+        var searchTerms = GetExpandedSearchTerms(query);
+        
+        return await _dbSet
+            .Where(h => searchTerms.Any(term =>
+                h.Translation.ToLower().Contains(term) || 
+                h.ArabicText.Contains(term) ||
+                (h.Topic != null && h.Topic.ToLower().Contains(term)) ||
+                (h.Explanation != null && h.Explanation.ToLower().Contains(term))) &&
+                h.Grade <= (int)HadithGrade.Hasan) // Only Sahih and Hasan (authentic) hadiths
+            .OrderBy(h => h.Grade) // Sahih first, then Hasan
             .Take(maxResults)
             .ToListAsync();
     }
@@ -193,10 +201,230 @@ public class HadithRepository : Repository<HadithEntity>, IHadithRepository
     public async Task<IEnumerable<HadithEntity>> GetByTopicAsync(string topic, string language = "en", int maxResults = 10)
     {
         var query = topic.ToLower();
+        var searchTerms = GetExpandedSearchTerms(query);
+        
         return await _dbSet
-            .Where(h => h.Topic.ToLower().Contains(query) || h.Translation.ToLower().Contains(query))
+            .Where(h => searchTerms.Any(term => 
+                (h.Topic != null && h.Topic.ToLower().Contains(term)) || 
+                h.Translation.ToLower().Contains(term) ||
+                (h.Explanation != null && h.Explanation.ToLower().Contains(term))))
             .Take(maxResults)
             .ToListAsync();
+    }
+
+    private List<string> GetExpandedSearchTerms(string originalTerm)
+    {
+        var terms = new List<string> { originalTerm };
+        var termLower = originalTerm.ToLower().Trim();
+        
+        // Add generic linguistic variations
+        terms.AddRange(GetLinguisticVariations(termLower));
+        
+        // Add specific Islamic and topical terms
+        terms.AddRange(GetTopicalTerms(termLower));
+        
+        return terms.Distinct().ToList();
+    }
+
+    private List<string> GetLinguisticVariations(string term)
+    {
+        var variations = new List<string>();
+        
+        // 1. Plural/Singular variations
+        if (term.EndsWith("s") && term.Length > 3)
+        {
+            // Plural to singular: "women" -> "woman", "prayers" -> "prayer"
+            var singular = term.TrimEnd('s');
+            variations.Add(singular);
+            
+            // Handle irregular plurals
+            if (singular.EndsWith("e"))
+                singular = singular.TrimEnd('e');
+            variations.Add(singular);
+        }
+        else
+        {
+            // Singular to plural: "woman" -> "women", "prayer" -> "prayers"
+            variations.Add(term + "s");
+            if (term.EndsWith("y"))
+            {
+                variations.Add(term.TrimEnd('y') + "ies"); // "family" -> "families"
+            }
+            if (term.EndsWith("man"))
+            {
+                variations.Add(term.Replace("man", "men")); // "woman" -> "women"
+            }
+        }
+        
+        // 2. Verb forms variations
+        if (term.EndsWith("ing"))
+        {
+            var root = term.Substring(0, term.Length - 3);
+            variations.AddRange(new[] { root, root + "ed", root + "s" });
+        }
+        else if (term.EndsWith("ed"))
+        {
+            var root = term.Substring(0, term.Length - 2);
+            variations.AddRange(new[] { root, root + "ing", root + "s" });
+        }
+        else
+        {
+            // Add common verb forms
+            variations.AddRange(new[] { term + "ing", term + "ed", term + "s" });
+            if (term.EndsWith("e"))
+            {
+                var root = term.TrimEnd('e');
+                variations.AddRange(new[] { root + "ing", root + "ed" });
+            }
+        }
+        
+        // 3. Adjective/Adverb variations
+        if (term.EndsWith("ly"))
+        {
+            variations.Add(term.Substring(0, term.Length - 2)); // "peacefully" -> "peaceful"
+        }
+        else
+        {
+            variations.Add(term + "ly"); // "peaceful" -> "peacefully"
+        }
+        
+        // 4. Common prefixes and suffixes
+        var prefixes = new[] { "un", "in", "dis", "re", "pre", "over", "under" };
+        var suffixes = new[] { "ness", "ment", "tion", "sion", "able", "ible", "ful", "less" };
+        
+        foreach (var prefix in prefixes)
+        {
+            if (term.StartsWith(prefix) && term.Length > prefix.Length + 2)
+            {
+                variations.Add(term.Substring(prefix.Length)); // "unhappy" -> "happy"
+            }
+            else
+            {
+                variations.Add(prefix + term); // "happy" -> "unhappy"
+            }
+        }
+        
+        foreach (var suffix in suffixes)
+        {
+            if (term.EndsWith(suffix) && term.Length > suffix.Length + 2)
+            {
+                variations.Add(term.Substring(0, term.Length - suffix.Length)); // "happiness" -> "happy"
+            }
+            else
+            {
+                variations.Add(term + suffix); // "happy" -> "happiness"
+            }
+        }
+        
+        return variations.Where(v => v.Length > 2).ToList(); // Filter out very short variations
+    }
+
+    private List<string> GetTopicalTerms(string term)
+    {
+        var topicalTerms = new List<string>();
+        
+        // Islamic-specific terms mapping
+        var islamicTerms = new Dictionary<string, string[]>
+        {
+            // Family and relationships
+            ["women"] = new[] { "woman", "female", "wife", "mother", "daughter", "sister", "ladies", "girl", "females" },
+            ["woman"] = new[] { "women", "female", "wife", "mother", "lady", "girl", "females" },
+            ["marriage"] = new[] { "marry", "married", "wedding", "husband", "wife", "spouse", "nikah", "matrimony" },
+            ["family"] = new[] { "relatives", "kin", "household", "children", "parents", "siblings" },
+            
+            // Worship and spirituality
+            ["prayer"] = new[] { "pray", "salah", "salat", "worship", "dua", "supplication", "prayers" },
+            ["worship"] = new[] { "prayer", "praise", "devotion", "reverence", "ibadah", "adoration" },
+            ["faith"] = new[] { "belief", "believe", "trust", "iman", "religion", "conviction" },
+            ["god"] = new[] { "allah", "lord", "creator", "almighty", "divine", "deity" },
+            
+            // Ethics and virtues
+            ["charity"] = new[] { "zakat", "sadaqah", "alms", "giving", "poor", "needy", "donation" },
+            ["knowledge"] = new[] { "learn", "study", "education", "wisdom", "ilm", "scholar", "learning" },
+            ["peace"] = new[] { "peaceful", "harmony", "tranquil", "salam", "calm", "serenity" },
+            ["justice"] = new[] { "just", "fair", "fairness", "equity", "right", "adl", "righteousness" },
+            ["patience"] = new[] { "patient", "perseverance", "endurance", "sabr", "steadfast", "tolerance" },
+            ["forgiveness"] = new[] { "forgive", "pardon", "mercy", "compassion", "clemency" },
+            ["humility"] = new[] { "humble", "modest", "meek", "unpretentious", "lowly" },
+            
+            // Actions and behaviors
+            ["help"] = new[] { "assist", "aid", "support", "helping", "assistance", "service" },
+            ["love"] = new[] { "affection", "care", "compassion", "kindness", "mercy", "loving" },
+            ["respect"] = new[] { "honor", "esteem", "reverence", "dignity", "regard" },
+            ["obey"] = new[] { "obedience", "follow", "comply", "submit", "adherence" },
+            
+            // Time and life
+            ["death"] = new[] { "die", "dying", "mortality", "demise", "passing", "afterlife" },
+            ["life"] = new[] { "living", "existence", "lifetime", "world", "dunya" },
+            ["future"] = new[] { "tomorrow", "hereafter", "akhirah", "eternity", "afterlife" },
+            
+            // Social concepts
+            ["community"] = new[] { "society", "ummah", "people", "nation", "group", "collective" },
+            ["leader"] = new[] { "leadership", "guide", "imam", "ruler", "authority", "chief" },
+            ["friend"] = new[] { "friendship", "companion", "ally", "buddy", "comrade" },
+            
+            // Eschatology and End Times (very important Islamic concepts)
+            ["antichrist"] = new[] { "dajjal", "masih ad-dajjal", "deceiver", "false messiah", "one-eyed", "impostor" },
+            ["anti christ"] = new[] { "dajjal", "masih ad-dajjal", "deceiver", "false messiah", "one-eyed", "impostor" },
+            ["dajjal"] = new[] { "antichrist", "anti christ", "deceiver", "false messiah", "one-eyed", "impostor", "masih ad-dajjal" },
+            ["end times"] = new[] { "last days", "final hour", "qiyamah", "resurrection", "judgment day", "apocalypse", "signs" },
+            ["judgment day"] = new[] { "qiyamah", "resurrection", "final judgment", "last day", "reckoning", "hereafter" },
+            ["resurrection"] = new[] { "qiyamah", "judgment day", "rising", "afterlife", "hereafter", "final judgment" },
+            ["signs"] = new[] { "portents", "omens", "indicators", "warnings", "prophecy", "predictions" },
+            
+            // Prophets and messengers
+            ["jesus"] = new[] { "isa", "christ", "messiah", "prophet isa", "son of mary", "maryam" },
+            ["prophet"] = new[] { "messenger", "rasul", "nabi", "apostle", "envoy" },
+            ["muhammad"] = new[] { "prophet muhammad", "messenger", "rasulullah", "ahmad", "final prophet" },
+            ["moses"] = new[] { "musa", "prophet musa", "staff", "pharaoh", "exodus" },
+            
+            // Angels and spiritual beings
+            ["angel"] = new[] { "malak", "gabriel", "jibril", "michael", "mikail", "messenger" },
+            ["satan"] = new[] { "shaytan", "devil", "iblis", "evil", "tempter", "whisper" },
+            ["devil"] = new[] { "shaytan", "satan", "iblis", "evil", "tempter", "demon" },
+            
+            // Paradise and Hell
+            ["paradise"] = new[] { "jannah", "heaven", "garden", "bliss", "eternal reward" },
+            ["hell"] = new[] { "jahannam", "hellfire", "punishment", "torment", "damnation" },
+            ["heaven"] = new[] { "jannah", "paradise", "sky", "celestial", "divine realm" }
+        };
+        
+        // Check for exact matches first
+        if (islamicTerms.ContainsKey(term))
+        {
+            topicalTerms.AddRange(islamicTerms[term]);
+        }
+        
+        // Check for partial matches (if the term contains or is contained in a key)
+        foreach (var kvp in islamicTerms)
+        {
+            if (term.Contains(kvp.Key) || kvp.Key.Contains(term))
+            {
+                topicalTerms.AddRange(kvp.Value);
+            }
+        }
+        
+        // Add contextual terms based on semantic similarity
+        var contextualMappings = new Dictionary<string, string[]>
+        {
+            // Add terms that might appear in similar contexts
+            ["good"] = new[] { "righteous", "virtuous", "moral", "ethical", "beneficial" },
+            ["bad"] = new[] { "evil", "wrong", "sinful", "harmful", "wicked" },
+            ["reward"] = new[] { "blessing", "benefit", "gift", "prize", "recompense" },
+            ["punishment"] = new[] { "penalty", "consequence", "retribution", "discipline" },
+            ["truth"] = new[] { "honest", "truthful", "sincere", "genuine", "real" },
+            ["false"] = new[] { "lie", "deception", "falsehood", "untrue", "dishonest" }
+        };
+        
+        foreach (var kvp in contextualMappings)
+        {
+            if (term.Contains(kvp.Key) || kvp.Key.Contains(term))
+            {
+                topicalTerms.AddRange(kvp.Value);
+            }
+        }
+        
+        return topicalTerms.Distinct().ToList();
     }
 
     public async Task<HadithEntity?> GetByReferenceAsync(string collection, string hadithNumber)
@@ -207,10 +435,15 @@ public class HadithRepository : Repository<HadithEntity>, IHadithRepository
 
     public async Task<IEnumerable<HadithEntity>> GetAuthenticHadithAsync(string topic, HadithGrade minGrade = HadithGrade.Sahih, int maxResults = 10)
     {
-        var query = topic.ToLower();
+        var searchTerms = GetExpandedSearchTerms(topic);
+        
+        // Use a single LINQ query with multiple OR conditions
         return await _dbSet
-            .Where(h => (h.Topic.ToLower().Contains(query) || h.Translation.ToLower().Contains(query)) &&
-                       h.Grade >= (int)minGrade)
+            .Where(h => searchTerms.Any(term => 
+                (h.Topic != null && h.Topic.ToLower().Contains(term.ToLower())) ||
+                h.Translation.ToLower().Contains(term.ToLower()) ||
+                (h.Explanation != null && h.Explanation.ToLower().Contains(term.ToLower()))) &&
+                h.Grade >= (int)minGrade)
             .OrderBy(h => h.Grade) // Sahih first, then Hasan, etc.
             .Take(maxResults)
             .ToListAsync();

@@ -18,8 +18,11 @@ builder.Services.AddSwaggerGen(c =>
     });
 });
 
-// Configure HTTP client for Ollama
-builder.Services.AddHttpClient<IOllamaService, OllamaService>();
+// Configure HTTP client for Ollama with extended timeout
+builder.Services.AddHttpClient<IOllamaService, OllamaService>(client =>
+{
+    client.Timeout = TimeSpan.FromMinutes(5); // 5 minutes timeout for AI operations
+});
 
 // Register core services
 builder.Services.AddScoped<IOllamaService, OllamaService>();
@@ -28,8 +31,14 @@ builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 // Add Islamic Knowledge Base services with database backend
 builder.Services.AddIslamicKnowledgeBase(builder.Configuration, useDatabaseServices: true);
 
+// Add Elasticsearch services for enhanced search capabilities
+builder.Services.AddElasticsearch(builder.Configuration);
+
 // Register search services (now provided by AddIslamicKnowledgeBase)
 builder.Services.AddScoped<IIntelligentSearchService, IntelligentSearchService>();
+
+// Register advanced hadith search service for enhanced search capabilities
+builder.Services.AddScoped<IAdvancedHadithSearchService, AdvancedHadithSearchService>();
 
 // Register multi-agent system with enhanced search capabilities
 Muwasala.Agents.MultiAgentServiceExtensions.AddMultiAgentSystem(builder.Services);
@@ -57,6 +66,17 @@ var app = builder.Build();
 
 // Initialize database
 await app.Services.InitializeIslamicKnowledgeDatabaseAsync();
+
+// Initialize Elasticsearch (optional - will create index if needed)
+try
+{
+    await app.Services.InitializeElasticsearchAsync();
+}
+catch (Exception ex)
+{
+    // Elasticsearch is optional, continue without it
+    app.Logger.LogWarning(ex, "Elasticsearch initialization failed - continuing without Elasticsearch");
+}
 
 // Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
@@ -102,5 +122,9 @@ app.MapGet("/", () => new {
         dua = "/api/dua"
     }
 });
+
+// Note: Elasticsearch endpoints are available via the ElasticsearchController
+// Use /api/elasticsearch/search?query=your_search for Elasticsearch search
+// Use /api/elasticsearch/health for Elasticsearch health status
 
 app.Run();
