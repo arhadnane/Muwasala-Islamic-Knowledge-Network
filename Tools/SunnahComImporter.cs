@@ -67,7 +67,7 @@ public class SunnahComImporter
         // Configuration respectueuse du serveur
         _httpClient.DefaultRequestHeaders.Add("User-Agent", 
             "Muwasala Islamic Knowledge Network - Educational Research Tool");
-        _httpClient.Timeout = TimeSpan.FromMinutes(2);
+        _httpClient.Timeout = TimeSpan.FromMinutes(10);
     }
 
     /// <summary>

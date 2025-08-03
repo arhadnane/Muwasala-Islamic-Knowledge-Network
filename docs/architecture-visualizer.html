@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architecture Muwasala - Diagrammes Mermaid</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #34495e;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            padding-left: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .diagram-container {
+            margin: 20px 0;
+            padding: 20px;
+            background: #fafafa;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+        .mermaid {
+            text-align: center;
+        }
+        .description {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #e8f4fd;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏗️ Architecture Muwasala Islamic Knowledge Network</h1>
+
+        <h2>1. Architecture Globale du Système</h2>
+        <div class="description">
+            Vue d'ensemble des couches principales : Présentation, Application, et Données avec leurs interconnexions.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TB
+    subgraph "Couche Présentation"
+        WEB[Muwasala.Web<br/>Blazor Server]
+        API[Muwasala.Api<br/>REST API]
+        CLI[Muwasala.Console<br/>CLI Interface]
+        MCP[Muwasala.MCP<br/>Model Context Protocol]
+    end
+
+    subgraph "Couche Application"
+        CORE[Muwasala.Core<br/>Core Services]
+        AGENTS[Muwasala.Agents<br/>Multi-Agent System]
+    end
+
+    subgraph "Couche Données"
+        KB[Muwasala.KnowledgeBase<br/>Islamic Knowledge Services]
+        DB[(SQLite Database)]
+        ES[(Elasticsearch)]
+        FILES[JSON Files<br/>Quran & Hadith]
+    end
+
+    subgraph "Services Externes"
+        OLLAMA[Ollama AI<br/>DeepSeek Models]
+        SUNNAH[Sunnah.com API]
+        WEB_SOURCES[Islamic Web Sources]
+    end
+
+    %% Connections
+    WEB --> CORE
+    API --> CORE
+    CLI --> CORE
+    MCP --> CORE
+    
+    CORE --> AGENTS
+    CORE --> KB
+    
+    AGENTS --> OLLAMA
+    AGENTS --> SUNNAH
+    AGENTS --> WEB_SOURCES
+    
+    KB --> DB
+    KB --> ES
+    KB --> FILES
+
+    %% Styling
+    classDef presentation fill:#e1f5fe
+    classDef application fill:#f3e5f5
+    classDef data fill:#e8f5e8
+    classDef external fill:#fff3e0
+    
+    class WEB,API,CLI,MCP presentation
+    class CORE,AGENTS application
+    class KB,DB,ES,FILES data
+    class OLLAMA,SUNNAH,WEB_SOURCES external
+            </div>
+        </div>
+
+        <h2>2. Architecture Multi-Agents</h2>
+        <div class="description">
+            Système d'agents spécialisés orchestré par DeepSeek Brain pour répondre aux questions islamiques.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph LR
+    subgraph "DeepSeek Brain Agent"
+        BRAIN[DeepSeek Brain<br/>Central Orchestrator]
+    end
+    
+    subgraph "Agents Spécialisés"
+        QNA[Quran Navigator<br/>Agent]
+        HVA[Hadith Verifier<br/>Agent]
+        FIA[Fiqh Advisor<br/>Agent]
+        DCA[Dua Companion<br/>Agent]
+        TTA[Tajweed Tutor<br/>Agent]
+        SSA[Sirah Scholar<br/>Agent]
+        WCA[Web Crawler<br/>Agent]
+        QAA[Query Analysis<br/>Agent]
+        RQA[Response Quality<br/>Agent]
+        RTS[Real-Time Search<br/>Agent]
+    end
+
+    subgraph "Services de Support"
+        HYBRID[Enhanced Hybrid<br/>Search Service]
+        FALLBACK[Fast Fallback<br/>Service]
+        CIRCUIT[Circuit Breaker<br/>Service]
+    end
+
+    USER[👤 Utilisateur] --> BRAIN
+    BRAIN --> QNA
+    BRAIN --> HVA
+    BRAIN --> FIA
+    BRAIN --> DCA
+    BRAIN --> TTA
+    BRAIN --> SSA
+    BRAIN --> WCA
+    BRAIN --> QAA
+    BRAIN --> RQA
+    BRAIN --> RTS
+    
+    QNA --> HYBRID
+    HVA --> HYBRID
+    FIA --> HYBRID
+    
+    HYBRID --> FALLBACK
+    FALLBACK --> CIRCUIT
+    
+    BRAIN --> USER
+
+    %% Styling
+    classDef brain fill:#ff6b6b
+    classDef agents fill:#4ecdc4
+    classDef services fill:#45b7d1
+    classDef user fill:#96ceb4
+    
+    class BRAIN brain
+    class QNA,HVA,FIA,DCA,TTA,SSA,WCA,QAA,RQA,RTS agents
+    class HYBRID,FALLBACK,CIRCUIT services
+    class USER user
+            </div>
+        </div>
+
+        <h2>3. Flux de Recherche</h2>
+        <div class="description">
+            Séquence de traitement d'une recherche "moon" de l'utilisateur jusqu'aux résultats finaux.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+sequenceDiagram
+    participant U as Utilisateur
+    participant W as Web Interface
+    participant A as API Controller
+    participant B as DeepSeek Brain
+    participant H as Hybrid Search
+    participant S as SQLite
+    participant E as Elasticsearch
+    participant F as Fallback Service
+
+    U->>W: Recherche "moon"
+    W->>A: POST /api/hadith/search
+    A->>B: Analyser la requête
+    B->>H: Recherche hybride
+    
+    par Recherche parallèle
+        H->>S: Recherche SQLite
+        H->>E: Recherche Elasticsearch
+    end
+    
+    alt Elasticsearch disponible
+        E-->>H: Résultats Elasticsearch
+        H->>B: Résultats principaux
+    else Elasticsearch indisponible
+        S-->>H: Résultats SQLite
+        H->>F: Service de secours
+        F->>B: Résultats de secours
+    end
+    
+    B->>A: Résultats enrichis
+    A->>W: JSON Response
+    W->>U: Affichage des résultats
+            </div>
+        </div>
+
+        <h2>4. Architecture des Données</h2>
+        <div class="description">
+            Structure des données islamiques et leurs services d'accès dans le système.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+graph TB
+    subgraph "Sources de Données"
+        QF[Quran Files<br/>114 Sourates]
+        HF[Hadith Collections<br/>Bukhari, Muslim, etc.]
+        AF[Additional Resources<br/>Duas, Fiqh, etc.]
+    end
+
+    subgraph "Couche de Persistance"
+        SQLITE[(SQLite Database<br/>HadithRecords<br/>QuranVerses)]
+        ELASTIC[(Elasticsearch<br/>Index: hadiths<br/>Full-text search)]
+        CACHE[Memory Cache<br/>Fast access]
+    end
+
+    subgraph "Services d'Accès aux Données"
+        IKS[Islamic Knowledge<br/>Service]
+        HSS[Hadith Search<br/>Service]
+        ESS[Elasticsearch<br/>Service]
+        AHS[Advanced Hadith<br/>Search Service]
+    end
+
+    subgraph "Modèles de Données"
+        QV[QuranVerse]
+        HR[HadithRecord]
+        SH[ScoredHadith]
+        SR[SearchResult]
+    end
+
+    %% Data Flow
+    QF --> SQLITE
+    HF --> SQLITE
+    AF --> SQLITE
+    
+    HF --> ELASTIC
+    
+    SQLITE --> IKS
+    ELASTIC --> ESS
+    CACHE --> IKS
+    
+    IKS --> HSS
+    ESS --> AHS
+    HSS --> AHS
+    
+    AHS --> QV
+    AHS --> HR
+    AHS --> SH
+    AHS --> SR
+
+    %% Styling
+    classDef sources fill:#ffeb3b
+    classDef persistence fill:#4caf50
+    classDef services fill:#2196f3
+    classDef models fill:#9c27b0
+    
+    class QF,HF,AF sources
+    class SQLITE,ELASTIC,CACHE persistence
+    class IKS,HSS,ESS,AHS services
+    class QV,HR,SH,SR models
+            </div>
+        </div>
+
+        <h2>5. Technologies Utilisées</h2>
+        <div class="description">
+            Vue d'ensemble des technologies et frameworks utilisés dans le projet.
+        </div>
+        <div class="diagram-container">
+            <div class="mermaid">
+mindmap
+  root((Muwasala<br/>Tech Stack))
+    Backend
+      ASP.NET Core 8
+      Entity Framework Core
+      SQLite Database
+      Elasticsearch 8.12
+      Swagger/OpenAPI
+    Frontend
+      Blazor Server
+      HTML/CSS/JavaScript
+      Bootstrap
+      Chart.js
+    AI/ML
+      Ollama
+      DeepSeek Models
+      Vector Search
+      Semantic Analysis
+    DevOps
+      Git/GitHub
+      Docker
+      CI/CD Pipelines
+      Monitoring
+    Testing
+      xUnit
+      Integration Tests
+      Performance Tests
+      Load Testing
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#3498db',
+                primaryTextColor: '#2c3e50',
+                primaryBorderColor: '#2980b9',
+                lineColor: '#34495e',
+                secondaryColor: '#ecf0f1',
+                tertiaryColor: '#bdc3c7'
+            }
+        });
+    </script>
+</body>
+</html>

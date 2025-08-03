@@ -1081,13 +1081,16 @@ public class GlobalSearchService : IGlobalSearchService
         
         var suggestions = new List<string>();
         
-        // Common Islamic search terms and suggestions
+        // Common Islamic search terms and suggestions (enhanced with astronomical/calendar terms)
         var commonTerms = new[]
         {
             "patience", "prayer", "charity", "fasting", "pilgrimage", "faith", "forgiveness",
             "guidance", "mercy", "justice", "wisdom", "knowledge", "worship", "gratitude",
             "repentance", "trust", "hope", "love", "compassion", "kindness", "humility",
-            "leadership", "family", "marriage", "friendship", "business", "ethics", "morality"
+            "leadership", "family", "marriage", "friendship", "business", "ethics", "morality",
+            // Added astronomical and calendar terms
+            "moon", "lunar", "crescent", "calendar", "eclipse", "sighting", "hilal", "months",
+            "night", "day", "time", "season", "year", "ramadan"
         };
 
         var lowerQuery = partialQuery.ToLower();
@@ -1768,6 +1771,56 @@ SCHOLARS: [scholar1|scholar2]";
                 language
             ));
         }
+
+        // 🌙 NEW: Moon, lunar calendar, and astronomical terms
+        if (queryLower.Contains("moon") || queryLower.Contains("lunar") || queryLower.Contains("crescent") || queryLower.Contains("hilal"))
+        {
+            results.Add(new WebSourceResult(
+                "Moon Sighting in Islam - Lunar Calendar",
+                "Learn about the importance of moon sighting (rukyah) in Islam for determining lunar months, Ramadan, Eid, and other Islamic observances. Understanding the Islamic lunar calendar and Hilal sighting.",
+                "https://islamqa.info/en/moon-sighting",
+                "IslamQA.info",
+                8.6,
+                DateTime.Now.AddDays(-2),
+                language
+            ));
+            
+            results.Add(new WebSourceResult(
+                "Islamic Calendar - Hijri Lunar System",
+                "Complete guide to the Islamic Hijri calendar system based on lunar months. Moon phases, crescent sighting, and Islamic month calculations for religious observances.",
+                "https://islamicfinder.org/islamic-calendar",
+                "IslamicFinder.org",
+                8.4,
+                DateTime.Now.AddDays(-3),
+                language
+            ));
+        }
+
+        if (queryLower.Contains("eclipse") || queryLower.Contains("kusuf") || queryLower.Contains("khusuf"))
+        {
+            results.Add(new WebSourceResult(
+                "Eclipse Prayer in Islam - Salat al-Kusuf",
+                "Islamic teachings about solar and lunar eclipses, the special eclipse prayer (Salat al-Kusuf), and the Prophet's guidance during celestial events.",
+                "https://sunnah.com/eclipse-prayer",
+                "Sunnah.com",
+                8.3,
+                DateTime.Now.AddDays(-4),
+                language
+            ));
+        }
+
+        if (queryLower.Contains("calendar") || queryLower.Contains("hijri") || queryLower.Contains("months"))
+        {
+            results.Add(new WebSourceResult(
+                "Hijri Calendar - Islamic Lunar Year",
+                "Understanding the 12 months of the Islamic Hijri calendar, their significance, and how lunar calculations determine Islamic dates and religious observances.",
+                "https://islamweb.net/en/hijri-calendar",
+                "IslamWeb",
+                7.9,
+                DateTime.Now.AddDays(-5),
+                language
+            ));
+        }
         
         // Default Islamic knowledge result for general queries
         if (results.Count == 0)
@@ -1853,6 +1906,18 @@ SCHOLARS: [scholar1|scholar2]";
         else if (queryLower.Contains("hajj"))
         {
             suggestions.AddRange(new[] { "hajj steps", "umrah", "pilgrimage requirements", "hajj preparation" });
+        }
+        else if (queryLower.Contains("moon") || queryLower.Contains("lunar") || queryLower.Contains("crescent"))
+        {
+            suggestions.AddRange(new[] { "moon sighting", "lunar calendar", "islamic months", "crescent moon" });
+        }
+        else if (queryLower.Contains("eclipse"))
+        {
+            suggestions.AddRange(new[] { "lunar eclipse", "solar eclipse", "eclipse prayer", "kusuf prayer" });
+        }
+        else if (queryLower.Contains("calendar"))
+        {
+            suggestions.AddRange(new[] { "hijri calendar", "islamic months", "lunar year", "moon sighting" });
         }
         else
         {

@@ -2,7 +2,12 @@
 @using Muwasala.Agents
 @using Muwasala.Core.Models
 @using System.Linq
+@using System.Text.Json
+@using Microsoft.JSInterop
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
 @inject HadithVerifierAgent HadithAgent
+@inject HttpClient HttpClient
 @inject IJSRuntime JSRuntime
 
 <PageTitle>Hadith Verifier - Muwasala</PageTitle>
@@ -216,8 +221,31 @@
                     response = FormatHadithResponse(hadithResponse);
                     break;
                 case "search":
-                    var hadithResults = await HadithAgent.GetHadithByTopicAsync(searchModel.Query, searchModel.Language);
-                    response = FormatHadithResults(hadithResults);
+                    // Use enhanced search endpoint with Elasticsearch and SQLite fallback
+                    try 
+                    {
+                        var searchResults = await SearchHadithsWithEnhancedAPI(searchModel.Query, searchModel.Language);
+                        if (searchResults == null)
+                        {
+                            response = "❌ DEBUG: SearchHadithsWithEnhancedAPI returned NULL";
+                        }
+                        else if (searchResults.Results == null)
+                        {
+                            response = $"❌ DEBUG: SearchResults.Results is NULL. Source: {searchResults.Source}, ResultsCount: {searchResults.ResultsCount}";
+                        }
+                        else if (!searchResults.Results.Any())
+                        {
+                            response = $"❌ DEBUG: SearchResults.Results is EMPTY. Source: {searchResults.Source}, ResultsCount: {searchResults.ResultsCount}";
+                        }
+                        else
+                        {
+                            response = FormatEnhancedSearchResults(searchResults);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        response = $"💥 DEBUG ERROR: {ex.Message}<br>Type: {ex.GetType().Name}<br>StackTrace: {ex.StackTrace?.Substring(0, Math.Min(500, ex.StackTrace.Length))}";
+                    }
                     break;
                 case "authentic":
                     var authenticResults = await HadithAgent.GetAuthenticHadithByTopicAsync(searchModel.Query, searchModel.Language);
@@ -343,6 +371,147 @@
             HadithGrade.Mawdu => "danger",
             _ => "secondary"
         };
+    }
+
+    // New method to call enhanced search API
+    private async Task<EnhancedSearchResponse?> SearchHadithsWithEnhancedAPI(string query, string language)
+    {
+        try
+        {
+            // Force SQLite usage for astronomical terms that might not be in Elasticsearch
+            var forceAdvancedSearch = IsAstronomicalTerm(query);
+            var requestUrl = $"/api/hadith/search?query={Uri.EscapeDataString(query)}&maxResults=10&useElasticsearch={(!forceAdvancedSearch).ToString().ToLower()}";
+            
+            var response = await HttpClient.GetStringAsync(requestUrl);
+            
+            if (string.IsNullOrEmpty(response))
+            {
+                return null;
+            }
+            
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+            
+            var result = JsonSerializer.Deserialize<EnhancedSearchResponse>(response, options);
+            
+            return result;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"[ERROR] Error calling enhanced search API: {ex.Message}");
+            return null;
+        }
+    }
+    
+    // Check if the query contains astronomical terms that should use advanced SQLite search
+    private bool IsAstronomicalTerm(string query)
+    {
+        var astronomicalTerms = new[] { "moon", "lunar", "crescent", "hilal", "eclipse", "calendar", "month", "sighting" };
+        return astronomicalTerms.Any(term => query.ToLower().Contains(term.ToLower()));
+    }
+
+    // Format enhanced search results
+    private string FormatEnhancedSearchResults(EnhancedSearchResponse? searchResponse)
+    {
+        if (searchResponse?.Results == null || !searchResponse.Results.Any())
+        {
+            return "No hadith found for this topic.";
+        }
+
+        var formatted = "<div>";
+        
+        // Show search info
+        formatted += $"<div class='alert alert-info mb-3'>";
+        formatted += $"<small><strong>🔍 Search Source:</strong> {searchResponse.Source?.ToUpper()}</small><br>";
+        formatted += $"<small><strong>📊 Results:</strong> {searchResponse.ResultsCount} found";
+        if (searchResponse.SearchTimeMs.HasValue)
+        {
+            formatted += $" in {searchResponse.SearchTimeMs}ms";
+        }
+        formatted += "</small>";
+        if (searchResponse.SearchTerms?.Any() == true)
+        {
+            formatted += $"<br><small><strong>🏷️ Expanded Terms:</strong> {string.Join(", ", searchResponse.SearchTerms.Take(5))}</small>";
+        }
+        formatted += "</div>";
+
+        // Show results
+        foreach (var result in searchResponse.Results.Take(10))
+        {
+            formatted += FormatEnhancedHadithResult(result);
+        }
+        
+        formatted += "</div>";
+        return formatted;
+    }
+
+    // Format individual hadith result
+    private string FormatEnhancedHadithResult(EnhancedHadithResult result)
+    {
+        var formatted = "<div class='mb-4 border-start border-success border-3 ps-3'>";
+        
+        // Header with collection and number
+        formatted += $"<h6 class='mb-2'>";
+        formatted += $"<span class='badge bg-success me-2'>{result.Collection}</span>";
+        if (!string.IsNullOrEmpty(result.HadithNumber))
+        {
+            formatted += $"<small class='text-muted'>#{result.HadithNumber}</small>";
+        }
+        formatted += "</h6>";
+
+        // Translation
+        if (!string.IsNullOrEmpty(result.Translation))
+        {
+            formatted += $"<p class='mb-2'><strong>Translation:</strong> {result.Translation}</p>";
+        }
+
+        // Arabic text
+        if (!string.IsNullOrEmpty(result.Arabic))
+        {
+            formatted += $"<p class='mb-2 text-end' dir='rtl'><strong>Arabic:</strong> {result.Arabic}</p>";
+        }
+
+        // Topic
+        if (!string.IsNullOrEmpty(result.Topic))
+        {
+            formatted += $"<p class='mb-2'><small><strong>Topic:</strong> <span class='badge bg-light text-dark'>{result.Topic}</span></small></p>";
+        }
+
+        // Relevance score (if available)
+        if (result.RelevanceScore.HasValue)
+        {
+            formatted += $"<p class='mb-2'><small class='text-muted'>⭐ Relevance: {result.RelevanceScore:F1}/10</small></p>";
+        }
+
+        formatted += "</div>";
+        return formatted;
+    }
+
+    // Models for enhanced search API response
+    public class EnhancedSearchResponse
+    {
+        public string? Source { get; set; }
+        public string? Query { get; set; }
+        public List<string>? SearchTerms { get; set; }
+        public int ResultsCount { get; set; }
+        public int? SearchTimeMs { get; set; }
+        public List<EnhancedHadithResult>? Results { get; set; }
+    }
+
+    public class EnhancedHadithResult
+    {
+        public int Id { get; set; }
+        public string? Collection { get; set; }
+        public string? HadithNumber { get; set; }
+        public string? Topic { get; set; }
+        public string? Translation { get; set; }
+        public string? Arabic { get; set; }
+        public string? Grade { get; set; }
+        public string? Explanation { get; set; }
+        public decimal? RelevanceScore { get; set; }
+        public List<string>? MatchedTerms { get; set; }
     }
 }
 
