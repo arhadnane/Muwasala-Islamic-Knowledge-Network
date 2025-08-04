@@ -92,24 +92,47 @@ public class SirahScholarAgent
 
         foreach (var sirahEvent in events)
         {
-            var prompt = BuildEventAnalysisPrompt(sirahEvent, language);
-            var analysis = await _ollama.GenerateStructuredResponseAsync<SirahAnalysis>(
-                MODEL_NAME, prompt, temperature: 0.1);
-
-            var response = new SirahResponse
+            try
             {
-                Topic = $"{period} Period",
-                Event = sirahEvent.Name,
-                Description = sirahEvent.Description,
-                Period = sirahEvent.Period,
-                KeyLessons = analysis.KeyLessons,
-                RelatedEvents = analysis.RelatedEvents,
-                ModernApplication = analysis.ModernApplication,
-                PropheticWisdom = analysis.PropheticWisdom
-            };
+                var prompt = BuildEventAnalysisPrompt(sirahEvent, language);
+                var analysis = await _ollama.GenerateStructuredResponseAsync<SirahAnalysis>(
+                    MODEL_NAME, prompt, temperature: 0.1);
 
-            response.Sources.Add("As-Sirah An-Nabawiyyah");
-            responses.Add(response);
+                var response = new SirahResponse
+                {
+                    Topic = $"{period} Period",
+                    Event = sirahEvent.Name,
+                    Description = sirahEvent.Description,
+                    Period = sirahEvent.Period,
+                    KeyLessons = analysis.KeyLessons,
+                    RelatedEvents = analysis.RelatedEvents,
+                    ModernApplication = analysis.ModernApplication,
+                    PropheticWisdom = analysis.PropheticWisdom
+                };
+
+                response.Sources.Add("As-Sirah An-Nabawiyyah");
+                responses.Add(response);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to parse structured response for event {EventName}, using fallback", sirahEvent.Name);
+                
+                // Fallback response in case of JSON parsing failure
+                var fallbackResponse = new SirahResponse
+                {
+                    Topic = $"{period} Period",
+                    Event = sirahEvent.Name,
+                    Description = sirahEvent.Description,
+                    Period = sirahEvent.Period,
+                    KeyLessons = language == "ar" ? "دروس مهمة من حياة النبي صلى الله عليه وسلم" : "Important lessons from the Prophet's life",
+                    RelatedEvents = new List<string>(),
+                    ModernApplication = new List<string> { language == "ar" ? "تطبيق الحكمة النبوية في حياتنا اليومية" : "Apply Prophetic wisdom in daily life" },
+                    PropheticWisdom = language == "ar" ? "هدي من السيرة النبوية" : "Guidance from the Prophetic biography"
+                };
+
+                fallbackResponse.Sources.Add("As-Sirah An-Nabawiyyah");
+                responses.Add(fallbackResponse);
+            }
         }
 
         return responses;
@@ -132,23 +155,47 @@ public class SirahScholarAgent
         );
 
         var prompt = BuildCharacterPrompt(primaryCharacteristic, language);
-        var analysis = await _ollama.GenerateStructuredResponseAsync<SirahAnalysis>(
-            MODEL_NAME, prompt, temperature: 0.1);
-
-        var response = new SirahResponse
+        
+        try
         {
-            Topic = characterAspect,
-            Event = $"Prophetic Character: {characterAspect}",
-            Description = primaryCharacteristic.Description,
-            Period = SirahPeriod.EarlyMedina, // Default period
-            KeyLessons = analysis.KeyLessons,
-            RelatedEvents = analysis.RelatedEvents,
-            ModernApplication = analysis.ModernApplication,
-            PropheticWisdom = analysis.PropheticWisdom
-        };
+            var analysis = await _ollama.GenerateStructuredResponseAsync<SirahAnalysis>(
+                MODEL_NAME, prompt, temperature: 0.1);
 
-        response.Sources.AddRange(new[] { "Ash-Shama'il Al-Muhammadiyyah", "Character of Prophet", MODEL_NAME });
-        return response;
+            var response = new SirahResponse
+            {
+                Topic = characterAspect,
+                Event = $"Prophetic Character: {characterAspect}",
+                Description = primaryCharacteristic.Description,
+                Period = SirahPeriod.EarlyMedina, // Default period
+                KeyLessons = analysis.KeyLessons,
+                RelatedEvents = analysis.RelatedEvents,
+                ModernApplication = analysis.ModernApplication,
+                PropheticWisdom = analysis.PropheticWisdom
+            };
+
+            response.Sources.AddRange(new[] { "Ash-Shama'il Al-Muhammadiyyah", "Character of Prophet", MODEL_NAME });
+            return response;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to parse structured response for characteristic {Aspect}, using fallback", characterAspect);
+            
+            // Fallback response in case of JSON parsing failure
+            var fallbackResponse = new SirahResponse
+            {
+                Topic = characterAspect,
+                Event = $"Prophetic Character: {characterAspect}",
+                Description = primaryCharacteristic.Description,
+                Period = SirahPeriod.EarlyMedina,
+                KeyLessons = language == "ar" ? "صفات نبوية عظيمة نتعلم منها" : "Great Prophetic qualities we learn from",
+                RelatedEvents = new List<string>(),
+                ModernApplication = new List<string> { language == "ar" ? "تطبيق الأخلاق النبوية في حياتنا" : "Apply Prophetic ethics in our lives" },
+                PropheticWisdom = language == "ar" ? "حكمة من أخلاق النبي صلى الله عليه وسلم" : "Wisdom from the Prophet's character"
+            };
+
+            fallbackResponse.Sources.AddRange(new[] { "Ash-Shama'il Al-Muhammadiyyah", "Character of Prophet", MODEL_NAME });
+            return fallbackResponse;
+        }
     }
 
     /// <summary>
@@ -162,21 +209,30 @@ public class SirahScholarAgent
         
         // Enhance timeline with AI analysis of interconnections
         var prompt = BuildTimelineAnalysisPrompt(timeline, language);
-        var timelineAnalysis = await _ollama.GenerateStructuredResponseAsync<TimelineAnalysis>(
-            MODEL_NAME, prompt, temperature: 0.1);
-
-        // Add AI insights to the timeline
-        foreach (var period in new[] { timeline.MeccanPeriod, timeline.MedinanPeriod, timeline.MajorEvents })
+        
+        try
         {
-            foreach (var sirahEvent in period)
+            var timelineAnalysis = await _ollama.GenerateStructuredResponseAsync<TimelineAnalysis>(
+                MODEL_NAME, prompt, temperature: 0.1);
+
+            // Add AI insights to the timeline
+            foreach (var period in new[] { timeline.MeccanPeriod, timeline.MedinanPeriod, timeline.MajorEvents })
             {
-                // Enhance each event with contextual analysis
-                if (timelineAnalysis.EventConnections.ContainsKey(sirahEvent.Name))
+                foreach (var sirahEvent in period)
                 {
-                    var connection = timelineAnalysis.EventConnections[sirahEvent.Name];
-                    sirahEvent.KeyLessons.AddRange(connection.Split(", "));
+                    // Enhance each event with contextual analysis
+                    if (timelineAnalysis.EventConnections.ContainsKey(sirahEvent.Name))
+                    {
+                        var connection = timelineAnalysis.EventConnections[sirahEvent.Name];
+                        sirahEvent.KeyLessons.AddRange(connection.Split(", "));
+                    }
                 }
             }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to enhance timeline with AI analysis, returning basic timeline");
+            // Timeline is still returned with basic data even if AI enhancement fails
         }
 
         return timeline;
@@ -190,7 +246,7 @@ public class SirahScholarAgent
     {
         var languageInstruction = language switch
         {
-            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية باللغة العربية. لا تستخدم الإنجليزية في الرد أبداً. يجب أن تكون جميع التفسيرات والشروحات باللغة العربية الفصحى.",
             "en" => "Please respond in English language. Use clear English explanations.",
             _ => "Please respond in English language. Use clear English explanations."
         };
@@ -222,7 +278,15 @@ Respond with clear, practical guidance in the requested language.";
 
     private string BuildEventAnalysisPrompt(SirahEvent sirahEvent, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. لا تستخدم الإنجليزية في الرد. يجب أن يكون التحليل باللغة العربية الفصحى.",
+            "en" => "Please respond in English language.",
+            _ => "Please respond in English language."
+        };
+
+        return $@"{languageInstruction}
+
 Analyze this event from the life of Prophet Muhammad (peace be upon him):
 
 Event: {sirahEvent.Name}
@@ -236,18 +300,24 @@ Provide deep analysis including:
 3. How this event connects to other events in his life
 4. Modern applications for Muslims today
 
-Language: {language}
-
 Respond in JSON format with scholarly analysis.";
     }
 
     private string BuildCharacterPrompt(PropheticCharacteristic characteristic, string language)
     {
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. لا تستخدم الإنجليزية في الرد. يجب أن يكون التوجيه باللغة العربية الفصحى.",
+            "en" => "Please respond in English language.",
+            _ => "Please respond in English language."
+        };
+
         var examplesText = characteristic.Examples.Any() 
             ? string.Join(", ", characteristic.Examples)
             : "Various examples from his life";
 
-        return $@"
+        return $@"{languageInstruction}
+
 Explore this aspect of Prophet Muhammad's (PBUH) character:
 
 Characteristic: {characteristic.Aspect}
@@ -260,16 +330,22 @@ Provide guidance on:
 3. Practical ways Muslims can develop this characteristic
 4. Relevant prophetic sayings about this trait
 
-Language: {language}
-
 Respond in JSON format with character development guidance.";
     }
 
     private string BuildTimelineAnalysisPrompt(ChronologicalTimeline timeline, string language)
     {
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. لا تستخدم الإنجليزية في الرد. يجب أن يكون التحليل باللغة العربية الفصحى.",
+            "en" => "Please respond in English language.",
+            _ => "Please respond in English language."
+        };
+
         var majorEvents = string.Join(", ", timeline.MajorEvents.Select(e => e.Name));
         
-        return $@"
+        return $@"{languageInstruction}
+
 Analyze the connections and progression in Prophet Muhammad's life:
 
 Major Events: {majorEvents}
@@ -281,8 +357,6 @@ Identify:
 2. Lessons that emerge from the chronological progression  
 3. Patterns in prophetic methodology
 4. Key turning points and their significance
-
-Language: {language}
 
 Respond in JSON format mapping event names to their broader significance.";
     }
