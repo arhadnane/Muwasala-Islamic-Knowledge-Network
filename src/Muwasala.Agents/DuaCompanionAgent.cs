@@ -32,9 +32,10 @@ public class DuaCompanionAgent
     public async Task<List<DuaResponse>> GetDuasForOccasionAsync(
         string occasion, 
         string language = "en", 
-        int maxResults = 3)
+        int maxResults = 3,
+        bool fastMode = false) // 🚀 Mode rapide ajouté
     {
-        _logger.LogInformation("DuaCompanion finding duas for occasion: {Occasion}", occasion);
+        _logger.LogInformation("DuaCompanion finding duas for occasion: {Occasion} (FastMode: {FastMode})", occasion, fastMode);
 
         try
         {
@@ -43,32 +44,74 @@ public class DuaCompanionAgent
             
             if (!candidateDuas.Any())
             {
-                return await GetAlternativeDuasAsync(occasion, language);
+                return await GetAlternativeDuasAsync(occasion, language, fastMode);
             }
 
-            var responses = new List<DuaResponse>();
-
-            foreach (var dua in candidateDuas)
+            // 🚀 MODE RAPIDE: Skip AI enhancement pour des réponses instantanées
+            if (fastMode)
             {
-                // Get AI enhancement and explanation
-                var prompt = BuildDuaExplanationPrompt(dua, occasion, language);
-                var aiEnhancement = await _ollama.GenerateStructuredResponseAsync<DuaEnhancement>(
-                    MODEL_NAME, prompt, temperature: 0.1);
-
-                var response = new DuaResponse
+                return candidateDuas.Select(dua => new DuaResponse
                 {
                     ArabicText = dua.ArabicText,
                     Translation = dua.Translation,
                     Transliteration = dua.Transliteration,
                     Occasion = occasion,
                     Source = dua.Source,
-                    Benefits = aiEnhancement.Benefits,
-                    RelatedDuas = aiEnhancement.RelatedDuas
+                    Benefits = dua.Benefits ?? "Authentic Islamic supplication with spiritual benefits",
+                    RelatedDuas = new List<string>()
+                }).ToList();
+            }
+
+            // 🚀 OPTIMISATION: Parallélisation des appels AI
+            var enhancementTasks = candidateDuas.Select(async dua =>
+            {
+                try
+                {
+                    var prompt = BuildDuaExplanationPrompt(dua, occasion, language);
+                    var aiEnhancement = await _ollama.GenerateStructuredResponseAsync<DuaEnhancement>(
+                        MODEL_NAME, prompt, temperature: 0.1);
+                    
+                    return new { dua, aiEnhancement, success = true };
+                }
+                catch (Exception ex)
+                {
+                    string errorType = ex is TaskCanceledException || ex is TimeoutException || ex.Message.Contains("timeout") 
+                        ? "timeout" : "error";
+                    _logger.LogWarning(ex, "Failed to get AI enhancement for dua due to {ErrorType}: {DuaText}", errorType, dua.ArabicText);
+                    
+                    // Fallback avec benefits de base
+                    return new { 
+                        dua, 
+                        aiEnhancement = new DuaEnhancement(
+                            errorType == "timeout" 
+                                ? "AI enhancement timed out - this is a blessed authentic supplication" 
+                                : "Recitation brings spiritual benefits", 
+                            "Anytime", 
+                            new List<string>(), 
+                            "Authentic Islamic supplication"),
+                        success = false 
+                    };
+                }
+            }).ToArray();
+
+            var enhancementResults = await Task.WhenAll(enhancementTasks);
+            
+            var responses = enhancementResults.Select(result =>
+            {
+                var response = new DuaResponse
+                {
+                    ArabicText = result.dua.ArabicText,
+                    Translation = result.dua.Translation,
+                    Transliteration = result.dua.Transliteration,
+                    Occasion = occasion,
+                    Source = result.dua.Source,
+                    Benefits = result.aiEnhancement.Benefits,
+                    RelatedDuas = result.aiEnhancement.RelatedDuas
                 };
 
-                response.Sources.AddRange(new[] { dua.Source, MODEL_NAME });
-                responses.Add(response);
-            }
+                response.Sources.AddRange(new[] { result.dua.Source, MODEL_NAME });
+                return response;
+            }).ToList();
 
             _logger.LogInformation("DuaCompanion found {Count} duas for {Occasion}", responses.Count, occasion);
             return responses;
@@ -76,6 +119,14 @@ public class DuaCompanionAgent
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error in DuaCompanion for occasion: {Occasion}", occasion);
+            
+            // Si c'est un timeout et que ce n'est pas déjà en mode rapide, essayons en mode rapide
+            if ((ex is TaskCanceledException || ex is TimeoutException || ex.Message.Contains("timeout")) && !fastMode)
+            {
+                _logger.LogWarning("Timeout detected, falling back to fast mode for occasion: {Occasion}", occasion);
+                return await GetDuasForOccasionAsync(occasion, language, maxResults, fastMode: true);
+            }
+            
             throw;
         }
     }
@@ -171,11 +222,23 @@ public class DuaCompanionAgent
         return response;
     }
 
-    private async Task<List<DuaResponse>> GetAlternativeDuasAsync(string occasion, string language)
+    private async Task<List<DuaResponse>> GetAlternativeDuasAsync(string occasion, string language, bool fastMode = false)
     {
-        _logger.LogInformation("Searching for alternative duas for: {Occasion}", occasion);
+        _logger.LogInformation("Searching for alternative duas for: {Occasion} (fastMode: {FastMode})", occasion, fastMode);
 
-        var prompt = $@"
+        string suggestions;
+        
+        if (fastMode)
+        {
+            // Mode rapide : pas d'appel IA
+            suggestions = language == "ar" 
+                ? "دعاء عام مناسب للمناسبة المطلوبة. يُنصح بالرجوع إلى المصادر الإسلامية للحصول على أدعية محددة."
+                : "General supplication suitable for the requested occasion. Please consult Islamic resources for specific duas.";
+        }
+        else
+        {
+            // Mode amélioré : avec IA
+            var prompt = $@"
 A Muslim is seeking du'as for this situation: ""{occasion}""
 
 Suggest appropriate authentic du'as from Quran and Sunnah that would be suitable.
@@ -188,7 +251,8 @@ Language: {language}
 
 Respond with suggestions for finding appropriate authentic du'as.";
 
-        var suggestions = await _ollama.GenerateResponseAsync(MODEL_NAME, prompt, 0.1);
+            suggestions = await _ollama.GenerateResponseAsync(MODEL_NAME, prompt, 0.1);
+        }
 
         // Return a single guidance response
         return new List<DuaResponse>

@@ -47,10 +47,10 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.AddSingleton<ICacheService, MemoryCacheService>();
 
-// Configure OllamaService with HttpClient
+// Configure OllamaService with HttpClient - Extended timeout for DeepSeek-R1
 builder.Services.AddHttpClient<IOllamaService, OllamaService>(client =>
 {
-    // Configure for Ollama if needed
+    client.Timeout = TimeSpan.FromMinutes(15); // Extended timeout for heavy AI models
 });
 
 // Add Islamic Knowledge Base services with database backend (with file fallback)

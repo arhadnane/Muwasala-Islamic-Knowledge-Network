@@ -89,6 +89,17 @@
                             </div>
                         </div>
 
+                        <div class="mb-3">
+                            <label class="form-label">Response Mode</label>
+                            <InputSelect @bind-Value="duaModel.ResponseMode" class="form-select">
+                                <option value="fast">⚡ Fast Mode (~2 seconds)</option>
+                                <option value="enhanced">✨ Enhanced Mode (~15 seconds)</option>
+                            </InputSelect>
+                            <small class="form-text text-muted">
+                                Fast mode provides instant results, Enhanced mode includes AI explanations
+                            </small>
+                        </div>
+
                         <button type="submit" class="btn btn-warning w-100" disabled="@isLoading">
                             @if (isLoading)
                             {
@@ -256,6 +267,7 @@
         public string CustomRequest { get; set; } = "";
         public string Language { get; set; } = "both";
         public bool IncludePronunciation { get; set; } = true;
+        public string ResponseMode { get; set; } = "fast"; // 🚀 Mode de réponse rapide par défaut
     }
 
     private async Task HandleDuaSearch()
@@ -297,10 +309,12 @@
         {
             var includeArabic = duaModel.Language == "ar" || duaModel.Language == "both";
             var includeEnglish = duaModel.Language == "en" || duaModel.Language == "both";
+            var fastMode = duaModel.ResponseMode == "fast";
               var duaResponses = await DuaAgent.GetDuasForOccasionAsync(
                 searchQuery, 
                 duaModel.Language, 
-                3
+                3,
+                fastMode
             );
 
             response = FormatDuaResults(duaResponses);
@@ -340,31 +354,31 @@
             // Arabic text
             if (!string.IsNullOrEmpty(dua.ArabicText))
             {
-                result += $"<div class='arabic-text mb-3'>{dua.ArabicText}</div>";
+                var cleanedArabic = CleanTextForDisplay(dua.ArabicText);
+                result += $"<div class='arabic-text mb-3' style='white-space: pre-line;'>{System.Web.HttpUtility.HtmlEncode(cleanedArabic)}</div>";
+                // Debug temporaire pour voir le texte brut
+                result += $"<div class='debug-text' style='font-size: 0.8rem; color: #666; border: 1px solid #ddd; padding: 5px; margin: 5px 0;'>DEBUG: '{System.Web.HttpUtility.HtmlEncode(dua.ArabicText)}'</div>";
             }
             
             // Translation
             if (!string.IsNullOrEmpty(dua.Translation))
             {
-                result += $"<div class='translation mb-2'><strong>Translation:</strong> {dua.Translation}</div>";
+                var cleanedTranslation = CleanTextForDisplay(dua.Translation);
+                result += $"<div class='translation mb-2'><strong>Translation:</strong> {System.Web.HttpUtility.HtmlEncode(cleanedTranslation)}</div>";
             }
             
             // Transliteration
             if (!string.IsNullOrEmpty(dua.Transliteration))
             {
-                result += $"<div class='transliteration mb-2'><strong>Pronunciation:</strong> {dua.Transliteration}</div>";
+                var cleanedTransliteration = CleanTextForDisplay(dua.Transliteration);
+                result += $"<div class='transliteration mb-2'><strong>Pronunciation:</strong> {System.Web.HttpUtility.HtmlEncode(cleanedTransliteration)}</div>";
             }
             
             // Benefits
-            if (dua.Benefits != null && dua.Benefits.Any())
+            if (!string.IsNullOrEmpty(dua.Benefits))
             {
-                result += "<div class='benefits mb-2'><strong>Benefits:</strong>";
-                result += "<ul>";
-                foreach (var benefit in dua.Benefits)
-                {
-                    result += $"<li>{benefit}</li>";
-                }
-                result += "</ul></div>";
+                var cleanedBenefits = CleanTextForDisplay(dua.Benefits);
+                result += $"<div class='benefits mb-2'><strong>Benefits:</strong> {System.Web.HttpUtility.HtmlEncode(cleanedBenefits)}</div>";
             }
             
             // Source
@@ -406,6 +420,55 @@
 
         return $"<p>{formatted}</p>";
     }
+
+    private string CleanTextForDisplay(string text)
+    {
+        if (string.IsNullOrEmpty(text)) return text;
+        
+        // Détecter si c'est du texte arabe
+        bool isArabicText = System.Text.RegularExpressions.Regex.IsMatch(text, @"[\u0600-\u06FF\u0750-\u077F]");
+        
+        if (isArabicText)
+        {
+            // Pour le texte arabe, être plus conservateur
+            var cleaned = text.Replace("\r", "")
+                             .Replace("\u200B", "") // Zero-width space
+                             .Replace("\u200C", "") // Zero-width non-joiner
+                             .Replace("\u200D", "") // Zero-width joiner
+                             .Replace("\uFEFF", ""); // Byte order mark
+            
+            // Ne pas remplacer TOUS les \n, seulement les multiples
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"\n{2,}", " ");
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"[\x00-\x1F\x7F-\x9F]", "");
+            
+            return cleaned.Trim();
+        }
+        else
+        {
+            // Pour le texte non-arabe, traitement normal
+            var cleaned = text.Replace("\n", " ")
+                             .Replace("\r", " ")
+                             .Replace("\t", " ")
+                             .Replace("\u200B", "") // Zero-width space
+                             .Replace("\u200C", "") // Zero-width non-joiner
+                             .Replace("\u200D", "") // Zero-width joiner
+                             .Replace("\uFEFF", ""); // Byte order mark
+            
+            // Supprimer les espaces multiples de façon répétée
+            while (cleaned.Contains("  "))
+            {
+                cleaned = cleaned.Replace("  ", " ");
+            }
+            
+            // Nettoyer les caractères de contrôle (0x00-0x1F et 0x7F-0x9F)
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"[\x00-\x1F\x7F-\x9F]", "");
+            
+            // Supprimer les caractères de formatage Unicode problématiques
+            cleaned = System.Text.RegularExpressions.Regex.Replace(cleaned, @"[\u2000-\u200F\u2028-\u202F\u205F-\u206F]", " ");
+            
+            return cleaned.Trim();
+        }
+    }
 }
 
 <style>
@@ -433,6 +496,11 @@
         border-right: 4px solid #ffc107;
         margin: 10px 0;
         border-radius: 4px;
+        white-space: pre-wrap;
+        word-break: keep-all;
+        line-height: 1.8;
+        font-family: 'Amiri', 'Scheherazade', 'Arial Unicode MS', serif;
+        unicode-bidi: embed;
     }
     
     .card {
