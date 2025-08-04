@@ -1,0 +1,64 @@
+{
+  "collection": "Sahih Muslim - General Topics",
+  "language": "en", 
+  "total_hadiths": 7563,
+  "description": "Sample from Sahih Muslim covering various commonly searched topics",
+  "hadiths": [
+    {
+      "book": 45,
+      "book_name": "Jihad and Expedition",
+      "hadith_number": "1757",
+      "reference": "Sahih Muslim 1757",
+      "arabic_text": "الدنيا خضرة حلوة وان الله مستخلفكم فيها فينظر كيف تعملون",
+      "translation": "Verily, the world is green and beautiful, and Allah has appointed you as His stewards over it to see how you will act.",
+      "grade": "Sahih",
+      "topic": "world,earth,stewardship,responsibility,environment,land",
+      "keywords": ["world", "earth", "stewardship", "responsibility", "environment", "land", "green", "beautiful", "caretaker"],
+      "chain": ["Abu Said al-Khudri"],
+      "explanation": "This hadith emphasizes human responsibility as stewards of the earth and its resources, including land and environment.",
+      "chapter": "Warning against the temptations of the world"
+    },
+    {
+      "book": 22,
+      "book_name": "Zakat",
+      "hadith_number": "979",
+      "reference": "Sahih Muslim 979",
+      "arabic_text": "ما في السماء موضع اربع اصابع الا وملك واضع جبهته ساجدا لله",
+      "translation": "There is no space in the heavens the size of four fingers but there is an angel placing his forehead in prostration to Allah.",
+      "grade": "Sahih",
+      "topic": "heaven,earth,worship,creation,space,land",
+      "keywords": ["heaven", "earth", "worship", "creation", "space", "land", "angel", "prostration"],
+      "chain": ["Abu Dharr"],
+      "explanation": "This hadith describes the vastness of creation and worship, connecting heavenly and earthly domains in devotion to Allah.",
+      "chapter": "The excellence of worship"
+    },
+    {
+      "book": 37,
+      "book_name": "Marriage",
+      "hadith_number": "1400",
+      "reference": "Sahih Muslim 1400",
+      "arabic_text": "اذا خطب اليكم من ترضون دينه وخلقه فزوجوه الا تفعلوا تكن فتنة في الارض وفساد عريض",
+      "translation": "When someone whose religion and character you are pleased with proposes to you, then marry (him). If you do not do so, there will be corruption and great mischief on earth.",
+      "grade": "Sahih",
+      "topic": "marriage,earth,corruption,society,land,community",
+      "keywords": ["marriage", "earth", "corruption", "society", "land", "community", "character", "religion"],
+      "chain": ["Abu Hurairah"],
+      "explanation": "This hadith links individual moral choices to the well-being of society and the earth, showing how personal decisions affect the broader community and land.",
+      "chapter": "It is recommended to marry someone of good character"
+    },
+    {
+      "book": 54,
+      "book_name": "Tribulations",
+      "hadith_number": "2889",
+      "reference": "Sahih Muslim 2889",
+      "arabic_text": "ان الله لا يظلم مثقال ذرة وان تك حسنة يضاعفها ويؤت من لدنه اجرا عظيما",
+      "translation": "Verily, Allah does not do injustice even to the weight of an atom, and if there is a good deed, He multiplies it and gives from His presence a great reward.",
+      "grade": "Sahih",
+      "topic": "justice,earth,atom,weight,land,creation",
+      "keywords": ["justice", "earth", "atom", "weight", "land", "creation", "good deed", "reward"],
+      "chain": ["Abu Said al-Khudri"],
+      "explanation": "This hadith emphasizes Allah's perfect justice that extends to the smallest particles of creation, including every grain of earth and land.",
+      "chapter": "The intercession and bringing out the people from Hell-fire"
+    }
+  ]
+}

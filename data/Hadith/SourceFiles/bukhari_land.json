@@ -1,0 +1,92 @@
+{
+  "collection": "Sahih al-Bukhari - Land and Agriculture",
+  "language": "en", 
+  "total_hadiths": 7563,
+  "description": "Sample from Sahih al-Bukhari focusing on land, agriculture, and property rights",
+  "hadiths": [
+    {
+      "book": 39,
+      "book_name": "Agriculture",
+      "hadith_number": "2320",
+      "reference": "Sahih al-Bukhari 2320",
+      "arabic_text": "من احيا ارضا ميتة فهي له",
+      "translation": "Whoever brings dead land to life, it belongs to him.",
+      "grade": "Sahih",
+      "topic": "land,agriculture,property,ownership,revival",
+      "keywords": ["land", "agriculture", "property", "ownership", "revival", "cultivation", "dead land"],
+      "chain": ["Aisha", "Urwa ibn az-Zubayr"],
+      "explanation": "This hadith establishes the principle that uncultivated wasteland can be claimed through cultivation and development.",
+      "chapter": "The cultivation of land"
+    },
+    {
+      "book": 39,
+      "book_name": "Agriculture", 
+      "hadith_number": "2321",
+      "reference": "Sahih al-Bukhari 2321",
+      "arabic_text": "ليس للمرء الا ما طابت به نفس صاحبه",
+      "translation": "A person has no right to anything except what the owner willingly gives.",
+      "grade": "Sahih",
+      "topic": "land,property,rights,ownership,consent",
+      "keywords": ["land", "property", "rights", "ownership", "consent", "willingness", "taking"],
+      "chain": ["Abu Hurairah"],
+      "explanation": "This hadith emphasizes that property rights, including land, must be respected and cannot be taken without the owner's consent.",
+      "chapter": "Taking property without permission"
+    },
+    {
+      "book": 39,
+      "book_name": "Agriculture",
+      "hadith_number": "2322",
+      "reference": "Sahih al-Bukhari 2322",
+      "arabic_text": "من ظلم قيد شبر من الارض طوقه من سبع ارضين",
+      "translation": "Whoever usurps even a span of land unjustly, his neck will be encircled with it from the seven earths on the Day of Resurrection.",
+      "grade": "Sahih",
+      "topic": "land,injustice,usurpation,punishment,property",
+      "keywords": ["land", "injustice", "usurpation", "punishment", "property", "span", "earth", "resurrection"],
+      "chain": ["Aisha", "Said ibn Zaid"],
+      "explanation": "This hadith warns severely against taking even the smallest amount of land unjustly, emphasizing the grave sin of land usurpation.",
+      "chapter": "The sin of usurping land"
+    },
+    {
+      "book": 39,
+      "book_name": "Agriculture",
+      "hadith_number": "2323",
+      "reference": "Sahih al-Bukhari 2323",
+      "arabic_text": "ما من مسلم يغرس غرسا او يزرع زرعا فياكل منه طير او انسان او بهيمة الا كان له به صدقة",
+      "translation": "There is none amongst the Muslims who plants a tree or sows seeds, and then a bird, or a person or an animal eats from it, but is regarded as a charitable gift for him.",
+      "grade": "Sahih",
+      "topic": "land,agriculture,planting,charity,reward,cultivation",
+      "keywords": ["land", "agriculture", "planting", "charity", "reward", "cultivation", "tree", "seeds", "sadaqah"],
+      "chain": ["Anas ibn Malik"],
+      "explanation": "This hadith encourages cultivation of land and planting, showing that feeding others through agricultural work is a form of continuous charity.",
+      "chapter": "The virtue of cultivation and planting"
+    },
+    {
+      "book": 39,
+      "book_name": "Agriculture",
+      "hadith_number": "2324",
+      "reference": "Sahih al-Bukhari 2324",
+      "arabic_text": "اذا قامت الساعة وفي يد احدكم فسيلة فليغرسها",
+      "translation": "If the Hour (Day of Resurrection) is about to be established and one of you has a palm shoot in his hand, he should plant it.",
+      "grade": "Sahih",
+      "topic": "land,planting,last day,agriculture,hope,cultivation",
+      "keywords": ["land", "planting", "last day", "agriculture", "hope", "cultivation", "palm", "resurrection"],
+      "chain": ["Anas ibn Malik"],
+      "explanation": "This hadith emphasizes the importance of beneficial work including cultivation of land, even in the most dire circumstances.",
+      "chapter": "Planting until the last moment"
+    },
+    {
+      "book": 58,
+      "book_name": "Conditions",
+      "hadith_number": "2730",
+      "reference": "Sahih al-Bukhari 2730",
+      "arabic_text": "الارض لله ولرسوله ثم هي لكم مني",
+      "translation": "The land belongs to Allah and His Messenger, then it is for you from me.",
+      "grade": "Sahih",
+      "topic": "land,ownership,divine,distribution,conquest",
+      "keywords": ["land", "ownership", "divine", "distribution", "conquest", "Allah", "messenger"],
+      "chain": ["Umar ibn al-Khattab"],
+      "explanation": "This hadith establishes that ultimately all land belongs to Allah, and earthly ownership is a trust and responsibility.",
+      "chapter": "Land distribution"
+    }
+  ]
+}

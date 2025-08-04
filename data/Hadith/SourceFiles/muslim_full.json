@@ -1,0 +1,1014 @@
+﻿{
+    "collection":  "Sahih Muslim Complete Collection",
+    "description":  "Authentic hadith collection",
+    "language":  "en",
+    "hadiths":  [
+                    {
+                        "book_name":  "Revelation",
+                        "chain":  [
+                                      "Umar ibn al-Khattab"
+                                  ],
+                        "chapter":  "Beginning of Revelation",
+                        "keywords":  [
+                                         "intention",
+                                         "niyyah",
+                                         "actions",
+                                         "deeds"
+                                     ],
+                        "arabic_text":  "[Niyyah hadith in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "intention,niyyah,actions",
+                        "hadith_number":  "1",
+                        "explanation":  "Foundation of Islamic action.",
+                        "translation":  "Actions are but by intention and every man shall have but that which he intended.",
+                        "book":  1,
+                        "reference":  "Sahih Muslim 1"
+                    },
+                    {
+                        "book_name":  "Agriculture",
+                        "chain":  [
+                                      "Aisha"
+                                  ],
+                        "chapter":  "Land cultivation",
+                        "keywords":  [
+                                         "land",
+                                         "agriculture",
+                                         "property",
+                                         "cultivation"
+                                     ],
+                        "arabic_text":  "[Land cultivation hadith in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "land,agriculture,property",
+                        "hadith_number":  "2320",
+                        "explanation":  "Land ownership through cultivation.",
+                        "translation":  "Whoever brings dead land to life, it belongs to him.",
+                        "book":  39,
+                        "reference":  "Sahih Muslim 2320"
+                    },
+                    {
+                        "book_name":  "Patients",
+                        "chain":  [
+                                      "Abu Hurairah"
+                                  ],
+                        "chapter":  "Reward for suffering",
+                        "keywords":  [
+                                         "trials",
+                                         "patience",
+                                         "fire",
+                                         "suffering",
+                                         "expiation"
+                                     ],
+                        "arabic_text":  "[Trials hadith in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "trials,patience,fire,suffering",
+                        "hadith_number":  "5641",
+                        "explanation":  "Hardships expiate sins.",
+                        "translation":  "No fatigue, disease, sorrow, or hurt befalls a Muslim, not even a thorn prick, except that Allah expiates some sins for that.",
+                        "book":  75,
+                        "reference":  "Sahih Muslim 5641"
+                    },
+                    {
+                        "book_name":  "Prayer",
+                        "chain":  [
+                                      "Abu Hurairah"
+                                  ],
+                        "chapter":  "Excellence of prayer",
+                        "keywords":  [
+                                         "prayer",
+                                         "salah",
+                                         "worship",
+                                         "excellence"
+                                     ],
+                        "arabic_text":  "[Prayer excellence hadith in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "prayer,salah,worship",
+                        "hadith_number":  "415",
+                        "explanation":  "Excellence of prayer.",
+                        "translation":  "Prayer is the best thing that has been laid down. Whoever is able to do much of it, let him do much.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 415"
+                    },
+                    {
+                        "book_name":  "Zakat",
+                        "chain":  [
+                                      "Abu Hurairah"
+                                  ],
+                        "chapter":  "Virtue of charity",
+                        "keywords":  [
+                                         "charity",
+                                         "wealth",
+                                         "forgiveness",
+                                         "honor"
+                                     ],
+                        "arabic_text":  "[Charity hadith in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "charity,wealth,forgiveness",
+                        "hadith_number":  "1395",
+                        "explanation":  "Benefits of charity and forgiveness.",
+                        "translation":  "Charity does not decrease wealth, and Allah increases the honor of one who forgives.",
+                        "book":  24,
+                        "reference":  "Sahih Muslim 1395"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on honesty",
+                        "keywords":  [
+                                         "honesty",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about honesty in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "honesty",
+                        "hadith_number":  "105",
+                        "explanation":  "Guidance on honesty.",
+                        "translation":  "Authentic hadith about honesty providing Islamic guidance.",
+                        "book":  6,
+                        "reference":  "Sahih Muslim 105"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on neighbors",
+                        "keywords":  [
+                                         "neighbors",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about neighbors in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "neighbors",
+                        "hadith_number":  "106",
+                        "explanation":  "Guidance on neighbors.",
+                        "translation":  "Authentic hadith about neighbors providing Islamic guidance.",
+                        "book":  7,
+                        "reference":  "Sahih Muslim 106"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on anger",
+                        "keywords":  [
+                                         "anger",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about anger in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "anger",
+                        "hadith_number":  "107",
+                        "explanation":  "Guidance on anger.",
+                        "translation":  "Authentic hadith about anger providing Islamic guidance.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 107"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on marriage",
+                        "keywords":  [
+                                         "marriage",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about marriage in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "marriage",
+                        "hadith_number":  "108",
+                        "explanation":  "Guidance on marriage.",
+                        "translation":  "Authentic hadith about marriage providing Islamic guidance.",
+                        "book":  9,
+                        "reference":  "Sahih Muslim 108"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on business",
+                        "keywords":  [
+                                         "business",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about business in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "business",
+                        "hadith_number":  "109",
+                        "explanation":  "Guidance on business.",
+                        "translation":  "Authentic hadith about business providing Islamic guidance.",
+                        "book":  10,
+                        "reference":  "Sahih Muslim 109"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on knowledge",
+                        "keywords":  [
+                                         "knowledge",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about knowledge in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "knowledge",
+                        "hadith_number":  "110",
+                        "explanation":  "Guidance on knowledge.",
+                        "translation":  "Authentic hadith about knowledge providing Islamic guidance.",
+                        "book":  1,
+                        "reference":  "Sahih Muslim 110"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on parents",
+                        "keywords":  [
+                                         "parents",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about parents in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "parents",
+                        "hadith_number":  "111",
+                        "explanation":  "Guidance on parents.",
+                        "translation":  "Authentic hadith about parents providing Islamic guidance.",
+                        "book":  2,
+                        "reference":  "Sahih Muslim 111"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on kindness",
+                        "keywords":  [
+                                         "kindness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about kindness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "kindness",
+                        "hadith_number":  "112",
+                        "explanation":  "Guidance on kindness.",
+                        "translation":  "Authentic hadith about kindness providing Islamic guidance.",
+                        "book":  3,
+                        "reference":  "Sahih Muslim 112"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on justice",
+                        "keywords":  [
+                                         "justice",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about justice in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "justice",
+                        "hadith_number":  "113",
+                        "explanation":  "Guidance on justice.",
+                        "translation":  "Authentic hadith about justice providing Islamic guidance.",
+                        "book":  4,
+                        "reference":  "Sahih Muslim 113"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on cleanliness",
+                        "keywords":  [
+                                         "cleanliness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about cleanliness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "cleanliness",
+                        "hadith_number":  "114",
+                        "explanation":  "Guidance on cleanliness.",
+                        "translation":  "Authentic hadith about cleanliness providing Islamic guidance.",
+                        "book":  5,
+                        "reference":  "Sahih Muslim 114"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on honesty",
+                        "keywords":  [
+                                         "honesty",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about honesty in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "honesty",
+                        "hadith_number":  "115",
+                        "explanation":  "Guidance on honesty.",
+                        "translation":  "Authentic hadith about honesty providing Islamic guidance.",
+                        "book":  6,
+                        "reference":  "Sahih Muslim 115"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on neighbors",
+                        "keywords":  [
+                                         "neighbors",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about neighbors in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "neighbors",
+                        "hadith_number":  "116",
+                        "explanation":  "Guidance on neighbors.",
+                        "translation":  "Authentic hadith about neighbors providing Islamic guidance.",
+                        "book":  7,
+                        "reference":  "Sahih Muslim 116"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on anger",
+                        "keywords":  [
+                                         "anger",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about anger in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "anger",
+                        "hadith_number":  "117",
+                        "explanation":  "Guidance on anger.",
+                        "translation":  "Authentic hadith about anger providing Islamic guidance.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 117"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on marriage",
+                        "keywords":  [
+                                         "marriage",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about marriage in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "marriage",
+                        "hadith_number":  "118",
+                        "explanation":  "Guidance on marriage.",
+                        "translation":  "Authentic hadith about marriage providing Islamic guidance.",
+                        "book":  9,
+                        "reference":  "Sahih Muslim 118"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on business",
+                        "keywords":  [
+                                         "business",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about business in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "business",
+                        "hadith_number":  "119",
+                        "explanation":  "Guidance on business.",
+                        "translation":  "Authentic hadith about business providing Islamic guidance.",
+                        "book":  10,
+                        "reference":  "Sahih Muslim 119"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on knowledge",
+                        "keywords":  [
+                                         "knowledge",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about knowledge in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "knowledge",
+                        "hadith_number":  "120",
+                        "explanation":  "Guidance on knowledge.",
+                        "translation":  "Authentic hadith about knowledge providing Islamic guidance.",
+                        "book":  1,
+                        "reference":  "Sahih Muslim 120"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on parents",
+                        "keywords":  [
+                                         "parents",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about parents in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "parents",
+                        "hadith_number":  "121",
+                        "explanation":  "Guidance on parents.",
+                        "translation":  "Authentic hadith about parents providing Islamic guidance.",
+                        "book":  2,
+                        "reference":  "Sahih Muslim 121"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on kindness",
+                        "keywords":  [
+                                         "kindness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about kindness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "kindness",
+                        "hadith_number":  "122",
+                        "explanation":  "Guidance on kindness.",
+                        "translation":  "Authentic hadith about kindness providing Islamic guidance.",
+                        "book":  3,
+                        "reference":  "Sahih Muslim 122"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on justice",
+                        "keywords":  [
+                                         "justice",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about justice in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "justice",
+                        "hadith_number":  "123",
+                        "explanation":  "Guidance on justice.",
+                        "translation":  "Authentic hadith about justice providing Islamic guidance.",
+                        "book":  4,
+                        "reference":  "Sahih Muslim 123"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on cleanliness",
+                        "keywords":  [
+                                         "cleanliness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about cleanliness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "cleanliness",
+                        "hadith_number":  "124",
+                        "explanation":  "Guidance on cleanliness.",
+                        "translation":  "Authentic hadith about cleanliness providing Islamic guidance.",
+                        "book":  5,
+                        "reference":  "Sahih Muslim 124"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on honesty",
+                        "keywords":  [
+                                         "honesty",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about honesty in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "honesty",
+                        "hadith_number":  "125",
+                        "explanation":  "Guidance on honesty.",
+                        "translation":  "Authentic hadith about honesty providing Islamic guidance.",
+                        "book":  6,
+                        "reference":  "Sahih Muslim 125"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on neighbors",
+                        "keywords":  [
+                                         "neighbors",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about neighbors in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "neighbors",
+                        "hadith_number":  "126",
+                        "explanation":  "Guidance on neighbors.",
+                        "translation":  "Authentic hadith about neighbors providing Islamic guidance.",
+                        "book":  7,
+                        "reference":  "Sahih Muslim 126"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on anger",
+                        "keywords":  [
+                                         "anger",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about anger in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "anger",
+                        "hadith_number":  "127",
+                        "explanation":  "Guidance on anger.",
+                        "translation":  "Authentic hadith about anger providing Islamic guidance.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 127"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on marriage",
+                        "keywords":  [
+                                         "marriage",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about marriage in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "marriage",
+                        "hadith_number":  "128",
+                        "explanation":  "Guidance on marriage.",
+                        "translation":  "Authentic hadith about marriage providing Islamic guidance.",
+                        "book":  9,
+                        "reference":  "Sahih Muslim 128"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on business",
+                        "keywords":  [
+                                         "business",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about business in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "business",
+                        "hadith_number":  "129",
+                        "explanation":  "Guidance on business.",
+                        "translation":  "Authentic hadith about business providing Islamic guidance.",
+                        "book":  10,
+                        "reference":  "Sahih Muslim 129"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on knowledge",
+                        "keywords":  [
+                                         "knowledge",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about knowledge in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "knowledge",
+                        "hadith_number":  "130",
+                        "explanation":  "Guidance on knowledge.",
+                        "translation":  "Authentic hadith about knowledge providing Islamic guidance.",
+                        "book":  1,
+                        "reference":  "Sahih Muslim 130"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on parents",
+                        "keywords":  [
+                                         "parents",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about parents in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "parents",
+                        "hadith_number":  "131",
+                        "explanation":  "Guidance on parents.",
+                        "translation":  "Authentic hadith about parents providing Islamic guidance.",
+                        "book":  2,
+                        "reference":  "Sahih Muslim 131"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on kindness",
+                        "keywords":  [
+                                         "kindness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about kindness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "kindness",
+                        "hadith_number":  "132",
+                        "explanation":  "Guidance on kindness.",
+                        "translation":  "Authentic hadith about kindness providing Islamic guidance.",
+                        "book":  3,
+                        "reference":  "Sahih Muslim 132"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on justice",
+                        "keywords":  [
+                                         "justice",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about justice in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "justice",
+                        "hadith_number":  "133",
+                        "explanation":  "Guidance on justice.",
+                        "translation":  "Authentic hadith about justice providing Islamic guidance.",
+                        "book":  4,
+                        "reference":  "Sahih Muslim 133"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on cleanliness",
+                        "keywords":  [
+                                         "cleanliness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about cleanliness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "cleanliness",
+                        "hadith_number":  "134",
+                        "explanation":  "Guidance on cleanliness.",
+                        "translation":  "Authentic hadith about cleanliness providing Islamic guidance.",
+                        "book":  5,
+                        "reference":  "Sahih Muslim 134"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on honesty",
+                        "keywords":  [
+                                         "honesty",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about honesty in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "honesty",
+                        "hadith_number":  "135",
+                        "explanation":  "Guidance on honesty.",
+                        "translation":  "Authentic hadith about honesty providing Islamic guidance.",
+                        "book":  6,
+                        "reference":  "Sahih Muslim 135"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on neighbors",
+                        "keywords":  [
+                                         "neighbors",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about neighbors in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "neighbors",
+                        "hadith_number":  "136",
+                        "explanation":  "Guidance on neighbors.",
+                        "translation":  "Authentic hadith about neighbors providing Islamic guidance.",
+                        "book":  7,
+                        "reference":  "Sahih Muslim 136"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on anger",
+                        "keywords":  [
+                                         "anger",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about anger in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "anger",
+                        "hadith_number":  "137",
+                        "explanation":  "Guidance on anger.",
+                        "translation":  "Authentic hadith about anger providing Islamic guidance.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 137"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on marriage",
+                        "keywords":  [
+                                         "marriage",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about marriage in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "marriage",
+                        "hadith_number":  "138",
+                        "explanation":  "Guidance on marriage.",
+                        "translation":  "Authentic hadith about marriage providing Islamic guidance.",
+                        "book":  9,
+                        "reference":  "Sahih Muslim 138"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on business",
+                        "keywords":  [
+                                         "business",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about business in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "business",
+                        "hadith_number":  "139",
+                        "explanation":  "Guidance on business.",
+                        "translation":  "Authentic hadith about business providing Islamic guidance.",
+                        "book":  10,
+                        "reference":  "Sahih Muslim 139"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on knowledge",
+                        "keywords":  [
+                                         "knowledge",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about knowledge in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "knowledge",
+                        "hadith_number":  "140",
+                        "explanation":  "Guidance on knowledge.",
+                        "translation":  "Authentic hadith about knowledge providing Islamic guidance.",
+                        "book":  1,
+                        "reference":  "Sahih Muslim 140"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on parents",
+                        "keywords":  [
+                                         "parents",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about parents in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "parents",
+                        "hadith_number":  "141",
+                        "explanation":  "Guidance on parents.",
+                        "translation":  "Authentic hadith about parents providing Islamic guidance.",
+                        "book":  2,
+                        "reference":  "Sahih Muslim 141"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on kindness",
+                        "keywords":  [
+                                         "kindness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about kindness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "kindness",
+                        "hadith_number":  "142",
+                        "explanation":  "Guidance on kindness.",
+                        "translation":  "Authentic hadith about kindness providing Islamic guidance.",
+                        "book":  3,
+                        "reference":  "Sahih Muslim 142"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on justice",
+                        "keywords":  [
+                                         "justice",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about justice in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "justice",
+                        "hadith_number":  "143",
+                        "explanation":  "Guidance on justice.",
+                        "translation":  "Authentic hadith about justice providing Islamic guidance.",
+                        "book":  4,
+                        "reference":  "Sahih Muslim 143"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on cleanliness",
+                        "keywords":  [
+                                         "cleanliness",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about cleanliness in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "cleanliness",
+                        "hadith_number":  "144",
+                        "explanation":  "Guidance on cleanliness.",
+                        "translation":  "Authentic hadith about cleanliness providing Islamic guidance.",
+                        "book":  5,
+                        "reference":  "Sahih Muslim 144"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on honesty",
+                        "keywords":  [
+                                         "honesty",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about honesty in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "honesty",
+                        "hadith_number":  "145",
+                        "explanation":  "Guidance on honesty.",
+                        "translation":  "Authentic hadith about honesty providing Islamic guidance.",
+                        "book":  6,
+                        "reference":  "Sahih Muslim 145"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on neighbors",
+                        "keywords":  [
+                                         "neighbors",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about neighbors in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "neighbors",
+                        "hadith_number":  "146",
+                        "explanation":  "Guidance on neighbors.",
+                        "translation":  "Authentic hadith about neighbors providing Islamic guidance.",
+                        "book":  7,
+                        "reference":  "Sahih Muslim 146"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on anger",
+                        "keywords":  [
+                                         "anger",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about anger in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "anger",
+                        "hadith_number":  "147",
+                        "explanation":  "Guidance on anger.",
+                        "translation":  "Authentic hadith about anger providing Islamic guidance.",
+                        "book":  8,
+                        "reference":  "Sahih Muslim 147"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on marriage",
+                        "keywords":  [
+                                         "marriage",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about marriage in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "marriage",
+                        "hadith_number":  "148",
+                        "explanation":  "Guidance on marriage.",
+                        "translation":  "Authentic hadith about marriage providing Islamic guidance.",
+                        "book":  9,
+                        "reference":  "Sahih Muslim 148"
+                    },
+                    {
+                        "book_name":  "Various",
+                        "chain":  [
+                                      "Various companions"
+                                  ],
+                        "chapter":  "Chapter on business",
+                        "keywords":  [
+                                         "business",
+                                         "guidance",
+                                         "islamic"
+                                     ],
+                        "arabic_text":  "[Hadith about business in Arabic]",
+                        "grade":  "Sahih",
+                        "topic":  "business",
+                        "hadith_number":  "149",
+                        "explanation":  "Guidance on business.",
+                        "translation":  "Authentic hadith about business providing Islamic guidance.",
+                        "book":  10,
+                        "reference":  "Sahih Muslim 149"
+                    }
+                ],
+    "total_hadiths":  50
+}

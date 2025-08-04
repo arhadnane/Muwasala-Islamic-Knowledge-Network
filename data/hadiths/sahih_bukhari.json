@@ -1,0 +1,72 @@
+[
+  {
+    "id": "bukhari_1",
+    "collection": "Sahih Bukhari",
+    "book_number": 1,
+    "hadith_number": 1,
+    "arabic_text": "إنما الأعمال بالنيات وإنما لكل امرئ ما نوى",
+    "english_text": "Actions are but by intention and every man shall have but that which he intended. So whoever emigrated for Allah and His messenger, then his emigration was for Allah and His messenger, and whoever emigrated for worldly gain or a woman to marry, then his emigration was for that which he emigrated.",
+    "narrator": "Umar ibn al-Khattab",
+    "theme": "intention",
+    "chapter": "How the Divine Inspiration started",
+    "grade": "sahih",
+    "reference": "Bukhari 1:1",
+    "keywords": ["intention", "niyyah", "actions", "deeds", "purpose"]
+  },
+  {
+    "id": "bukhari_2",
+    "collection": "Sahih Bukhari",
+    "book_number": 24,
+    "hadith_number": 498,
+    "arabic_text": "الصدقة تطفئ الخطيئة كما يطفئ الماء النار",
+    "english_text": "Charity extinguishes sin as water extinguishes fire",
+    "narrator": "Ka'b ibn Ujrah",
+    "theme": "charity",
+    "chapter": "Obligatory Charity Tax (Zakat)",
+    "grade": "sahih",
+    "reference": "Bukhari 24:498",
+    "keywords": ["charity", "sadaqah", "zakat", "sin", "forgiveness", "fire", "water"]
+  },
+  {
+    "id": "bukhari_3",
+    "collection": "Sahih Bukhari",
+    "book_number": 30,
+    "hadith_number": 1914,
+    "arabic_text": "صوموا لرؤيته وأفطروا لرؤيته فإن غبي عليكم فأكملوا عدة شعبان ثلاثين",
+    "english_text": "Fast when you see the new moon (crescent) and break your fast when you see it. If it is cloudy, then complete thirty days of Sha'ban.",
+    "narrator": "Abdullah ibn Umar",
+    "theme": "fasting",
+    "chapter": "The Book of Fasting",
+    "grade": "sahih",
+    "reference": "Bukhari 30:1914",
+    "keywords": ["fasting", "moon", "crescent", "hilal", "ramadan", "sighting", "lunar", "calendar"]
+  },
+  {
+    "id": "bukhari_4",
+    "collection": "Sahih Bukhari",
+    "book_number": 61,
+    "hadith_number": 3895,
+    "arabic_text": "خيركم من تعلم القرآن وعلمه",
+    "english_text": "The best of you are those who learn the Quran and teach it to others",
+    "narrator": "Uthman ibn Affan",
+    "theme": "education",
+    "chapter": "The Merits of the Quran",
+    "grade": "sahih",
+    "reference": "Bukhari 61:3895",
+    "keywords": ["education", "quran", "learning", "teaching", "knowledge", "ilm", "best", "virtue"]
+  },
+  {
+    "id": "bukhari_5",
+    "collection": "Sahih Bukhari",
+    "book_number": 8,
+    "hadith_number": 395,
+    "arabic_text": "الصلاة عماد الدين من أقامها فقد أقام الدين ومن هدمها فقد هدم الدين",
+    "english_text": "Prayer is the pillar of religion. Whoever establishes it has established religion, and whoever abandons it has demolished religion",
+    "narrator": "Umar ibn al-Khattab",
+    "theme": "prayer",
+    "chapter": "The Book of Prayer",
+    "grade": "sahih",
+    "reference": "Bukhari 8:395",
+    "keywords": ["prayer", "salah", "pillar", "religion", "foundation", "worship", "establish"]
+  }
+]

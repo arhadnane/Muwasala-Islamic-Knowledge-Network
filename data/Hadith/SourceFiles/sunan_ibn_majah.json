@@ -1,0 +1,30 @@
+[
+  {
+    "id": "ibn_majah_1",
+    "collection": "Sunan Ibn Majah",
+    "book_number": 1,
+    "hadith_number": 224,
+    "arabic_text": "طلب العلم فريضة على كل مسلم ومسلمة",
+    "english_text": "Seeking knowledge is an obligation upon every Muslim man and woman",
+    "narrator": "Anas ibn Malik",
+    "theme": "education",
+    "chapter": "The Book of the Sunnah",
+    "grade": "hasan",
+    "reference": "Ibn Majah 1:224",
+    "keywords": ["knowledge", "education", "obligation", "learning", "muslim", "ilm", "seeking"]
+  },
+  {
+    "id": "ibn_majah_2",
+    "collection": "Sunan Ibn Majah",
+    "book_number": 7,
+    "hadith_number": 2244,
+    "arabic_text": "إن الدنيا خضرة حلوة وإن الله مستخلفكم فيها",
+    "english_text": "The world is beautiful and green, and Allah has appointed you as His stewards over it",
+    "narrator": "Abu Sa'id al-Khudri",
+    "theme": "environment",
+    "chapter": "The Book of Business Transactions",
+    "grade": "sahih",
+    "reference": "Ibn Majah 7:2244",
+    "keywords": ["environment", "stewardship", "earth", "green", "creation", "responsibility"]
+  }
+]
