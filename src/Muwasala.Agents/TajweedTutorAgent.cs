@@ -110,21 +110,71 @@ public class TajweedTutorAgent
         }
 
         var prompt = BuildLessonPrompt(surahData, level, language);
-        var lessonPlan = await _ollama.GenerateStructuredResponseAsync<LessonPlan>(
-            MODEL_NAME, prompt, temperature: 0.1);        // Create step-by-step lesson
-        var lessonSteps = await CreateLessonStepsAsync(surahData, lessonPlan, language);
-        var lesson = new RecitationLesson(
-            surahNumber,
-            surahData.Name,
-            level,
-            surahData.VerseCount,
-            CalculateLessonDuration(surahData.VerseCount, level),
-            lessonSteps,
-            lessonPlan.Prerequisites,
-            lessonPlan.LearningObjectives
-        );
+        
+        try 
+        {
+            var lessonPlan = await _ollama.GenerateStructuredResponseAsync<LessonPlan>(
+                MODEL_NAME, prompt, temperature: 0.1);
+            
+            // Create step-by-step lesson
+            var lessonSteps = await CreateLessonStepsAsync(surahData, lessonPlan, language);
+            var lesson = new RecitationLesson(
+                surahNumber,
+                surahData.Name,
+                level,
+                surahData.VerseCount,
+                CalculateLessonDuration(surahData.VerseCount, level),
+                lessonSteps,
+                lessonPlan.Prerequisites,
+                lessonPlan.LearningObjectives
+            );
 
-        return lesson;
+            return lesson;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning(ex, "Failed to generate structured lesson plan, falling back to simple lesson");
+            
+            // Fallback to simple lesson plan
+            var simpleLessonPlan = new LessonPlan(
+                Prerequisites: new List<string> 
+                { 
+                    language == "ar" ? "معرفة أساسية بالحروف العربية" : "Basic knowledge of Arabic letters",
+                    language == "ar" ? "فهم أهمية التجويد" : "Understanding the importance of Tajweed"
+                },
+                LearningObjectives: new List<string> 
+                { 
+                    language == "ar" ? "إتقان قواعد التجويد الأساسية" : "Master basic Tajweed rules",
+                    language == "ar" ? "تحسين النطق" : "Improve pronunciation"
+                },
+                StepCount: 5
+            );
+            
+            var simpleSteps = new List<LessonStep>();
+            for (int i = 1; i <= 5; i++)
+            {
+                simpleSteps.Add(new LessonStep(
+                    StepNumber: i,
+                    Title: language == "ar" ? $"الخطوة {i}" : $"Step {i}",
+                    Objective: language == "ar" ? "تعلم قواعد التجويد" : "Learn Tajweed rules",
+                    VerseReferences: new List<string> { $"{surahData.Name} - {(language == "ar" ? "آية" : "Verse")} {i}" },
+                    TajweedFocus: new List<string> { language == "ar" ? "قواعد أساسية" : "Basic rules" },
+                    PracticeExercises: new List<string> { language == "ar" ? "تمارين النطق" : "Pronunciation exercises" },
+                    AssessmentCriteria: language == "ar" ? "دقة النطق" : "Pronunciation accuracy"
+                ));
+            }
+            
+            return new RecitationLesson(
+                surahNumber,
+                surahData.Name,
+                level,
+                surahData.VerseCount,
+                CalculateLessonDuration(surahData.VerseCount, level),
+                simpleSteps,
+                simpleLessonPlan.Prerequisites,
+                simpleLessonPlan.LearningObjectives
+            );
+        }
     }
 
     /// <summary>
@@ -143,11 +193,29 @@ public class TajweedTutorAgent
 
         foreach (var mistake in commonMistakes)
         {
-            var prompt = BuildCorrectionPrompt(mistake, verseData.ArabicText, language);
-            var correction = await _ollama.GenerateStructuredResponseAsync<TajweedCorrection>(
-                MODEL_NAME, prompt, temperature: 0.1);
+            try 
+            {
+                var prompt = BuildCorrectionPrompt(mistake, verseData?.ArabicText ?? "", language);
+                var correction = await _ollama.GenerateStructuredResponseAsync<TajweedCorrection>(
+                    MODEL_NAME, prompt, temperature: 0.1);
 
-            corrections.Add(correction);
+                corrections.Add(correction);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to generate correction for mistake {Type}, using fallback", mistake.Type);
+                
+                // Fallback simple correction
+                var simpleCorrection = new TajweedCorrection(
+                    MistakeType: mistake.Type,
+                    IncorrectPronunciation: mistake.TypicalError,
+                    CorrectPronunciation: language == "ar" ? "النطق الصحيح" : "Correct pronunciation",
+                    Explanation: language == "ar" ? "تصحيح الخطأ" : mistake.Description,
+                    PracticeTips: new List<string> { language == "ar" ? "تمرن مع معلم" : "Practice with a teacher" }
+                );
+                
+                corrections.Add(simpleCorrection);
+            }
         }
 
         return corrections;
@@ -164,6 +232,11 @@ public class TajweedTutorAgent
         _logger.LogInformation("Getting Qiraat info for verse {Verse}, type: {QiraatType}", verse, qiraatType);
 
         var qiraatData = await _tajweedService.GetQiraatDataAsync(verse, qiraatType);
+        
+        if (qiraatData == null)
+        {
+            throw new ArgumentException($"Qiraat data not found for verse {verse} and type {qiraatType}");
+        }
         
         var prompt = BuildQiraatPrompt(qiraatData, qiraatType, language);
         var analysis = await _ollama.GenerateStructuredResponseAsync<QiraatAnalysis>(
@@ -184,7 +257,7 @@ public class TajweedTutorAgent
     {
         var languageInstruction = language switch
         {
-            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
             "en" => "Please respond in English language. Use clear English explanations.",
             _ => "Please respond in English language. Use clear English explanations."
         };
@@ -229,11 +302,31 @@ Respond in JSON format with detailed explanation in the requested language.";
         // Create progressive steps based on lesson plan
         for (int i = 0; i < plan.StepCount; i++)
         {
-            var stepPrompt = BuildStepPrompt(surahData, i + 1, plan.StepCount, language);
-            var step = await _ollama.GenerateStructuredResponseAsync<LessonStep>(
-                MODEL_NAME, stepPrompt, temperature: 0.1);
-            
-            steps.Add(step);
+            try 
+            {
+                var stepPrompt = BuildStepPrompt(surahData, i + 1, plan.StepCount, language);
+                var step = await _ollama.GenerateStructuredResponseAsync<LessonStep>(
+                    MODEL_NAME, stepPrompt, temperature: 0.1);
+                
+                steps.Add(step);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Failed to generate step {Step}, using fallback", i + 1);
+                
+                // Fallback simple step
+                var simpleStep = new LessonStep(
+                    StepNumber: i + 1,
+                    Title: language == "ar" ? $"الخطوة {i + 1}" : $"Step {i + 1}",
+                    Objective: language == "ar" ? "تعلم قواعد التجويد" : "Learn Tajweed rules",
+                    VerseReferences: new List<string> { $"{surahData.Name}" },
+                    TajweedFocus: new List<string> { language == "ar" ? "قواعد أساسية" : "Basic rules" },
+                    PracticeExercises: new List<string> { language == "ar" ? "تمارين النطق" : "Pronunciation exercises" },
+                    AssessmentCriteria: language == "ar" ? "دقة النطق" : "Pronunciation accuracy"
+                );
+                
+                steps.Add(simpleStep);
+            }
         }
 
         return steps;
@@ -252,7 +345,17 @@ Respond in JSON format with detailed explanation in the requested language.";
         return TimeSpan.FromMinutes(Math.Max(15, Math.Min(120, baseMinutes)));
     }    private string BuildTajweedAnalysisPrompt(VerseData verseData, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Tajweed expert providing verse analysis.
+
+{languageInstruction}
+
 Analyze the tajweed rules for this Quranic verse:
 
 Arabic Text: {verseData.ArabicText}
@@ -265,14 +368,14 @@ Please provide clear guidance on:
 3. Common mistakes to avoid
 4. Any special recitation notes
 
-Respond with clear, practical guidance without complex JSON formatting.";
+Respond with clear, practical guidance in the requested language without complex JSON formatting.";
     }
 
     private string BuildPronunciationPrompt(string arabicWord, string language)
     {
         var languageInstruction = language switch
         {
-            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
             "en" => "Please respond in English language. Use clear English explanations.",
             _ => "Please respond in English language. Use clear English explanations."
         };
@@ -299,7 +402,7 @@ Respond in JSON format with step-by-step pronunciation guide in the requested la
     {
         var languageInstruction = language switch
         {
-            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
             "en" => "Please respond in English language. Use clear English explanations.",
             _ => "Please respond in English language. Use clear English explanations."
         };
@@ -327,7 +430,7 @@ Respond in JSON format with educational lesson plan in the requested language.";
     {
         var languageInstruction = language switch
         {
-            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
             "en" => "Please respond in English language. Use clear English explanations.",
             _ => "Please respond in English language. Use clear English explanations."
         };
@@ -354,7 +457,17 @@ Respond in JSON format with correction guidance in the requested language.";
 
     private string BuildQiraatPrompt(QiraatData qiraatData, QiraatType qiraatType, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Qira'at scholar providing recitation guidance.
+
+{languageInstruction}
+
 Analyze the Qira'at (recitation style) information:
 
 Qira'at Type: {qiraatType}
@@ -367,14 +480,22 @@ Provide:
 3. Scholarly opinions and authenticity
 4. Practical guidance for reciters
 
-Language: {language}
-
-Respond in JSON format with Qira'at analysis.";
+Respond in JSON format with Qira'at analysis in the requested language.";
     }
 
     private string BuildStepPrompt(SurahData surahData, int stepNumber, int totalSteps, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "يرجى الرد باللغة العربية فقط. استخدم المصطلحات الإسلامية بالعربية وقدم جميع الشروحات باللغة العربية. لا تستخدم الإنجليزية في الرد.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Tajweed expert creating lesson steps.
+
+{languageInstruction}
+
 Create lesson step {stepNumber} of {totalSteps} for Surah {surahData.Name}:
 
 Focus on progressive learning with:
@@ -383,9 +504,7 @@ Focus on progressive learning with:
 3. Practice exercises for this step
 4. Assessment criteria
 
-Language: {language}
-
-Respond in JSON format with detailed lesson step.";
+Respond in JSON format with detailed lesson step in the requested language.";
     }    // Supporting records - enums moved to Core.Models
     private record TajweedAnalysis(
         List<BasicTajweedRule> Rules,
