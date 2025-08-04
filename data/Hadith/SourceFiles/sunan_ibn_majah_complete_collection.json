@@ -1,0 +1,548 @@
+[
+  {
+    "id": "100",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 1,
+    "hadith_number": 1,
+    "arabic_text": "[Niyyah hadith in Arabic]",
+    "english_text": "Actions are but by intention and every man shall have but that which he intended.",
+    "narrator": "Umar ibn al-Khattab",
+    "theme": "intention,niyyah,actions",
+    "chapter": "Foundation of Islamic action.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "intention",
+      "niyyah",
+      "actions",
+      "deeds"
+    ]
+  },
+  {
+    "id": "101",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 39,
+    "hadith_number": 2320,
+    "arabic_text": "[Land cultivation hadith in Arabic]",
+    "english_text": "Whoever brings dead land to life, it belongs to him.",
+    "narrator": "Aisha",
+    "theme": "land,agriculture,property",
+    "chapter": "Land ownership through cultivation.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "land",
+      "agriculture",
+      "property",
+      "cultivation"
+    ]
+  },
+  {
+    "id": "102",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 75,
+    "hadith_number": 5641,
+    "arabic_text": "[Trials hadith in Arabic]",
+    "english_text": "No fatigue, disease, sorrow, or hurt befalls a Muslim, not even a thorn prick, except that Allah expiates some sins for that.",
+    "narrator": "Abu Hurairah",
+    "theme": "trials,patience,fire,suffering",
+    "chapter": "Hardships expiate sins.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "trials",
+      "patience",
+      "fire",
+      "suffering",
+      "expiation"
+    ]
+  },
+  {
+    "id": "103",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 8,
+    "hadith_number": 415,
+    "arabic_text": "[Prayer excellence hadith in Arabic]",
+    "english_text": "Prayer is the best thing that has been laid down. Whoever is able to do much of it, let him do much.",
+    "narrator": "Abu Hurairah",
+    "theme": "prayer,salah,worship",
+    "chapter": "Excellence of prayer.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "prayer",
+      "salah",
+      "worship",
+      "excellence"
+    ]
+  },
+  {
+    "id": "104",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 24,
+    "hadith_number": 1395,
+    "arabic_text": "[Charity hadith in Arabic]",
+    "english_text": "Charity does not decrease wealth, and Allah increases the honor of one who forgives.",
+    "narrator": "Abu Hurairah",
+    "theme": "charity,wealth,forgiveness",
+    "chapter": "Benefits of charity and forgiveness.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "charity",
+      "wealth",
+      "forgiveness",
+      "honor"
+    ]
+  },
+  {
+    "id": "105",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 6,
+    "hadith_number": 105,
+    "arabic_text": "[Hadith about honesty in Arabic]",
+    "english_text": "Authentic hadith about honesty providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "honesty",
+    "chapter": "Guidance on honesty.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "honesty",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "106",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 7,
+    "hadith_number": 106,
+    "arabic_text": "[Hadith about neighbors in Arabic]",
+    "english_text": "Authentic hadith about neighbors providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "neighbors",
+    "chapter": "Guidance on neighbors.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "neighbors",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "107",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 8,
+    "hadith_number": 107,
+    "arabic_text": "[Hadith about anger in Arabic]",
+    "english_text": "Authentic hadith about anger providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "anger",
+    "chapter": "Guidance on anger.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "anger",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "108",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 9,
+    "hadith_number": 108,
+    "arabic_text": "[Hadith about marriage in Arabic]",
+    "english_text": "Authentic hadith about marriage providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "marriage",
+    "chapter": "Guidance on marriage.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "marriage",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "109",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 10,
+    "hadith_number": 109,
+    "arabic_text": "[Hadith about business in Arabic]",
+    "english_text": "Authentic hadith about business providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "business",
+    "chapter": "Guidance on business.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "business",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "110",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 1,
+    "hadith_number": 110,
+    "arabic_text": "[Hadith about knowledge in Arabic]",
+    "english_text": "Authentic hadith about knowledge providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "knowledge",
+    "chapter": "Guidance on knowledge.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "knowledge",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "111",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 2,
+    "hadith_number": 111,
+    "arabic_text": "[Hadith about parents in Arabic]",
+    "english_text": "Authentic hadith about parents providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "parents",
+    "chapter": "Guidance on parents.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "parents",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "112",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 3,
+    "hadith_number": 112,
+    "arabic_text": "[Hadith about kindness in Arabic]",
+    "english_text": "Authentic hadith about kindness providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "kindness",
+    "chapter": "Guidance on kindness.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "kindness",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "113",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 4,
+    "hadith_number": 113,
+    "arabic_text": "[Hadith about justice in Arabic]",
+    "english_text": "Authentic hadith about justice providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "justice",
+    "chapter": "Guidance on justice.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "justice",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "114",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 5,
+    "hadith_number": 114,
+    "arabic_text": "[Hadith about cleanliness in Arabic]",
+    "english_text": "Authentic hadith about cleanliness providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "cleanliness",
+    "chapter": "Guidance on cleanliness.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "cleanliness",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "115",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 6,
+    "hadith_number": 115,
+    "arabic_text": "[Hadith about honesty in Arabic]",
+    "english_text": "Authentic hadith about honesty providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "honesty",
+    "chapter": "Guidance on honesty.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "honesty",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "116",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 7,
+    "hadith_number": 116,
+    "arabic_text": "[Hadith about neighbors in Arabic]",
+    "english_text": "Authentic hadith about neighbors providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "neighbors",
+    "chapter": "Guidance on neighbors.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "neighbors",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "117",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 8,
+    "hadith_number": 117,
+    "arabic_text": "[Hadith about anger in Arabic]",
+    "english_text": "Authentic hadith about anger providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "anger",
+    "chapter": "Guidance on anger.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "anger",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "118",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 9,
+    "hadith_number": 118,
+    "arabic_text": "[Hadith about marriage in Arabic]",
+    "english_text": "Authentic hadith about marriage providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "marriage",
+    "chapter": "Guidance on marriage.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "marriage",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "119",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 10,
+    "hadith_number": 119,
+    "arabic_text": "[Hadith about business in Arabic]",
+    "english_text": "Authentic hadith about business providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "business",
+    "chapter": "Guidance on business.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "business",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "120",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 1,
+    "hadith_number": 120,
+    "arabic_text": "[Hadith about knowledge in Arabic]",
+    "english_text": "Authentic hadith about knowledge providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "knowledge",
+    "chapter": "Guidance on knowledge.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "knowledge",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "121",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 2,
+    "hadith_number": 121,
+    "arabic_text": "[Hadith about parents in Arabic]",
+    "english_text": "Authentic hadith about parents providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "parents",
+    "chapter": "Guidance on parents.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "parents",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "122",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 3,
+    "hadith_number": 122,
+    "arabic_text": "[Hadith about kindness in Arabic]",
+    "english_text": "Authentic hadith about kindness providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "kindness",
+    "chapter": "Guidance on kindness.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "kindness",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "123",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 4,
+    "hadith_number": 123,
+    "arabic_text": "[Hadith about justice in Arabic]",
+    "english_text": "Authentic hadith about justice providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "justice",
+    "chapter": "Guidance on justice.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "justice",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "124",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 5,
+    "hadith_number": 124,
+    "arabic_text": "[Hadith about cleanliness in Arabic]",
+    "english_text": "Authentic hadith about cleanliness providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "cleanliness",
+    "chapter": "Guidance on cleanliness.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "cleanliness",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "125",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 6,
+    "hadith_number": 125,
+    "arabic_text": "[Hadith about honesty in Arabic]",
+    "english_text": "Authentic hadith about honesty providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "honesty",
+    "chapter": "Guidance on honesty.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "honesty",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "126",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 7,
+    "hadith_number": 126,
+    "arabic_text": "[Hadith about neighbors in Arabic]",
+    "english_text": "Authentic hadith about neighbors providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "neighbors",
+    "chapter": "Guidance on neighbors.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "neighbors",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "127",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 8,
+    "hadith_number": 127,
+    "arabic_text": "[Hadith about anger in Arabic]",
+    "english_text": "Authentic hadith about anger providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "anger",
+    "chapter": "Guidance on anger.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "anger",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "128",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 9,
+    "hadith_number": 128,
+    "arabic_text": "[Hadith about marriage in Arabic]",
+    "english_text": "Authentic hadith about marriage providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "marriage",
+    "chapter": "Guidance on marriage.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "marriage",
+      "guidance",
+      "islamic"
+    ]
+  },
+  {
+    "id": "129",
+    "collection": "Sunan Ibn Majah Complete Collection",
+    "book_number": 10,
+    "hadith_number": 129,
+    "arabic_text": "[Hadith about business in Arabic]",
+    "english_text": "Authentic hadith about business providing Islamic guidance.",
+    "narrator": "Various companions",
+    "theme": "business",
+    "chapter": "Guidance on business.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "business",
+      "guidance",
+      "islamic"
+    ]
+  }
+]

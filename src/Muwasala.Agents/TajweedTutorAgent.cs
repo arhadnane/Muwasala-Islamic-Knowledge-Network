@@ -14,7 +14,7 @@ public class TajweedTutorAgent
     private readonly IOllamaService _ollama;
     private readonly ITajweedService _tajweedService;
     private readonly ILogger<TajweedTutorAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     public TajweedTutorAgent(
         IOllamaService ollama,
@@ -182,7 +182,17 @@ public class TajweedTutorAgent
         string verseText, 
         string language)
     {
-        var prompt = $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        var prompt = $@"You are a Tajweed expert providing pronunciation guidance.
+
+{languageInstruction}
+
 Provide detailed explanation for this tajweed rule:
 
 Rule: {basicRule.Name}
@@ -195,9 +205,7 @@ Explain:
 3. Common mistakes students make
 4. Practice tips
 
-Language: {language}
-
-Respond in JSON format with detailed explanation.";
+Respond in JSON format with detailed explanation in the requested language.";
 
         var explanation = await _ollama.GenerateStructuredResponseAsync<RuleExplanation>(
             MODEL_NAME, prompt, temperature: 0.1);
@@ -262,7 +270,17 @@ Respond with clear, practical guidance without complex JSON formatting.";
 
     private string BuildPronunciationPrompt(string arabicWord, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Tajweed expert providing pronunciation guidance.
+
+{languageInstruction}
+
 Create a detailed pronunciation guide for this Arabic word from the Quran:
 
 Arabic Word: {arabicWord}
@@ -274,20 +292,27 @@ Provide:
 4. Audio description (how it should sound)
 5. Practice exercises
 
-Language: {language}
-
-Respond in JSON format with step-by-step pronunciation guide.";
+Respond in JSON format with step-by-step pronunciation guide in the requested language.";
     }
 
     private string BuildLessonPrompt(SurahData surahData, RecitationLevel level, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Tajweed expert creating educational content.
+
+{languageInstruction}
+
 Create a structured recitation lesson plan for:
 
 Surah: {surahData.Name} (#{surahData.Number})
 Verses: {surahData.VerseCount}
 Student Level: {level}
-Language: {language}
 
 Design lesson with:
 1. Prerequisites students should know
@@ -295,12 +320,22 @@ Design lesson with:
 3. Number of recommended steps/sessions
 4. Progressive difficulty structure
 
-Respond in JSON format with educational lesson plan.";
+Respond in JSON format with educational lesson plan in the requested language.";
     }
 
     private string BuildCorrectionPrompt(CommonMistake mistake, string verseText, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are a Tajweed expert providing mistake correction guidance.
+
+{languageInstruction}
+
 Explain how to correct this common tajweed mistake:
 
 Mistake Type: {mistake.Type}
@@ -314,9 +349,7 @@ Provide:
 3. Step-by-step correction method
 4. Practice tips to avoid this mistake
 
-Language: {language}
-
-Respond in JSON format with correction guidance.";
+Respond in JSON format with correction guidance in the requested language.";
     }
 
     private string BuildQiraatPrompt(QiraatData qiraatData, QiraatType qiraatType, string language)

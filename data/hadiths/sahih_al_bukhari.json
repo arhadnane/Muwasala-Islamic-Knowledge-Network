@@ -1,0 +1,112 @@
+[
+  {
+    "id": "31",
+    "collection": "Sahih al-Bukhari",
+    "book_number": 1,
+    "hadith_number": 1,
+    "arabic_text": "انما الاعمال بالنيات",
+    "english_text": "Actions are but by intention and every man shall have but that which he intended.",
+    "narrator": "Umar ibn al-Khattab -> Alqama ibn Waqqas",
+    "theme": "intention,niyyah,actions",
+    "chapter": "This hadith establishes the fundamental principle that all actions are judged by intentions.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "intention",
+      "niyyah",
+      "actions",
+      "deeds"
+    ]
+  },
+  {
+    "id": "32",
+    "collection": "Sahih al-Bukhari",
+    "book_number": 75,
+    "hadith_number": 5641,
+    "arabic_text": "ما يصيب المسلم من نصب ولا وصب ولا هم ولا حزن ولا اذى ولا غم حتى الشوكة يشاكها الا كفر الله بها من خطاياه",
+    "english_text": "No fatigue, nor disease, nor sorrow, nor sadness, nor hurt, nor distress befalls a Muslim, not even if it were the prick he receives from a thorn, but that Allah expiates some of his sins for that.",
+    "narrator": "Abu Said al-Khudri -> Abu Hurairah",
+    "theme": "trials,patience,fire,suffering,pain",
+    "chapter": "This hadith provides comfort by explaining that all forms of hardship, even pain like fire or the smallest suffering, serve as a means for Allah to forgive sins.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "trials",
+      "patience",
+      "fire",
+      "suffering",
+      "forgiveness",
+      "pain",
+      "hardship",
+      "expiation"
+    ]
+  },
+  {
+    "id": "33",
+    "collection": "Sahih al-Bukhari",
+    "book_number": 81,
+    "hadith_number": 6557,
+    "arabic_text": "النار جهنم سعرت فقالت رب اكلني بعضي بعضا فاذن لها بنفسين نفس في الشتاء ونفس في الصيف",
+    "english_text": "The Hell-fire complained to its Lord saying: O my Lord! Some parts of me have consumed the other parts. So Allah allowed it to take two breaths - one in winter and one in summer.",
+    "narrator": "Abu Hurairah",
+    "theme": "fire,hell,punishment,temperature",
+    "chapter": "This hadith explains the extreme heat of summer and cold of winter as breaths of Hell-fire, demonstrating the intensity of the punishment in the afterlife.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "fire",
+      "hell",
+      "jahannam",
+      "punishment",
+      "heat",
+      "cold",
+      "winter",
+      "summer"
+    ]
+  },
+  {
+    "id": "34",
+    "collection": "Sahih al-Bukhari",
+    "book_number": 76,
+    "hadith_number": 5681,
+    "arabic_text": "ان كان في شيء من ادويتكم خير ففي شرطة محجم او شربة عسل او لذعة بنار واكره الكي",
+    "english_text": "If there is any good in your medicines, then it is in cupping, a gulp of honey, or branding with fire - but I hate branding (cauterizing).",
+    "narrator": "Ibn Abbas",
+    "theme": "medicine,fire,treatment,health",
+    "chapter": "This hadith mentions the therapeutic use of fire in medical treatment, showing that fire can be used for healing purposes when applied correctly.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "medicine",
+      "fire",
+      "treatment",
+      "health",
+      "cupping",
+      "honey",
+      "cauterizing",
+      "branding"
+    ]
+  },
+  {
+    "id": "35",
+    "collection": "Sahih al-Bukhari",
+    "book_number": 97,
+    "hadith_number": 7439,
+    "arabic_text": "يقول الله تعالى انا عند ظن عبدي بي وانا معه اذا ذكرني",
+    "english_text": "Allah says: I am as My servant thinks I am, and I am with him when he remembers Me. If he remembers Me in himself, I remember him in Myself, and if he remembers Me in a gathering, I remember him in a gathering better than it.",
+    "narrator": "Abu Hurairah",
+    "theme": "remembrance,dhikr,allah,fire,paradise",
+    "chapter": "This sacred hadith (hadith qudsi) shows Allah's closeness to those who remember Him, whether in private or public gatherings, promising rewards that surpass even fire's punishment.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "remembrance",
+      "dhikr",
+      "allah",
+      "fire",
+      "paradise",
+      "gathering",
+      "worship"
+    ]
+  }
+]

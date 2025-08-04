@@ -14,7 +14,7 @@ public class SirahScholarAgent
     private readonly IOllamaService _ollama;
     private readonly ISirahService _sirahService;
     private readonly ILogger<SirahScholarAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     public SirahScholarAgent(
         IOllamaService ollama,
@@ -188,10 +188,18 @@ public class SirahScholarAgent
         string situation, 
         string language)
     {
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
         var guidanceText = guidance.Any() 
             ? string.Join("\n", guidance.Select(g => $"- {g.Guidance} (Context: {g.Context})"))
-            : "General guidance from Prophet's life";        return $@"
-You are an Islamic scholar specializing in the Sirah (biography) of Prophet Muhammad (peace be upon him).
+            : "General guidance from Prophet's life";        return $@"You are an Islamic scholar specializing in the Sirah (biography) of Prophet Muhammad (peace be upon him).
+
+{languageInstruction}
 
 User's Situation: ""{situation}""
 
@@ -209,7 +217,7 @@ Please provide clear guidance on how this relates to the user's situation. Inclu
 2. Practical applications of the Prophetic example
 3. Any relevant wisdom or sayings from Prophet Muhammad (PBUH)
 
-Respond with clear, practical guidance without complex JSON formatting.";
+Respond with clear, practical guidance in the requested language.";
     }
 
     private string BuildEventAnalysisPrompt(SirahEvent sirahEvent, string language)

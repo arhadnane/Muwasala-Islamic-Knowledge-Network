@@ -161,7 +161,7 @@ public class MockOllamaService : IOllamaService
 
     public Task<List<string>> GetAvailableModelsAsync()
     {
-        return Task.FromResult(new List<string> { "phi3:mini" });
+        return Task.FromResult(new List<string> { "deepseek-r1" });
     }
 }
 

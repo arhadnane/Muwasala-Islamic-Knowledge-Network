@@ -51,6 +51,10 @@ builder.Services.AddScoped<DuaCompanionAgent>();
 builder.Services.AddScoped<TajweedTutorAgent>();
 builder.Services.AddScoped<SirahScholarAgent>();
 
+// Register enhanced Fiqh services
+builder.Services.AddScoped<IEnhancedFiqhService, HybridFiqhService>();
+builder.Services.AddScoped<EnhancedFiqhAdvisorAgent>();
+
 // Configure CORS for frontend integration
 builder.Services.AddCors(options =>
 {

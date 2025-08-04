@@ -1,0 +1,66 @@
+[
+  {
+    "id": "97",
+    "collection": "Sahih al-Bukhari Sample Collection",
+    "book_number": 1,
+    "hadith_number": 1,
+    "arabic_text": "إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى فَمَنْ كَانَتْ هِجْرَتُهُ إِلَى اللَّهِ وَرَسُولِهِ فَهِجْرَتُهُ إِلَى اللَّهِ وَرَسُولِهِ وَمَنْ كَانَتْ هِجْرَتُهُ لِدُنْيَا يُصِيبُهَا أَوْ امْرَأَةٍ يَنْكِحُهَا فَهِجْرَتُهُ إِلَى مَا هَاجَرَ إِلَيْهِ",
+    "english_text": "I heard the Messenger of Allah (ﷺ) say: 'Actions are but by intention and every man shall have but that which he intended. Thus he whose migration was for Allah and His messenger, his migration was for Allah and His messenger, and he whose migration was to achieve some worldly benefit or to take some woman in marriage, his migration was for that for which he migrated.'",
+    "narrator": "Umar ibn al-Khattab -> Alqama ibn Waqqas al-Laythi -> Muhammad ibn Ibrahim at-Taymi -> Yahya ibn Sa'id al-Ansari",
+    "theme": "intention,niyyah,actions",
+    "chapter": "This hadith establishes the fundamental principle that all actions are judged by the intentions behind them. It emphasizes the importance of having pure intention (niyyah) in all acts of worship and daily activities.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "intention",
+      "niyyah",
+      "actions",
+      "deeds",
+      "migration",
+      "hijra"
+    ]
+  },
+  {
+    "id": "98",
+    "collection": "Sahih al-Bukhari Sample Collection",
+    "book_number": 1,
+    "hadith_number": 2,
+    "arabic_text": "وَقَالَ مُعَاوِيَةُ حَدَّثَنَا أَبُو الزِّنَادِ عَنِ الْأَعْرَجِ عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ عَنْ النَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ مَنْ كَذَبَ عَلَيَّ مُتَعَمِّدًا فَلْيَتَبَوَّأْ مَقْعَدَهُ مِنْ النَّارِ",
+    "english_text": "The Prophet (ﷺ) said: 'Whoever tells a lie against me intentionally then surely let him occupy his seat in Hell-Fire.'",
+    "narrator": "Abu Hurairah -> Abdul Rahman al-A'raj -> Abu az-Zinad -> Muawiyah",
+    "theme": "truth,lies,prophet",
+    "chapter": "This hadith warns against attributing false statements to the Prophet Muhammad (ﷺ). It emphasizes the serious consequences of fabricating hadiths or lying about what the Prophet said.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "truth",
+      "lies",
+      "fabrication",
+      "prophet",
+      "hell"
+    ]
+  },
+  {
+    "id": "99",
+    "collection": "Sahih al-Bukhari Sample Collection",
+    "book_number": 75,
+    "hadith_number": 5641,
+    "arabic_text": "مَا يُصِيبُ الْمُسْلِمَ مِنْ نَصَبٍ وَلَا وَصَبٍ وَلَا هَمٍّ وَلَا حُزْنٍ وَلَا أَذًى وَلَا غَمٍّ حَتَّى الشَّوْكَةِ يُشَاكُهَا إِلَّا كَفَّرَ اللَّهُ بِهَا مِنْ خَطَايَاهُ",
+    "english_text": "No fatigue, nor disease, nor sorrow, nor sadness, nor hurt, nor distress befalls a Muslim, not even if it were the prick he receives from a thorn, but that Allah expiates some of his sins for that.",
+    "narrator": "Abu Sa'id al-Khudri -> Abu Hurairah",
+    "theme": "trials,patience,forgiveness",
+    "chapter": "This hadith provides comfort to believers by explaining that all forms of hardship, even the smallest pain like being pricked by a thorn, serve as a means for Allah to forgive sins. It includes references to various forms of suffering including 'fire' (metaphorically through pain and trials).",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "trials",
+      "patience",
+      "sabr",
+      "forgiveness",
+      "sins",
+      "expiation",
+      "fire",
+      "suffering"
+    ]
+  }
+]

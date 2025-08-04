@@ -17,7 +17,7 @@ public class HadithVerifierAgent
     private readonly IHadithService _hadithService;
     private readonly ICacheService _cache;
     private readonly ILogger<HadithVerifierAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     // Terme expansion mapping pour recherche intelligente
     private readonly Dictionary<string, List<string>> _termExpansion = new()
@@ -519,7 +519,17 @@ Keep response concise and focused on verification guidance only.";
         return stopWords.Contains(word);
     }    private string BuildVerificationPrompt(HadithRecord hadith, string language)
     {
-        return $@"
+        var languageInstruction = language switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic and provide explanations in Arabic.",
+            "en" => "Please respond in English language. Use clear English explanations.",
+            _ => "Please respond in English language. Use clear English explanations."
+        };
+
+        return $@"You are an Islamic scholar providing hadith verification and explanation.
+
+{languageInstruction}
+
 Explain this authenticated hadith from {hadith.Collection} (Grade: {hadith.Grade}):
 
 Translation: {hadith.Translation}
@@ -529,7 +539,7 @@ Please provide:
 2. How it applies to modern Muslim life
 3. Any important scholarly insights
 
-Keep the explanation clear and practical.";
+Keep the explanation clear and practical in the requested language.";
     }
 
     private string BuildSanadAnalysisPrompt(HadithRecord hadith)

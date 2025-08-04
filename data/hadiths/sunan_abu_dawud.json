@@ -1,0 +1,44 @@
+[
+  {
+    "id": "abudawud_1",
+    "collection": "Sunan Abu Dawud",
+    "book_number": 14,
+    "hadith_number": 2141,
+    "arabic_text": "النساء شقائق الرجال",
+    "english_text": "Women are the twin halves of men",
+    "narrator": "Aisha",
+    "theme": "women",
+    "chapter": "The Book of Purification",
+    "grade": "hasan",
+    "reference": "Abu Dawud 14:2141",
+    "keywords": ["women", "equality", "rights", "gender", "twin", "halves", "men"]
+  },
+  {
+    "id": "abudawud_2",
+    "collection": "Sunan Abu Dawud",
+    "book_number": 8,
+    "hadith_number": 832,
+    "arabic_text": "الدعاء هو العبادة ادعوا الله وأنتم موقنون بالإجابة",
+    "english_text": "Supplication is worship itself. When you call upon Allah, call upon Him with certainty that He will answer",
+    "narrator": "Abu Hurairah",
+    "theme": "prayer",
+    "chapter": "The Book of Prayer",
+    "grade": "sahih",
+    "reference": "Abu Dawud 8:832",
+    "keywords": ["dua", "supplication", "prayer", "worship", "certainty", "answer", "call"]
+  },
+  {
+    "id": "abudawud_3",
+    "collection": "Sunan Abu Dawud",
+    "book_number": 2,
+    "hadith_number": 2558,
+    "arabic_text": "إن للصلاة أوقاتا موقوتة حددها الله تعالى بحركة الشمس والقمر",
+    "english_text": "The time for prayer is determined by the position of the sun and moon, as Allah has appointed specific times for His worship",
+    "narrator": "Ibn Abbas",
+    "theme": "prayer",
+    "chapter": "The Book of Prayer Times",
+    "grade": "sahih",
+    "reference": "Abu Dawud 2:2558",
+    "keywords": ["prayer", "times", "sun", "moon", "worship", "astronomy", "calendar"]
+  }
+]

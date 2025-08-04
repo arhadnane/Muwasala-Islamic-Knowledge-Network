@@ -59,11 +59,12 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Language</label>
+                            <label class="form-label">Response Language</label>
                             <InputSelect @bind-Value="consultationModel.Language" class="form-select">
-                                <option value="en">English</option>
-                                <option value="ar">Arabic</option>
+                                <option value="en">🇺🇸 English - الإنجليزية</option>
+                                <option value="ar">🇸🇦 Arabic - العربية</option>
                             </InputSelect>
+                            <div class="form-text">Choose the language for the Fiqh response</div>
                         </div>
 
                         <button type="submit" class="btn btn-info w-100" disabled="@isLoading">
@@ -247,22 +248,34 @@
         
         try
         {
-            // Parse the madhab from string to enum
-            var madhabEnum = consultationModel.Madhab.ToLower() switch
+            if (consultationModel.Madhab.ToLower() == "all")
             {
-                "hanafi" => Madhab.Hanafi,
-                "maliki" => Madhab.Maliki,
-                "shafi" => Madhab.Shafi,
-                "hanbali" => Madhab.Hanbali,
-                _ => Madhab.Hanafi // default to Hanafi for "all" or any other value
-            };
-            
-            var fiqhResponse = await FiqhAgent.GetRulingAsync(
-                consultationModel.Question, 
-                madhabEnum, 
-                consultationModel.Language
-            );
-            response = FormatFiqhResponse(fiqhResponse);
+                // Handle "All Schools" - compare all madhabs
+                var comparisonResponse = await FiqhAgent.CompareMadhabRulingsAsync(
+                    consultationModel.Question,
+                    consultationModel.Language
+                );
+                response = FormatComparisonResponse(comparisonResponse);
+            }
+            else
+            {
+                // Parse the madhab from string to enum for specific madhab
+                var madhabEnum = consultationModel.Madhab.ToLower() switch
+                {
+                    "hanafi" => Madhab.Hanafi,
+                    "maliki" => Madhab.Maliki,
+                    "shafi" => Madhab.Shafi,
+                    "hanbali" => Madhab.Hanbali,
+                    _ => Madhab.Hanafi // default fallback
+                };
+                
+                var fiqhResponse = await FiqhAgent.GetRulingAsync(
+                    consultationModel.Question, 
+                    madhabEnum, 
+                    consultationModel.Language
+                );
+                response = FormatFiqhResponse(fiqhResponse);
+            }
 
             responseTime = DateTime.Now - startTime;
             searchPerformed = true;
@@ -327,7 +340,70 @@
         {
             formatted += $"<div class='alert alert-warning'>{fiqhResponse.Warning}</div>";
         }
-          formatted += "</div>";
+        formatted += "</div>";
+        return formatted;
+    }
+
+    private string FormatComparisonResponse(FiqhAdvisorAgent.MadhabComparisonResponse comparisonResponse)
+    {
+        if (comparisonResponse == null) return "No comparison available.";
+
+        var formatted = "<div class='mb-4'>";
+        formatted += "<h5 class='text-primary mb-3'>📊 All Schools Comparison</h5>";
+        
+        // Display each madhab's ruling
+        foreach (var madhabRuling in comparisonResponse.MadhabRulings)
+        {
+            var madhab = madhabRuling.Key;
+            var ruling = madhabRuling.Value;
+            
+            formatted += "<div class='card mb-3'>";
+            formatted += $"<div class='card-header bg-{GetMadhabColor(madhab)} text-white'>";
+            formatted += $"<h6 class='mb-0'>{madhab} School</h6>";
+            formatted += "</div>";
+            formatted += "<div class='card-body'>";
+            formatted += $"<p><strong>Ruling:</strong> {ruling.Ruling}</p>";
+            formatted += $"<p><strong>Evidence:</strong> {ruling.Evidence}</p>";
+            formatted += "</div>";
+            formatted += "</div>";
+        }
+        
+        // Display analysis
+        if (comparisonResponse.CommonGround?.Any() == true)
+        {
+            formatted += "<div class='alert alert-success'>";
+            formatted += "<h6><i class='fas fa-handshake me-2'></i>Common Ground</h6>";
+            formatted += "<ul class='mb-0'>";
+            foreach (var common in comparisonResponse.CommonGround)
+            {
+                formatted += $"<li>{common}</li>";
+            }
+            formatted += "</ul>";
+            formatted += "</div>";
+        }
+        
+        if (comparisonResponse.KeyDifferences?.Any() == true)
+        {
+            formatted += "<div class='alert alert-info'>";
+            formatted += "<h6><i class='fas fa-balance-scale me-2'></i>Key Differences</h6>";
+            formatted += "<ul class='mb-0'>";
+            foreach (var difference in comparisonResponse.KeyDifferences)
+            {
+                formatted += $"<li>{difference}</li>";
+            }
+            formatted += "</ul>";
+            formatted += "</div>";
+        }
+        
+        if (!string.IsNullOrEmpty(comparisonResponse.RecommendedApproach))
+        {
+            formatted += "<div class='alert alert-primary'>";
+            formatted += "<h6><i class='fas fa-compass me-2'></i>Recommended Approach</h6>";
+            formatted += $"<p class='mb-0'>{comparisonResponse.RecommendedApproach}</p>";
+            formatted += "</div>";
+        }
+        
+        formatted += "</div>";
         return formatted;
     }    private string GetMadhabColor(Madhab madhab)
     {

@@ -1,0 +1,72 @@
+[
+  {
+    "id": "muslim_1",
+    "collection": "Sahih Muslim",
+    "book_number": 6,
+    "hadith_number": 2577,
+    "arabic_text": "صوموا لرؤيته وأفطروا لرؤيته فإن غم عليكم فاقدروا له",
+    "english_text": "Fast when you see the crescent moon and break your fast when you see it. If clouds prevent you from seeing it, then estimate the month",
+    "narrator": "Abu Hurayrah",
+    "theme": "fasting",
+    "chapter": "The Book of Fasting",
+    "grade": "sahih",
+    "reference": "Muslim 6:2577",
+    "keywords": ["fasting", "moon", "crescent", "hilal", "clouds", "estimation", "lunar", "calendar"]
+  },
+  {
+    "id": "muslim_2",
+    "collection": "Sahih Muslim",
+    "book_number": 12,
+    "hadith_number": 2586,
+    "arabic_text": "مثل المؤمنين في توادهم وتراحمهم وتعاطفهم مثل الجسد إذا اشتكى منه عضو تداعى له سائر الجسد بالسهر والحمى",
+    "english_text": "The believers in their mutual kindness, compassion, and sympathy are just one body - when a limb suffers, the whole body responds to it with wakefulness and fever",
+    "narrator": "Nu'man ibn Bashir",
+    "theme": "brotherhood",
+    "chapter": "The Book of Virtues",
+    "grade": "sahih",
+    "reference": "Muslim 12:2586",
+    "keywords": ["brotherhood", "believers", "compassion", "sympathy", "body", "unity", "ummah", "community"]
+  },
+  {
+    "id": "muslim_3",
+    "collection": "Sahih Muslim",
+    "book_number": 4,
+    "hadith_number": 1829,
+    "arabic_text": "اتقوا الظلم فإن الظلم ظلمات يوم القيامة",
+    "english_text": "Beware of oppression, for oppression will be darkness on the Day of Judgment",
+    "narrator": "Ibn Umar",
+    "theme": "justice",
+    "chapter": "The Book of Virtue",
+    "grade": "sahih",
+    "reference": "Muslim 4:1829",
+    "keywords": ["justice", "oppression", "zulm", "judgment", "qiyamah", "darkness", "fairness"]
+  },
+  {
+    "id": "muslim_4",
+    "collection": "Sahih Muslim",
+    "book_number": 45,
+    "hadith_number": 2999,
+    "arabic_text": "ما يصيب المسلم من نصب ولا وصب ولا هم ولا حزن ولا أذى ولا غم حتى الشوكة يشاكها إلا كفر الله بها من خطاياه",
+    "english_text": "No fatigue, illness, anxiety, sorrow, harm or distress befalls a Muslim, not even the pricking of a thorn, except that Allah removes some of his sins thereby",
+    "narrator": "Abu Hurairah",
+    "theme": "patience",
+    "chapter": "The Book of Virtue",
+    "grade": "sahih",
+    "reference": "Muslim 45:2999",
+    "keywords": ["patience", "sabr", "trial", "suffering", "reward", "sins", "expiation", "test"]
+  },
+  {
+    "id": "muslim_5",
+    "collection": "Sahih Muslim",
+    "book_number": 1,
+    "hadith_number": 1080,
+    "arabic_text": "ما نقصت صدقة من مال وما زاد الله عبدا بعفو إلا عزا وما تواضع أحد لله إلا رفعه الله",
+    "english_text": "Charity does not decrease wealth, and Allah increases the honor of one who forgives, and no one humbles himself for the sake of Allah except that Allah elevates him",
+    "narrator": "Abu Hurairah",
+    "theme": "charity",
+    "chapter": "The Book of Faith",
+    "grade": "sahih",
+    "reference": "Muslim 1:1080",
+    "keywords": ["charity", "wealth", "forgiveness", "humility", "blessing", "sadaqah", "honor"]
+  }
+]

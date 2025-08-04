@@ -1,0 +1,113 @@
+[
+  {
+    "id": "36",
+    "collection": "Sahih al-Bukhari - Common Topics",
+    "book_number": 8,
+    "hadith_number": 415,
+    "arabic_text": "الصلاة خير موضوع فمن استطاع ان يستكثر فليستكثر",
+    "english_text": "Prayer is the best thing that has been laid down. So whoever is able to do much of it, let him do much.",
+    "narrator": "Abu Hurairah",
+    "theme": "prayer,salah,worship,importance",
+    "chapter": "This hadith emphasizes the paramount importance of prayer in Islam and encourages increasing voluntary prayers.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "prayer",
+      "salah",
+      "worship",
+      "importance",
+      "best",
+      "much",
+      "islamic duty"
+    ]
+  },
+  {
+    "id": "37",
+    "collection": "Sahih al-Bukhari - Common Topics",
+    "book_number": 24,
+    "hadith_number": 1395,
+    "arabic_text": "ما نقصت صدقة من مال وما زاد الله عبدا بعفو الا عزا",
+    "english_text": "Charity does not decrease wealth, and Allah increases the honor of one who forgives, and no one humbles himself for the sake of Allah except that Allah elevates him.",
+    "narrator": "Abu Hurairah",
+    "theme": "charity,wealth,forgiveness,honor,humility",
+    "chapter": "This hadith teaches that giving charity actually increases one's wealth through Allah's blessings, and that forgiveness and humility lead to honor.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "charity",
+      "wealth",
+      "money",
+      "forgiveness",
+      "honor",
+      "humility",
+      "zakat",
+      "sadaqah"
+    ]
+  },
+  {
+    "id": "38",
+    "collection": "Sahih al-Bukhari - Common Topics",
+    "book_number": 30,
+    "hadith_number": 1904,
+    "arabic_text": "من صام رمضان ايمانا واحتسابا غفر له ما تقدم من ذنبه",
+    "english_text": "Whoever fasts during Ramadan with faith and seeking reward, his previous sins will be forgiven.",
+    "narrator": "Abu Hurairah",
+    "theme": "fasting,ramadan,forgiveness,faith,reward",
+    "chapter": "This hadith explains the spiritual benefit of fasting in Ramadan when done with proper intention and faith.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "fasting",
+      "ramadan",
+      "forgiveness",
+      "faith",
+      "reward",
+      "sins",
+      "sawm"
+    ]
+  },
+  {
+    "id": "39",
+    "collection": "Sahih al-Bukhari - Common Topics",
+    "book_number": 25,
+    "hadith_number": 1521,
+    "arabic_text": "الحج المبرور ليس له جزاء الا الجنة",
+    "english_text": "An accepted Hajj has no reward except Paradise.",
+    "narrator": "Abu Hurairah",
+    "theme": "hajj,pilgrimage,paradise,reward,acceptance",
+    "chapter": "This hadith emphasizes the immense reward of performing Hajj properly and with sincerity.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "hajj",
+      "pilgrimage",
+      "paradise",
+      "reward",
+      "acceptance",
+      "mecca",
+      "worship"
+    ]
+  },
+  {
+    "id": "40",
+    "collection": "Sahih al-Bukhari - Common Topics",
+    "book_number": 56,
+    "hadith_number": 2786,
+    "arabic_text": "الجهاد ماض الى يوم القيامة",
+    "english_text": "Jihad (struggle in the way of Allah) will continue until the Day of Resurrection.",
+    "narrator": "Uqba ibn Amir",
+    "theme": "jihad,struggle,continuity,resurrection,effort",
+    "chapter": "This hadith speaks about the continuous nature of striving in the way of Allah in various forms.",
+    "grade": "0",
+    "reference": "",
+    "keywords": [
+      "jihad",
+      "struggle",
+      "effort",
+      "continuity",
+      "resurrection",
+      "striving",
+      "path of allah"
+    ]
+  }
+]

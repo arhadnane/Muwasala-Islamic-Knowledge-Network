@@ -1,0 +1,47 @@
+{
+    "collection": "Sahih al-Bukhari - Moon Sighting",
+    "description": "Authentic hadith collection with moon sighting references",
+    "language": "en",
+    "total_hadiths": 3,
+    "hadiths": [
+        {
+            "book": 24,
+            "book_name": "Fasting",
+            "hadith_number": "1907",
+            "reference": "Bukhari 24:1907",
+            "arabic_text": "صُومُوا لِرُؤْيَتِهِ وَأَفْطِرُوا لِرُؤْيَتِهِ فَإِنْ غُبِّيَ عَلَيْكُمْ فَأَكْمِلُوا عِدَّةَ شَعْبَانَ ثَلاَثِينَ",
+            "translation": "Fast when you see the new moon (crescent) and break your fast when you see it. If it is cloudy for you, then complete the month of Shaban as thirty days.",
+            "chain": ["Ibn Umar"],
+            "topic": "fasting,moon,ramadan",
+            "keywords": ["moon", "crescent", "hilal", "fasting", "ramadan", "sighting"],
+            "grade": "Sahih",
+            "chapter": "Moon Sighting for Ramadan"
+        },
+        {
+            "book": 24,
+            "book_name": "Fasting", 
+            "hadith_number": "1908",
+            "reference": "Bukhari 24:1908",
+            "arabic_text": "الشَّهْرُ تِسْعٌ وَعِشْرُونَ لَيْلَةً فَلاَ تَصُومُوا حَتَّى تَرَوُا الْهِلاَلَ",
+            "translation": "The month is twenty-nine nights, so do not fast until you see the crescent moon, and do not break your fast until you see it.",
+            "chain": ["Abdullah ibn Umar"],
+            "topic": "fasting,moon,hilal",
+            "keywords": ["moon", "crescent", "hilal", "fasting", "twenty-nine", "lunar"],
+            "grade": "Sahih",
+            "chapter": "Moon Sighting and Lunar Calendar"
+        },
+        {
+            "book": 8,
+            "book_name": "Prayer",
+            "hadith_number": "1042", 
+            "reference": "Bukhari 8:1042",
+            "arabic_text": "إِنَّ الشَّمْسَ وَالْقَمَرَ آيَتَانِ مِنْ آيَاتِ اللَّهِ لاَ يَنْكَسِفَانِ لِمَوْتِ أَحَدٍ وَلاَ لِحَيَاتِهِ",
+            "translation": "The sun and the moon are two signs of Allah. They are not eclipsed because of the death or birth of someone. When you see an eclipse, remember Allah and pray.",
+            "chain": ["Aisha"],
+            "topic": "prayer,eclipse,moon,sun",
+            "keywords": ["moon", "sun", "eclipse", "prayer", "kusuf", "signs", "Allah"],
+            "grade": "Sahih",
+            "chapter": "Eclipse Prayer"
+        }
+    ]
+}

@@ -76,6 +76,10 @@ builder.Services.AddScoped<DuaCompanionAgent>();
 builder.Services.AddScoped<TajweedTutorAgent>();
 builder.Services.AddScoped<SirahScholarAgent>();
 
+// Register enhanced Fiqh services
+builder.Services.AddScoped<IEnhancedFiqhService, HybridFiqhService>();
+builder.Services.AddScoped<EnhancedFiqhAdvisorAgent>();
+
 var app = builder.Build();
 
 // Initialize database

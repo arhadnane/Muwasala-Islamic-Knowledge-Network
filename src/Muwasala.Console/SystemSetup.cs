@@ -57,7 +57,7 @@ public class SystemSetup
         {
             { "mistral:7b-instruct", "Quran Navigator & Hadith Verifier Agent" },
             { "mistral:7b", "Du'a Companion Agent" },
-            { "phi3:mini", "Fiqh Advisor, Tajweed Tutor & Sirah Scholar Agent" }
+            { "deepseek-r1", "Fiqh Advisor, Tajweed Tutor & Sirah Scholar Agent" }
         };
 
         try
@@ -89,7 +89,7 @@ public class SystemSetup
         System.Console.WriteLine();        System.Console.WriteLine("2. Pull required models:");
         System.Console.WriteLine("   ollama pull mistral:7b-instruct   # For Quran Navigator & Hadith Verifier");
         System.Console.WriteLine("   ollama pull mistral:7b             # For Du'a Companion");
-        System.Console.WriteLine("   ollama pull phi3:mini              # For Fiqh, Tajweed & Sirah Scholar");
+        System.Console.WriteLine("   ollama pull deepseek-r1            # For Fiqh, Tajweed & Sirah Scholar");
         System.Console.WriteLine();
 
         System.Console.WriteLine("3. Start Ollama service:");

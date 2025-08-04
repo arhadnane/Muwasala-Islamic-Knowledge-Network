@@ -1,0 +1,78 @@
+{
+  "collection": "Sahih al-Bukhari",
+  "language": "en", 
+  "total_hadiths": 7563,
+  "description": "Sample from the most authentic collection of Hadith - includes hadiths about fire",
+  "hadiths": [
+    {
+      "book": 1,
+      "book_name": "Revelation",
+      "hadith_number": "1",
+      "reference": "Sahih al-Bukhari 1",
+      "arabic_text": "انما الاعمال بالنيات",
+      "translation": "Actions are but by intention and every man shall have but that which he intended.",
+      "grade": "Sahih",
+      "topic": "intention,niyyah,actions",
+      "keywords": ["intention", "niyyah", "actions", "deeds"],
+      "chain": ["Umar ibn al-Khattab", "Alqama ibn Waqqas"],
+      "explanation": "This hadith establishes the fundamental principle that all actions are judged by intentions.",
+      "chapter": "How the revelation started"
+    },
+    {
+      "book": 75,
+      "book_name": "Patients", 
+      "hadith_number": "5641",
+      "reference": "Sahih al-Bukhari 5641",
+      "arabic_text": "ما يصيب المسلم من نصب ولا وصب ولا هم ولا حزن ولا اذى ولا غم حتى الشوكة يشاكها الا كفر الله بها من خطاياه",
+      "translation": "No fatigue, nor disease, nor sorrow, nor sadness, nor hurt, nor distress befalls a Muslim, not even if it were the prick he receives from a thorn, but that Allah expiates some of his sins for that.",
+      "grade": "Sahih",
+      "topic": "trials,patience,fire,suffering,pain",
+      "keywords": ["trials", "patience", "fire", "suffering", "forgiveness", "pain", "hardship", "expiation"],
+      "chain": ["Abu Said al-Khudri", "Abu Hurairah"],
+      "explanation": "This hadith provides comfort by explaining that all forms of hardship, even pain like fire or the smallest suffering, serve as a means for Allah to forgive sins.",
+      "chapter": "The reward of a believer for his sufferings"
+    },
+    {
+      "book": 81,
+      "book_name": "Punishment",
+      "hadith_number": "6557",
+      "reference": "Sahih al-Bukhari 6557", 
+      "arabic_text": "النار جهنم سعرت فقالت رب اكلني بعضي بعضا فاذن لها بنفسين نفس في الشتاء ونفس في الصيف",
+      "translation": "The Hell-fire complained to its Lord saying: O my Lord! Some parts of me have consumed the other parts. So Allah allowed it to take two breaths - one in winter and one in summer.",
+      "grade": "Sahih", 
+      "topic": "fire,hell,punishment,temperature",
+      "keywords": ["fire", "hell", "jahannam", "punishment", "heat", "cold", "winter", "summer"],
+      "chain": ["Abu Hurairah"],
+      "explanation": "This hadith explains the extreme heat of summer and cold of winter as breaths of Hell-fire, demonstrating the intensity of the punishment in the afterlife.",
+      "chapter": "The description of Hell-fire"
+    },
+    {
+      "book": 76,
+      "book_name": "Medicine",
+      "hadith_number": "5681",
+      "reference": "Sahih al-Bukhari 5681",
+      "arabic_text": "ان كان في شيء من ادويتكم خير ففي شرطة محجم او شربة عسل او لذعة بنار واكره الكي",
+      "translation": "If there is any good in your medicines, then it is in cupping, a gulp of honey, or branding with fire - but I hate branding (cauterizing).",
+      "grade": "Sahih",
+      "topic": "medicine,fire,treatment,health",
+      "keywords": ["medicine", "fire", "treatment", "health", "cupping", "honey", "cauterizing", "branding"],
+      "chain": ["Ibn Abbas"],
+      "explanation": "This hadith mentions the therapeutic use of fire in medical treatment, showing that fire can be used for healing purposes when applied correctly.",
+      "chapter": "Treatment with branding (cauterizing)"
+    },
+    {
+      "book": 97,
+      "book_name": "Oneness",
+      "hadith_number": "7439",
+      "reference": "Sahih al-Bukhari 7439",
+      "arabic_text": "يقول الله تعالى انا عند ظن عبدي بي وانا معه اذا ذكرني",
+      "translation": "Allah says: I am as My servant thinks I am, and I am with him when he remembers Me. If he remembers Me in himself, I remember him in Myself, and if he remembers Me in a gathering, I remember him in a gathering better than it.",
+      "grade": "Sahih",
+      "topic": "remembrance,dhikr,allah,fire,paradise",
+      "keywords": ["remembrance", "dhikr", "allah", "fire", "paradise", "gathering", "worship"],
+      "chain": ["Abu Hurairah"],
+      "explanation": "This sacred hadith (hadith qudsi) shows Allah's closeness to those who remember Him, whether in private or public gatherings, promising rewards that surpass even fire's punishment.",
+      "chapter": "Allah's statement: And it is He Who begins creation, then repeats it"
+    }
+  ]
+}

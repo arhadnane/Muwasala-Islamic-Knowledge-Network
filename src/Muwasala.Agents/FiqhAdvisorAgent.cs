@@ -14,7 +14,7 @@ public class FiqhAdvisorAgent
     private readonly IOllamaService _ollama;
     private readonly IFiqhService _fiqhService;
     private readonly ILogger<FiqhAdvisorAgent> _logger;
-    private const string MODEL_NAME = "phi3:mini";
+    private const string MODEL_NAME = "deepseek-r1";
 
     public FiqhAdvisorAgent(
         IOllamaService ollama,
@@ -158,9 +158,9 @@ public class FiqhAdvisorAgent
         {
             Question = question,
             MadhabRulings = comparisons,
-            CommonGround = analysis.CommonGround,
-            KeyDifferences = analysis.KeyDifferences,
-            RecommendedApproach = analysis.RecommendedApproach
+            CommonGround = analysis?.CommonGround ?? new List<string>(),
+            KeyDifferences = analysis?.KeyDifferences ?? new List<string>(),
+            RecommendedApproach = analysis?.RecommendedApproach ?? "Please consult with qualified Islamic scholars for guidance."
         };
     }
 
@@ -176,8 +176,17 @@ public class FiqhAdvisorAgent
             : "No specific rulings found in database";
 
         var madhabComparisons = string.Join("\n", allMadhabRulings.Select(kvp => 
-            $"- {kvp.Key}: {kvp.Value}"));        return $@"
+            $"- {kvp.Key}: {kvp.Value}"));        var languageInstruction = language.ToLower() switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic.",
+            "en" => "Please respond in English language.",
+            _ => "Please respond in English language."
+        };
+
+        return $@"
 You are a qualified Islamic jurisprudence scholar specializing in the {madhab} school of thought.
+
+{languageInstruction}
 
 Question: ""{question}""
 
@@ -236,9 +245,18 @@ Respond in JSON format with detailed breakdown.";
         var rulingsText = string.Join("\n\n", comparisons.Select(kvp => 
             $"{kvp.Key} Position: {kvp.Value.Ruling}\nEvidence: {kvp.Value.Evidence}"));
 
+        var languageInstruction = language.ToLower() switch
+        {
+            "ar" => "Please respond in Arabic language (العربية). Use Islamic terminology in Arabic.",
+            "en" => "Please respond in English language.",
+            _ => "Please respond in English language."
+        };
+
         return $@"
 Analyze the differences and similarities in madhab rulings for this question:
 ""{question}""
+
+{languageInstruction}
 
 Madhab Positions:
 {rulingsText}
@@ -247,8 +265,6 @@ Provide:
 1. What all madhabs agree on (if anything)
 2. Key differences and their underlying reasons
 3. Balanced approach for a Muslim to follow
-
-Language: {language}
 
 Respond in JSON format with scholarly analysis.";
     }

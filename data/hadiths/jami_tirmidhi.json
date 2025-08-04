@@ -1,0 +1,58 @@
+[
+  {
+    "id": "tirmidhi_1",
+    "collection": "Jami at-Tirmidhi",
+    "book_number": 47,
+    "hadith_number": 3895,
+    "arabic_text": "خيركم من تعلم القرآن وعلمه",
+    "english_text": "The best of you are those who learn the Quran and teach it",
+    "narrator": "Uthman ibn Affan",
+    "theme": "education",
+    "chapter": "The Merits of the Quran",
+    "grade": "sahih",
+    "reference": "Tirmidhi 47:3895",
+    "keywords": ["education", "quran", "learning", "teaching", "knowledge", "ilm", "merit"]
+  },
+  {
+    "id": "tirmidhi_2",
+    "collection": "Jami at-Tirmidhi",
+    "book_number": 9,
+    "hadith_number": 1376,
+    "arabic_text": "الزكاة قنطرة الإسلام فمن أداها فقد قطع القنطرة ومن منعها فقد احتبس دونها",
+    "english_text": "Zakat is a bridge of Islam. Whoever pays it has crossed the bridge, and whoever withholds it has been prevented from crossing",
+    "narrator": "Anas ibn Malik",
+    "theme": "zakat",
+    "chapter": "The Book of Zakat",
+    "grade": "hasan",
+    "reference": "Tirmidhi 9:1376",
+    "keywords": ["zakat", "bridge", "islam", "obligation", "wealth", "purification", "spiritual"]
+  },
+  {
+    "id": "tirmidhi_3",
+    "collection": "Jami at-Tirmidhi",
+    "book_number": 39,
+    "hadith_number": 2646,
+    "arabic_text": "فضل العالم على العابد كفضل القمر ليلة البدر على سائر الكواكب",
+    "english_text": "The virtue of the scholar over the worshipper is like the virtue of the moon on the night of the full moon over the rest of the stars",
+    "narrator": "Abu Darda",
+    "theme": "knowledge",
+    "chapter": "The Book of Knowledge",
+    "grade": "hasan",
+    "reference": "Tirmidhi 39:2646",
+    "keywords": ["knowledge", "scholar", "virtue", "moon", "stars", "learning", "full moon", "badr"]
+  },
+  {
+    "id": "tirmidhi_4",
+    "collection": "Jami at-Tirmidhi",
+    "book_number": 5,
+    "hadith_number": 806,
+    "arabic_text": "إن الشمس والقمر آيتان من آيات الله لا ينكسفان لموت أحد ولا لحياته فإذا رأيتم ذلك فصلوا",
+    "english_text": "The sun and moon are two signs among the signs of Allah. They do not eclipse because of the death or life of anyone. When you see that, offer prayer",
+    "narrator": "Abu Mas'ud",
+    "theme": "eclipse",
+    "chapter": "The Book of Prayer",
+    "grade": "sahih",
+    "reference": "Tirmidhi 5:806",
+    "keywords": ["eclipse", "sun", "moon", "signs", "prayer", "lunar", "solar", "kusuf", "khusuf"]
+  }
+]
